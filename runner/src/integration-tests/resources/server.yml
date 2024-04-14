@@ -1,0 +1,125 @@
+# MongoDB collections
+collections:
+  - players
+  - rounds
+  - punishments
+
+# How many player have time to accept round invitation
+# Milliseconds
+roundInvitationTimeout: 15000
+
+# Minimal time in queue
+# Milliseconds
+roundSearchTime: 5000
+
+# Chat configuration
+chat:
+  # Global chat
+  global:
+    pattern: "$(senderBadge)$(senderUsername): <color:$(chatMessageColor)>$(chatMessageText)</color>"
+  # Group chat
+  group:
+    members_pattern: "$(translate:group.prefix) $(senderBadge)$(senderUsername): <dark_aqua>$(chatMessageText)</dark_aqua>"
+    leader_pattern: "$(translate:group.prefix) $(senderBadge)$(senderUsername): <aqua>$(chatMessageText)</aqua>"
+  # Private chat
+  privateMessages:
+    from_default_pattern: "$(translate:pm.prefix) <color:$(chatMessageColor)>$(translate:pm.from)</color:$(chatMessageColor)> $(senderBadge)$(senderUsername): <color:$(chatMessageColor)>$(chatMessageText)</color:$(chatMessageColor)>"
+    to_default_pattern: "$(translate:pm.prefix) <color:$(chatMessageColor)>$(translate:pm.to)</color:$(chatMessageColor)> $(senderBadge)$(senderUsername): <dark_gray>$(chatMessageText)</dark_gray>"
+
+    from_admin_pattern: "$(translate:pm.prefix.staff) <color:$(chatMessageColor)>$(translate:pm.from)</color:$(chatMessageColor)> $(senderBadge)$(senderUsername): <color:$(chatMessageColor)>$(chatMessageText)</color:$(chatMessageColor)>"
+    to_admin_pattern: "$(translate:pm.prefix.staff) <color:$(chatMessageColor)>$(translate:pm.to)</color:$(chatMessageColor)> $(senderBadge)$(senderUsername): <color:$(chatMessageColor)>$(chatMessageText)</color:$(chatMessageColor)>"
+  # Spectator chat
+  spectator:
+    pattern: "$(translate:spectator.chat.prefix) $(senderBadge)$(senderUsername): <color:$(chatMessageColor)>$(chatMessageText)</color>"
+
+# Group settings, each group should contain `name` key and rest is optional
+# name = Group name, same as permissions format, required
+# badge = This badge will be displayed as prefix in player nickname
+#   Accepts MiniMessage format and i18n keys in $(translate:) variable
+groups:
+  # Player moderator group
+  - name: isPlayerModerator
+    badge: "<dark_blue><hover:show_text:'$(translate:badge.player-moderator)'>☆</hover></dark_blue>"
+    permissions:
+      - punishments.mute.temp
+      - punishments.mute
+      - punishments.mute.protected
+
+  # Admin group
+  - name: isAdmin
+    badge: "<dark_purple><hover:show_text:'$(translate:badge.admin)'>★</hover></dark_purple>"
+    globalChatColor: "#c7c7c7"
+    permissions:
+      - modes.active.admin
+      - punishments.mute
+      - punishments.mute.temp
+      - punishments.mute.perm
+      - punishments.mute.force
+      - punishments.mute.protected
+      - punishments.mute.protection-ignore
+      - punishments.mute.limit.any-duration
+      - punishments.mute.limit.any-amount
+      - punishments.expire.mute.*
+      - punishments.ban.temp
+      - punishments.ban.perm
+      - punishments.ban
+      - punishments.expire
+      - punishments.expire.ban.*
+      - punishments.notes.set
+      - punishments.notes.set.*
+      - punishments.list
+      - punishments.list.*
+      - punishments.view
+      - punishments.view.*
+      - punishments
+      - punishments.kick
+      - lobby.fly-allowed
+      - pm.staff
+      - chat.minimessage.full
+      - rounds.view-details
+      - rounds.force-end
+      - rounds.view
+      - rounds.spectate
+      - rounds.say
+      - rounds
+
+ports:
+  minecraft: 25565
+  prometheus: 9119
+
+# Seasons configuration
+seasons:
+  # Internal name for season
+  # Won't be shown to players
+  - name: "easter"
+    # i18n key for season display name
+    # Will be shown to players
+    display_name: "seasons.easter.displayname"
+    # Season start date, year is not supported
+    # Format: "MM.DD"
+    # Should have string type
+    start_date: "04.02"
+    # Season end date, year is not supported
+    # Format: "MM.DD"
+    # Should have string type
+    end_date: "05.01"
+
+  - name: "halloween"
+    display_name: "seasons.halloween.displayname"
+    start_date: "10.28"
+    end_date: "11.03"
+
+  - name: "newyear"
+    display_name: "seasons.newyear.displayname"
+    start_date: "12.20"
+    end_date: "01.15"
+
+  - name: "summer"
+    display_name: "seasons.summer.displayname"
+    start_date: "06.01"
+    end_date: "09.01"
+
+  - name: "winter"
+    display_name: "seasons.winter.displayname"
+    start_date: "12.01"
+    end_date: "03.01"

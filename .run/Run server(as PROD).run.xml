@@ -1,0 +1,14 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run server(as PROD)" type="Application" factoryName="Application" focusToolWindowBeforeRun="true">
+    <envs>
+      <env name="DAYLIFECRAFT_SETTINGS_SERVER_ENV" value="PROD" />
+      <env name="DAYLIFECRAFT_SETTINGS_DEBUG_COMMANDS" value="false" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="com.daylifecraft.minigames.Init" />
+    <module name="minigames.runner.main" />
+    <option name="WORKING_DIRECTORY" value="$ProjectFileDir$/runner" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
