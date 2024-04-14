@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run server" type="Application" factoryName="Application" focusToolWindowBeforeRun="true">
+    <option name="MAIN_CLASS_NAME" value="com.daylifecraft.minigames.Init" />
+    <module name="minigames.runner.main" />
+    <selectedOptions>
+      <option name="environmentVariables" visible="false" />
+    </selectedOptions>
+    <option name="WORKING_DIRECTORY" value="$ProjectFileDir$/runner" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

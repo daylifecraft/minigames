@@ -1,0 +1,10 @@
+name: testMiniGame2
+displayNameKey: games.testMiniGame2.displayName
+descriptionKey: games.testMiniGame2.description
+guiBlock: RED_SAND
+public: false
+permission: test.permission
+minPlayers: 1
+maxPlayers: 8
+minGroupSize: 2
+maxGroupSize: 6

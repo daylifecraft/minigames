@@ -1,0 +1,352 @@
+on:
+  push:
+
+jobs:
+  build:
+    env:
+      DEBIAN_FRONTEND: noninteractive
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v4.1.1
+        with:
+          lfs: "true"
+      - name: Setup java
+        uses: actions/setup-java@v4.2.1
+        with:
+          distribution: temurin
+          java-version: "21"
+          check-latest: true
+      - name: Setup gradle
+        uses: gradle/actions/setup-gradle@v3.3.0
+        with:
+          cache-read-only: false
+      - name: Setup build cache
+        uses: actions/cache@v4.0.2
+        with:
+          path: "**/build/"
+          key: classes-${{ env.GITHUB_REF_NAME }}-${{ env.GITHUB_SHA }}
+          restore-keys: |
+            classes-${{ env.GITHUB_REF_NAME }}-
+            classes-main-${{ github.event.pull_request.base.sha }}
+      - name: Compile project
+        run: ./gradlew --no-daemon --warning-mode=all --info --configuration-cache --build-cache classes testClasses integrationTestsClasses assemble
+      - name: Upload server jar as an artifact
+        uses: actions/upload-artifact@v4.3.1
+        with:
+          name: jar-${{ env.GITHUB_SHA }}
+          path: |
+            Dockerfile
+            runner/build/libs/
+
+  build-container-review:
+    if: "!contains(github.ref, 'main')"
+    env:
+      DEBIAN_FRONTEND: noninteractive
+    needs: ["build"]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download server jar artifact
+        uses: actions/download-artifact@v4.1.4
+        with:
+          name: jar-${{ env.GITHUB_SHA }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.3.0
+      - name: Set branch variable
+        shell: bash
+        run: echo "BRANCH=$(echo -n "${GITHUB_REF_NAME}" | sed 's~\/~\-~g')" >> $GITHUB_ENV
+      - name: Set tag variable
+        shell: bash
+        run: echo "TAG_NAME=$(date +'%s')" >> $GITHUB_ENV
+      - name: Login to container registry
+        uses: docker/login-action@v3.1.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v5.3.0
+        with:
+          context: .
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/arm64,linux/amd64
+          provenance: false
+          push: true
+          tags: ghcr.io/${{ github.repository }}:${{ env.BRANCH }}-${{ env.TAG_NAME }}
+
+  #deploy-review:
+  #  if: "!contains(github.ref, 'main')"
+  #  needs: ["build-container-review"]
+  #  env:
+  #    DEBIAN_FRONTEND: noninteractive
+  #    KUBECTL_VERSION: 1.29.2
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    - name: Setup cache for kubectl
+  #      uses: actions/cache@v4.0.2
+  #      with:
+  #        path: "/usr/local/bin/kubectl-${{ env.KUBECTL_VERSION }}"
+  #        key: kubectl-${{ env.KUBECTL_VERSION }}
+  #    - name: Download kubectl
+  #      run: |
+  #        [[ -e /usr/local/bin/kubectl-${{ env.KUBECTL_VERSION }} ]] || curl -L https://dl.k8s.io/release/v${{ env.KUBECTL_VERSION }}/bin/linux/arm64/kubectl -o /usr/local/bin/kubectl-${{ env.KUBECTL_VERSION }} && chmod +x /usr/local/bin/kubectl-${{ env.KUBECTL_VERSION }}
+  #    - name: Checkout project sources
+  #      uses: actions/checkout@v4.1.1
+  #    - name: Set correct env
+  #      shell: bash
+  #      run: echo "BRANCH=$(echo -n "${GITHUB_REF_NAME}" | sed 's~\/~\-~g')" >> $GITHUB_ENV
+  #    - name: Deploy review proxy
+  #      run: |
+  #        sed -i s~'${GITHUB_REPOSITORY}'~${{ github.repository }}~g .github/k8s-deploy-review.yml;
+  #        sed -i s~'${GITHUB_REF_NAME}'~${{ env.BRANCH }}~g .github/k8s-deploy-review.yml;
+  #        sed -i s~'${GITHUB_SHA}'~${{ env.GITHUB_SHA }}~g .github/k8s-deploy-review.yml;
+  #        echo -n '${{ secrets.KUBE_CONFIG }}' | base64 -d > kubeconfig;
+  #        kubectl-${{ env.KUBECTL_VERSION }} --kubeconfig ./kubeconfig apply -f .github/k8s-deploy-review.yml;
+
+  unit-tests:
+    env:
+      DEBIAN_FRONTEND: noninteractive
+    needs: ["build"]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v4.1.1
+        with:
+          lfs: "true"
+      - name: Setup java
+        uses: actions/setup-java@v4.2.1
+        with:
+          distribution: temurin
+          java-version: "21"
+          check-latest: true
+      - name: Setup gradle
+        uses: gradle/actions/setup-gradle@v3.3.0
+        with:
+          cache-read-only: false
+      - name: Setup build cache
+        uses: actions/cache@v4.0.2
+        with:
+          path: "**/build/"
+          key: classes-${{ env.GITHUB_REF_NAME }}-${{ env.GITHUB_SHA }}
+          restore-keys: |
+            classes-${{ env.GITHUB_REF_NAME }}-
+            classes-main-${{ github.event.pull_request.base.sha }}
+      - name: Run unit tests
+        run: ./gradlew --no-daemon --warning-mode=all --info --configuration-cache --build-cache testClasses test
+      - name: Upload unit tests result as an artifact
+        uses: actions/upload-artifact@v4.3.1
+        with:
+          name: tests-unit-${{ env.GITHUB_SHA }}
+          path: |
+            **/build/jacoco/test.exec
+            **/build/test-results/test/*.xml
+
+  integration-tests:
+    needs: ["build"]
+    services:
+      mongo:
+        image: mongo:7.0.8
+        ports:
+          - 27017:27017
+        env:
+          MONGO_INITDB_ROOT_USERNAME: minigames
+          MONGO_INITDB_ROOT_PASSWORD: example
+    env:
+      DAYLIFECRAFT_SETTINGS_MONGODB_HOSTNAME: "127.0.0.1"
+      DAYLIFECRAFT_SETTINGS_MONGODB_PASSWORD: example
+      DEBIAN_FRONTEND: noninteractive
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v4.1.1
+        with:
+          lfs: "true"
+      - name: Setup java
+        uses: actions/setup-java@v4.2.1
+        with:
+          distribution: temurin
+          java-version: "21"
+          check-latest: true
+      - name: Setup gradle
+        uses: gradle/actions/setup-gradle@v3.3.0
+        with:
+          cache-read-only: false
+      - name: Setup build cache
+        uses: actions/cache@v4.0.2
+        with:
+          path: "**/build/"
+          key: classes-${{ env.GITHUB_REF_NAME }}-${{ env.GITHUB_SHA }}
+          restore-keys: |
+            classes-${{ env.GITHUB_REF_NAME }}-
+            classes-main-${{ github.event.pull_request.base.sha }}
+      - name: Run integration tests
+        run: ./gradlew --no-daemon --warning-mode=all --info --configuration-cache --build-cache integrationTestsClasses integration-tests
+      - name: Upload integration tests result as an artifact
+        uses: actions/upload-artifact@v4.3.1
+        with:
+          name: tests-integration-${{ env.GITHUB_SHA }}
+          path: |
+            **/build/jacoco/integration-tests.exec
+            **/build/test-results/integration-tests/*.xml
+
+  detekt:
+    env:
+      DEBIAN_FRONTEND: noninteractive
+    needs: ["build"]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v4.1.1
+        with:
+          lfs: "true"
+      - name: Setup java
+        uses: actions/setup-java@v4.2.1
+        with:
+          distribution: temurin
+          java-version: "21"
+          check-latest: true
+      - name: Setup gradle
+        uses: gradle/actions/setup-gradle@v3.3.0
+        with:
+          cache-read-only: false
+      - name: Setup build cache
+        uses: actions/cache@v4.0.2
+        with:
+          path: "**/build/"
+          key: classes-${{ env.GITHUB_REF_NAME }}-${{ env.GITHUB_SHA }}
+          restore-keys: |
+            classes-${{ env.GITHUB_REF_NAME }}-
+            classes-main-${{ github.event.pull_request.base.sha }}
+      - name: Run detekt
+        run: ./gradlew --no-daemon --warning-mode=all --info --configuration-cache --build-cache detekt
+      - name: Upload detekt report as an artifact
+        uses: actions/upload-artifact@v4.3.1
+        with:
+          name: detekt-${{ env.GITHUB_SHA }}
+          path: "**/build/reports/detekt/detekt.xml"
+
+  ktlint:
+    if: "!contains(github.ref, 'main')"
+    env:
+      DEBIAN_FRONTEND: noninteractive
+      KTLINT_VERSION: "1.2.1"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v4.1.1
+      - name: Setup java
+        uses: actions/setup-java@v4.2.1
+        with:
+          distribution: temurin
+          java-version: "21"
+          check-latest: true
+      - name: Setup ktlint cache
+        uses: actions/cache@v4.0.2
+        with:
+          path: "/usr/local/bin/ktlint-${{ env.KTLINT_VERSION }}"
+          key: ktlint-${{ env.KTLINT_VERSION }}
+      - name: Download ktlint
+        run: |
+          [[ -e /usr/local/bin/ktlint-${{ env.KTLINT_VERSION }} ]] || curl -L https://github.com/pinterest/ktlint/releases/download/${{ env.KTLINT_VERSION }}/ktlint -o /usr/local/bin/ktlint-${{ env.KTLINT_VERSION }} && chmod +x /usr/local/bin/ktlint-${{ env.KTLINT_VERSION }}
+      - name: Run ktlint
+        run: ktlint-${{ env.KTLINT_VERSION }}
+
+  jacoco:
+    env:
+      DEBIAN_FRONTEND: noninteractive
+    needs:
+      - unit-tests
+      - integration-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v4.1.1
+        with:
+          lfs: "true"
+      - name: Setup java
+        uses: actions/setup-java@v4.2.1
+        with:
+          distribution: temurin
+          java-version: "21"
+          check-latest: true
+      - name: Setup gradle
+        uses: gradle/actions/setup-gradle@v3.3.0
+        with:
+          cache-read-only: false
+      - name: Setup build cache
+        uses: actions/cache@v4.0.2
+        with:
+          path: "**/build/"
+          key: classes-${{ env.GITHUB_REF_NAME }}-${{ env.GITHUB_SHA }}
+          restore-keys: |
+            classes-${{ env.GITHUB_REF_NAME }}-
+            classes-main-${{ github.event.pull_request.base.sha }}
+      - name: Download unit tests artifact
+        uses: actions/download-artifact@v4.1.4
+        with:
+          name: tests-unit-${{ env.GITHUB_SHA }}
+      - name: Download integration tests artifact
+        uses: actions/download-artifact@v4.1.4
+        with:
+          name: tests-integration-${{ env.GITHUB_SHA }}
+      - name: Run jacoco
+        run: ./gradlew --no-daemon --warning-mode=all --info --configuration-cache --build-cache jacocoTestReport
+      - name: Upload jacoco coverage report as an artifact
+        uses: actions/upload-artifact@v4.3.1
+        with:
+          name: jacoco-coverage-${{ env.GITHUB_SHA }}
+          path: "**/build/reports/jacoco/test/jacocoTestReport.xml"
+
+  sonar:
+    env:
+      DEBIAN_FRONTEND: noninteractive
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    needs:
+      - unit-tests
+      - integration-tests
+      - jacoco
+      - detekt
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v4.1.1
+        with:
+          lfs: "true"
+          fetch-depth: 0
+      - name: Setup java
+        uses: actions/setup-java@v4.2.1
+        with:
+          distribution: temurin
+          java-version: "21"
+          check-latest: true
+      - name: Setup gradle
+        uses: gradle/actions/setup-gradle@v3.3.0
+        with:
+          cache-read-only: false
+      - name: Setup build cache
+        uses: actions/cache@v4.0.2
+        with:
+          path: "**/build/"
+          key: classes-${{ env.GITHUB_REF_NAME }}-${{ env.GITHUB_SHA }}
+          restore-keys: |
+            classes-${{ env.GITHUB_REF_NAME }}-
+            classes-main-${{ github.event.pull_request.base.sha }}
+      - name: Download unit tests artifact
+        uses: actions/download-artifact@v4.1.4
+        with:
+          name: tests-unit-${{ env.GITHUB_SHA }}
+      - name: Download integration tests artifact
+        uses: actions/download-artifact@v4.1.4
+        with:
+          name: tests-integration-${{ env.GITHUB_SHA }}
+      - name: Download jacoco coverage report artifact
+        uses: actions/download-artifact@v4.1.4
+        with:
+          name: jacoco-coverage-${{ env.GITHUB_SHA }}
+      - name: Download detekt report artifact
+        uses: actions/download-artifact@v4.1.4
+        with:
+          name: detekt-${{ env.GITHUB_SHA }}
+      - name: Run sonar scan
+        run: ./gradlew --no-daemon --warning-mode=all --info --configuration-cache --build-cache testClasses integrationTestsClasses sonar

@@ -1,0 +1,23 @@
+comments:
+  active: true
+  UndocumentedPublicFunction:
+    active: true
+  UndocumentedPublicProperty:
+    active: true
+
+complexity:
+  active: true
+  LongParameterList:
+    active: true
+    constructorThreshold: 15
+
+style:
+  active: true
+  LoopWithTooManyJumpStatements:
+    active: true
+    maxJumpCount: 8
+  ReturnCount:
+    active: true
+    max: 12
+  MaxLineLength:
+    active: false

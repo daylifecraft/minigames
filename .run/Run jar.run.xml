@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run jar" type="JarApplication" focusToolWindowBeforeRun="true">
+    <option name="JAR_PATH" value="$PROJECT_DIR$/runner/build/libs/runner.jar" />
+    <option name="WORKING_DIRECTORY" value="$ProjectFileDir$/runner/build/libs" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <method v="2">
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="Build jar" run_configuration_type="GradleRunConfiguration" />
+    </method>
+  </configuration>
+</component>
