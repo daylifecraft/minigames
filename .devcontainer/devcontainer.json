@@ -20,5 +20,6 @@
     "DAYLIFECRAFT_SETTINGS_MONGODB_PASSWORD": "example",
     "DAYLIFECRAFT_SETTINGS_SERVER_ENV": "DEV",
     "DAYLIFECRAFT_SETTINGS_DEBUG_COMMANDS": "true"
-  }
+  },
+  "postAttachCommand": "docker compose up -d"
 }
