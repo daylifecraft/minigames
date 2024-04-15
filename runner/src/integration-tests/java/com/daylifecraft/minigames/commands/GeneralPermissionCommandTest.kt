@@ -1,105 +1,130 @@
-package com.daylifecraft.minigames.commands;
+package com.daylifecraft.minigames.commands
 
-import com.daylifecraft.minigames.UtilsForTesting;
-import com.daylifecraft.minigames.config.ConfigManager;
+import com.daylifecraft.common.config.ConfigFile
+import com.daylifecraft.minigames.UtilsForTesting
+import com.daylifecraft.minigames.config.ConfigManager
+import io.mockk.every
+import io.mockk.mockkObject
+import net.minestom.server.MinecraftServer
+import net.minestom.server.command.builder.Command
+import net.minestom.server.entity.Player
+import net.minestom.server.permission.Permission
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.MethodOrderer
+import org.junit.jupiter.api.Order
+import org.junit.jupiter.api.TestMethodOrder
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+private const val TEST_COMMANDS = """
+COMMAND,                  PERMISSION
+kick,                     punishments.kick
+mute temporary,           punishments.mute.temp
+mute permanent,           punishments.mute.perm
+ban temporary,            punishments.ban.temp
+ban permanent,            punishments.ban.perm
+punishment list,          punishments.list
+punishment view,          punishments.view
+punishment set-note,      punishments.notes.set
+punishment force-expire,  punishments.expire
+rounds view-details,      rounds.view-details
+rounds force-end,         rounds.force-end
+rounds view,              rounds.view
+rounds spectate,          rounds.spectate
+rounds say,               rounds.say
+"""
 
-import net.minestom.server.MinecraftServer;
-import net.minestom.server.command.builder.Command;
-import net.minestom.server.entity.Player;
-import net.minestom.server.permission.Permission;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class GeneralPermissionCommandTest {
-  private static Player player;
-  private final String testCommands =
-    """
-      COMMAND,         PERMISSION
-      kick,        punishments.kick
-      mute temporary,   punishments.mute.temp
-      mute permanent,   punishments.mute.perm
-      ban temporary,    punishments.ban.temp
-      ban permanent,    punishments.ban.perm
-      punishment list,  punishments.list
-      punishment view,  punishments.view
-      punishment set-note, punishments.notes.set
-      punishment force-expire,  punishments.expire
-      rounds view-details, rounds.view-details
-      rounds force-end, rounds.force-end
-      rounds view, rounds.view
-      rounds spectate, rounds.spectate
-      rounds say, rounds.say
-      """;
-
-  @BeforeAll
-  static void start() throws InterruptedException {
-    player = UtilsForTesting.initFakePlayer("CMTest");
-
-    UtilsForTesting.waitUntilPlayerJoin(player);
-  }
+@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
+internal class GeneralPermissionCommandTest {
 
   @Order(1)
   @ParameterizedTest(name = "[{index}] {arguments}")
-  @CsvSource(useHeadersInDisplayName = true, textBlock = testCommands)
-  void testCommandInsufficientPerm(final String command, final String permission) {
-    try {
-      final Command finalCommand = getLastVar(command, permission);
-      Assertions.assertFalse(
-        finalCommand.getCondition().canUse(player, null), "Check if command can't be executed");
-    } catch (final Exception exception) {
-      exception.printStackTrace();
+  @CsvSource(useHeadersInDisplayName = true, textBlock = TEST_COMMANDS)
+  fun testCommandInsufficientPerm(command: String, permission: String) {
+    mockkObject(ConfigManager) {
+      every { ConfigManager.mainConfig } returns configWithPermission(permission)
+
+      val finalCommand = getBestSubCommand(command)
+      assertFalse(
+        finalCommand.condition!!.canUse(player, null),
+        message = "Check if command can't be executed",
+      )
     }
   }
 
   @Order(2)
   @ParameterizedTest(name = "[{index}] {arguments}")
-  @CsvSource(useHeadersInDisplayName = true, textBlock = testCommands)
-  void testCommandSufficientPerm(final String command, final String permission) {
-    final Command finalCommand = getLastVar(command, permission);
-    player.addPermission(new Permission("isPlayerModerator"));
-    Assertions.assertTrue(
-      finalCommand.getCondition().canUse(player, null), "Check if command can be executed");
+  @CsvSource(useHeadersInDisplayName = true, textBlock = TEST_COMMANDS)
+  fun testCommandSufficientPerm(command: String, permission: String) {
+    mockkObject(ConfigManager) {
+      every { ConfigManager.mainConfig } returns configWithPermission(permission)
+
+      val finalCommand = getBestSubCommand(command)
+      player.addPermission(Permission("isPlayerModerator"))
+      assertTrue(
+        finalCommand.condition!!.canUse(player, null),
+        message = "Check if command can be executed",
+      )
+    }
   }
 
-  private Command getLastVar(final String command, final String permission) {
-    final var subcommands = command.split(" ");
+  companion object {
+    private lateinit var player: Player
 
-    final ArrayList<String> commands = new ArrayList<>();
-    commands.add(permission);
+    @BeforeAll
+    @Throws(InterruptedException::class)
+    @JvmStatic
+    fun start() {
+      player = UtilsForTesting.initFakePlayer("CMTest")
 
-    final List<Map<String, Object>> tempGroupData =
-      ConfigManager.getMainConfig().getValueList("groups");
-    tempGroupData.getFirst().put("permissions", commands);
-    ConfigManager.getMainConfig().setValue("groups", tempGroupData);
+      UtilsForTesting.waitUntilPlayerJoin(player)
+    }
 
-    final Command com = MinecraftServer.getCommandManager().getCommand(subcommands[0]);
-    Command finalCommand = com;
-    for (var i = 1; i < subcommands.length; i++) {
-      for (final Command c : com.getSubcommands()) {
-        if (subcommands[i].equals(c.getName())) {
-          finalCommand = c;
+    @AfterAll
+    @JvmStatic
+    fun kickPlayers() {
+      player.kick("")
+    }
+  }
+}
 
-          break;
-        }
+/** Creates config file with provided permission present in isPlayerModerator group */
+private fun configWithPermission(permission: String): ConfigFile =
+  ConfigFile(
+    mapOf(
+      "groups" to listOf(
+        mapOf(
+          "name" to "isPlayerModerator",
+          "permissions" to listOf(permission),
+        ),
+      ),
+    ),
+  )
+
+/**
+ * Returns best command node in commands tree for provided string
+ * @throws [NullPointerException] when there is no matching command
+ */
+private fun getBestSubCommand(command: String): Command {
+  val tokens = command.split(' ').dropLastWhile { it.isEmpty() }.toTypedArray()
+  val currentCommand = MinecraftServer.getCommandManager().getCommand(tokens[0])!!
+
+  return getBestSubCommand(tokens, 0, currentCommand)
+}
+
+private fun getBestSubCommand(tokens: Array<String>, currentToken: Int, currentCommand: Command): Command {
+  if (currentToken + 1 >= tokens.size) return currentCommand
+
+  for (subcommand in currentCommand.subcommands) {
+    for (subcommandName in subcommand.names) {
+      if (subcommandName == tokens[currentToken + 1]) {
+        return getBestSubCommand(tokens, currentToken + 1, subcommand)
       }
     }
-    return finalCommand;
   }
 
-  @AfterAll
-  static void kickPlayers() {
-    player.kick("");
-  }
+  return currentCommand
 }

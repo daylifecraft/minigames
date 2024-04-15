@@ -1,72 +1,74 @@
-package com.daylifecraft.minigames.chat;
+package com.daylifecraft.minigames.chat
 
-import com.daylifecraft.minigames.ChatManager;
-import com.daylifecraft.minigames.Init;
-import com.daylifecraft.minigames.instance.AbstractCraftInstance;
-import net.minestom.server.entity.Player;
-import net.minestom.server.instance.Instance;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
-import org.mockito.internal.util.collections.Sets;
+import com.daylifecraft.minigames.ChatManager
+import com.daylifecraft.minigames.Init.setupChatManager
+import com.daylifecraft.minigames.instance.AbstractCraftInstance
+import io.mockk.clearMocks
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.spyk
+import io.mockk.verify
+import net.minestom.server.entity.Player
+import net.minestom.server.instance.Instance
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
-class InstancesChatTest {
+internal class InstancesChatTest {
+  @Test
+  fun testChatInOneInstance() {
+    every { instance.players } returns setOf(fakePlayer1, fakePlayer2)
 
-  private static final ChatManager chatManager = Mockito.mock(ChatManager.class);
+    abstractCraftInstance.sendInstanceChatMessage(fakePlayer1, TEST_MESSAGE)
 
-  private static final AbstractCraftInstance abstractCraftInstance =
-    Mockito.mock(AbstractCraftInstance.class);
-
-  private static final Instance instance = Mockito.mock(Instance.class);
-
-  private static final Player fakePlayer1 = Mockito.mock(Player.class);
-  private static final Player fakePlayer2 = Mockito.mock(Player.class);
-
-  private static final String TEST_MESSAGE = "Some message";
-
-  @BeforeAll
-  static void setup() {
-    Init.setupChatManager(chatManager);
-
-    Mockito.doReturn(instance).when(abstractCraftInstance).getInstance();
-    Mockito.doCallRealMethod()
-      .when(abstractCraftInstance)
-      .sendInstanceChatMessage(ArgumentMatchers.eq(fakePlayer1), ArgumentMatchers.anyString());
-    Mockito.doReturn(true)
-      .when(abstractCraftInstance)
-      .canReceiveMessageFrom(ArgumentMatchers.any(), ArgumentMatchers.any());
+    verify {
+      chatManager.sendPlayerChatMessage(
+        fakePlayer1,
+        fakePlayer2,
+        any(),
+      )
+    }
   }
 
   @Test
-  void testChatInOneInstance() {
-    Mockito.doReturn(Sets.newSet(fakePlayer1, fakePlayer2)).when(instance).getPlayers();
+  fun testChatInDifferentInstances() {
+    every { instance.players } returns setOf(fakePlayer1)
 
-    abstractCraftInstance.sendInstanceChatMessage(fakePlayer1, TEST_MESSAGE);
+    abstractCraftInstance.sendInstanceChatMessage(fakePlayer1, TEST_MESSAGE)
 
-    Mockito.verify(chatManager)
-      .sendPlayerChatMessage(
-        ArgumentMatchers.eq(fakePlayer1),
-        ArgumentMatchers.eq(fakePlayer2),
-        ArgumentMatchers.anyString());
-  }
-
-  @Test
-  void testChatInDifferentInstances() {
-    Mockito.doReturn(Sets.newSet(fakePlayer1)).when(instance).getPlayers();
-
-    abstractCraftInstance.sendInstanceChatMessage(fakePlayer1, TEST_MESSAGE);
-
-    Mockito.verify(chatManager, Mockito.never())
-      .sendPlayerChatMessage(
-        ArgumentMatchers.eq(fakePlayer1),
-        ArgumentMatchers.eq(fakePlayer2),
-        ArgumentMatchers.anyString());
+    verify(inverse = true) {
+      chatManager.sendPlayerChatMessage(
+        fakePlayer1,
+        fakePlayer2,
+        any(),
+      )
+    }
   }
 
   @AfterEach
-  void clearInvocations() {
-    Mockito.clearInvocations(chatManager);
+  fun clearInvocations() {
+    clearMocks(chatManager)
+  }
+
+  companion object {
+    private val chatManager = mockk<ChatManager>(relaxed = true)
+
+    private val abstractCraftInstance = spyk<AbstractCraftInstance>()
+
+    private val instance = mockk<Instance>(relaxed = true)
+
+    private val fakePlayer1 = mockk<Player>(relaxed = true)
+    private val fakePlayer2 = mockk<Player>(relaxed = true)
+
+    private const val TEST_MESSAGE = "Some message"
+
+    @BeforeAll
+    @JvmStatic
+    fun setup() {
+      setupChatManager(chatManager)
+
+      every { abstractCraftInstance.instance } returns instance
+      every { abstractCraftInstance.canReceiveMessageFrom(any(), any()) } returns true
+    }
   }
 }

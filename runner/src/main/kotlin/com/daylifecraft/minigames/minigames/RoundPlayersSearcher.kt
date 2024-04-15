@@ -59,7 +59,7 @@ class RoundPlayersSearcher {
   companion object {
     private val EMPTY_JSON_OBJECT = JsonObject()
 
-    private val MIN_SEARCH_TIME_MILLIS = mainConfig!!.getInt("roundSearchTime")!!.toLong()
+    private val MIN_SEARCH_TIME_MILLIS = mainConfig.getInt("roundSearchTime")!!.toLong()
 
     @JvmStatic
     fun findMaxPlayersCombination(

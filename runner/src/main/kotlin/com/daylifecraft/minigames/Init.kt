@@ -205,7 +205,7 @@ object Init {
     CommandsManager.load(MinecraftServer.getCommandManager(), isInDebugMode)
 
     // Start the server on port 25565
-    minecraftServer.start(SERVER_IP, ConfigManager.mainConfig!!.getInt("ports.minecraft")!!)
+    minecraftServer.start(SERVER_IP, ConfigManager.mainConfig.getInt("ports.minecraft")!!)
 
     setupMetrics()
 
@@ -264,7 +264,7 @@ object Init {
     MinestomMetrics.builder().register()
     RunnerMetrics.builder().register()
 
-    val prometheusPort = ConfigManager.mainConfig!!.getInt("ports.prometheus")!!
+    val prometheusPort = ConfigManager.mainConfig.getInt("ports.prometheus")!!
     HTTPServer.builder().port(prometheusPort).buildAndStart()
   }
 

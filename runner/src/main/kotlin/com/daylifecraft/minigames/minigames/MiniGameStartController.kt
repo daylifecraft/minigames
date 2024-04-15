@@ -205,7 +205,7 @@ class MiniGameStartController private constructor(
 
   companion object {
     private val ROUND_CONFIRMATION_TIMEOUT =
-      mainConfig!!.getInt("roundInvitationTimeout")!!
+      mainConfig.getInt("roundInvitationTimeout")!!
         .toLong()
 
     /**

@@ -12,7 +12,7 @@ object SeasonsManager {
     private set
 
   fun load() {
-    configSeasonsList = fromConfig(ConfigManager.mainConfig!!, "seasons")
+    configSeasonsList = fromConfig(ConfigManager.mainConfig, "seasons")
   }
 
   /**
