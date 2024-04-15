@@ -1,19 +1,14 @@
 package com.daylifecraft.minigames.commands
 
 import com.daylifecraft.common.config.ConfigFile
-import com.daylifecraft.minigames.UtilsForTesting
 import com.daylifecraft.minigames.config.ConfigManager
 import io.mockk.every
+import io.mockk.mockk
 import io.mockk.mockkObject
 import net.minestom.server.MinecraftServer
 import net.minestom.server.command.builder.Command
 import net.minestom.server.entity.Player
 import net.minestom.server.permission.Permission
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.MethodOrderer
-import org.junit.jupiter.api.Order
-import org.junit.jupiter.api.TestMethodOrder
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import kotlin.test.assertFalse
@@ -37,56 +32,38 @@ rounds spectate,          rounds.spectate
 rounds say,               rounds.say
 """
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 internal class GeneralPermissionCommandTest {
 
-  @Order(1)
   @ParameterizedTest(name = "[{index}] {arguments}")
   @CsvSource(useHeadersInDisplayName = true, textBlock = TEST_COMMANDS)
   fun testCommandInsufficientPerm(command: String, permission: String) {
+    val player = mockk<Player>(relaxed = true)
+
     mockkObject(ConfigManager) {
       every { ConfigManager.mainConfig } returns configWithPermission(permission)
 
       val finalCommand = getBestSubCommand(command)
       assertFalse(
         finalCommand.condition!!.canUse(player, null),
-        message = "Check if command can't be executed",
+        message = "Command must not be executed because player have not permission",
       )
     }
   }
 
-  @Order(2)
   @ParameterizedTest(name = "[{index}] {arguments}")
   @CsvSource(useHeadersInDisplayName = true, textBlock = TEST_COMMANDS)
   fun testCommandSufficientPerm(command: String, permission: String) {
+    val player = mockk<Player>(relaxed = true)
+    every { player.allPermissions } returns setOf(Permission("isPlayerModerator"))
+
     mockkObject(ConfigManager) {
       every { ConfigManager.mainConfig } returns configWithPermission(permission)
 
       val finalCommand = getBestSubCommand(command)
-      player.addPermission(Permission("isPlayerModerator"))
       assertTrue(
         finalCommand.condition!!.canUse(player, null),
-        message = "Check if command can be executed",
+        message = "Command must be executed because player have permission",
       )
-    }
-  }
-
-  companion object {
-    private lateinit var player: Player
-
-    @BeforeAll
-    @Throws(InterruptedException::class)
-    @JvmStatic
-    fun start() {
-      player = UtilsForTesting.initFakePlayer("CMTest")
-
-      UtilsForTesting.waitUntilPlayerJoin(player)
-    }
-
-    @AfterAll
-    @JvmStatic
-    fun kickPlayers() {
-      player.kick("")
     }
   }
 }

@@ -6,7 +6,6 @@ import net.minestom.server.MinecraftServer
 import net.minestom.server.command.builder.CommandResult
 import net.minestom.server.entity.Player
 import net.minestom.server.permission.Permission
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
@@ -52,7 +51,7 @@ internal class CommandRegistrationTest {
   fun testCommandRegistration(command: String) {
     assertTrue(
       MinecraftServer.getCommandManager().commandExists(command),
-      message = "test if the command is registered",
+      message = "Command $command not found",
     )
   }
 
@@ -70,7 +69,7 @@ internal class CommandRegistrationTest {
     assertNotEquals(
       illegal = CommandResult.Type.UNKNOWN,
       actual = MinecraftServer.getCommandManager().execute(player, command).type,
-      message = "executing a normal command without attributes",
+      message = "Command $command must be registered",
     )
 
     if (correctEnding != null) {
@@ -79,7 +78,7 @@ internal class CommandRegistrationTest {
         actual = MinecraftServer.getCommandManager()
           .execute(player, "$command $correctEnding")
           .type,
-        message = "Test if the correct command is executed normally",
+        message = "Correct command /$command $correctEnding must return SUCCESS result",
       )
     }
     if (incorrectEnding != null) {
@@ -88,7 +87,7 @@ internal class CommandRegistrationTest {
         actual = MinecraftServer.getCommandManager()
           .execute(player, "$command $incorrectEnding")
           .type,
-        message = "Test if the incorrect command is executed without exceptions",
+        message = "Incorrect command /$command $incorrectEnding must return UNKNOWN result",
       )
     }
   }
@@ -97,15 +96,9 @@ internal class CommandRegistrationTest {
     private val player: Player = mockk(relaxed = true)
 
     @BeforeAll
-    @Throws(InterruptedException::class)
     @JvmStatic
     fun start() {
       every { player.allPermissions } returns setOf(Permission("isAdmin"))
-    }
-
-    @AfterAll
-    @JvmStatic
-    fun kickPlayers() {
     }
   }
 }
