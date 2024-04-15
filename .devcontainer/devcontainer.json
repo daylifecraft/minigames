@@ -13,5 +13,12 @@
       "version": "21",
       "jdkDistro": "tem"
     }
+  },
+  "remoteEnv": {
+    "DAYLIFECRAFT_SETTINGS_MONGODB_HOSTNAME": "127.0.0.1",
+    "DAYLIFECRAFT_SETTINGS_MONGODB_USER": "root",
+    "DAYLIFECRAFT_SETTINGS_MONGODB_PASSWORD": "example",
+    "DAYLIFECRAFT_SETTINGS_SERVER_ENV": "DEV",
+    "DAYLIFECRAFT_SETTINGS_DEBUG_COMMANDS": "true"
   }
 }
