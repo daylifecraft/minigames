@@ -46,8 +46,7 @@ object Init {
   var chatManager: ChatManager? = null
     private set
 
-  @JvmStatic
-  var miniGamesSettingsManager: MiniGamesSettingManager? = null
+  lateinit var miniGamesSettingsManager: MiniGamesSettingManager
     private set
 
   var onlineMode: Boolean = false
@@ -169,7 +168,7 @@ object Init {
 
     // Load mini games
     setupMiniGamesManager()
-    miniGamesSettingsManager!!.onStartupLoad()
+    miniGamesSettingsManager.onStartupLoad()
 
     // Get instance manager
     loadCraftInstances()
@@ -278,7 +277,7 @@ object Init {
   }
 
   private fun setupMiniGamesControllersManager() {
-    miniGameControllersManager = MiniGameControllersManager(miniGamesSettingsManager!!)
+    miniGameControllersManager = MiniGameControllersManager(miniGamesSettingsManager)
   }
 
   private fun enableVelocityProxy(): Boolean {

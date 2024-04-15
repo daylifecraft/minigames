@@ -52,7 +52,7 @@ class RunServerExtension :
 
       // Load mini games
       Init.setupMiniGamesManager()
-      miniGamesSettingsManager!!.onStartupLoad()
+      miniGamesSettingsManager.onStartupLoad()
 
       minecraftServer.start("::", 16666)
 

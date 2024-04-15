@@ -39,7 +39,7 @@ internal class InstanceChatEventTest {
   companion object {
     private lateinit var fakePlayer: Player
 
-    private val chatManager = mockk<ChatManager>()
+    private val chatManager = mockk<ChatManager>(relaxed = true)
 
     @BeforeAll
     @Throws(InterruptedException::class)

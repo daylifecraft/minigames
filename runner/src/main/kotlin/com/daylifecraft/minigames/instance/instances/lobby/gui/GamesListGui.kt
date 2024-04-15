@@ -34,13 +34,13 @@ class GamesListGui(player: Player?) : AbstractListGui(player!!, TranslateText("m
   }
 
   override val listSize: Int
-    get() = miniGamesSettingsManager!!.publicLoadedMiniGamesCount
+    get() = miniGamesSettingsManager.publicLoadedMiniGamesCount
 
   override val list: Array<GuiItem>
     get() {
       val items: MutableList<GuiItem> = ArrayList()
 
-      for (generalGameSettings in miniGamesSettingsManager!!.allLoadedMiniGamesSettings) {
+      for (generalGameSettings in miniGamesSettingsManager.allLoadedMiniGamesSettings) {
         val item = MiniGameGuiItem(player, generalGameSettings)
         if (Material.AIR == item.material) {
           continue

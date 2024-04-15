@@ -1,138 +1,97 @@
-package com.daylifecraft.minigames.games;
+package com.daylifecraft.minigames.games
 
-import com.daylifecraft.minigames.event.player.minigame.PlayerPreparationEndEvent;
-import com.daylifecraft.minigames.minigames.PlayerMiniGameManager;
-import com.daylifecraft.minigames.minigames.queue.PlayerMiniGameQueueData;
-import com.daylifecraft.minigames.minigames.search.IRoundSearchProvider;
+import com.daylifecraft.minigames.event.player.minigame.PlayerPreparationEndEvent
+import com.daylifecraft.minigames.minigames.PlayerMiniGameManager
+import com.daylifecraft.minigames.minigames.queue.PlayerMiniGameQueueData
+import com.daylifecraft.minigames.minigames.search.IRoundSearchProvider
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.spyk
+import io.mockk.verify
+import net.minestom.server.entity.Player
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import java.util.UUID
 
-import java.util.UUID;
+internal class MiniGamesManagerTest {
+  @Test
+  fun testDoesPlayerLockedOnPreparation() {
+    mockkObject(PlayerMiniGameManager) {
+      PlayerMiniGameManager.preparePlayerForRoundSearch(
+        fakePlayer,
+        MINI_GAME_ID,
+        roundSearchProvider,
+      )
 
-import net.minestom.server.entity.Player;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-
-class MiniGamesManagerTest {
-
-  private static final Player fakePlayer = Mockito.mock(Player.class);
-
-  private static final UUID ZERO_UUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
-
-  private static final IRoundSearchProvider roundSearchProvider =
-    Mockito.spy(IRoundSearchProvider.class);
-
-  private static final String MINI_GAME_ID = "awesomeMiniGame";
-
-  @BeforeAll
-  static void setup() {
-    Mockito.doReturn(ZERO_UUID).when(fakePlayer).getUuid();
-    Mockito.doReturn(Mockito.mock(Player.PlayerSettings.class)).when(fakePlayer).getSettings();
-    Mockito.doReturn("Bot").when(fakePlayer).getUsername();
+      verify { PlayerMiniGameManager.addLockedPlayer(ZERO_UUID, MINI_GAME_ID) }
+    }
   }
 
   @Test
-  void testDoesPlayerLockedOnPreparation() {
-    try (MockedStatic<PlayerMiniGameManager> miniGameManager =
-           Mockito.mockStatic(PlayerMiniGameManager.class)) {
-      miniGameManager
-        .when(
-          () ->
-            PlayerMiniGameManager.preparePlayerForRoundSearch(
-              fakePlayer, MINI_GAME_ID, roundSearchProvider))
-        .thenCallRealMethod();
-      miniGameManager
-        .when(
-          () ->
-            PlayerMiniGameManager.preparePlayerForRoundSearch(
-              ArgumentMatchers.eq(fakePlayer),
-              ArgumentMatchers.eq(MINI_GAME_ID),
-              ArgumentMatchers.eq(roundSearchProvider),
-              ArgumentMatchers.any(),
-              ArgumentMatchers.any()))
-        .thenCallRealMethod();
+  fun testDoesPlayerDoesNotPreparedWhenInGame() {
+    mockkObject(PlayerMiniGameManager) {
+      every { PlayerMiniGameManager.isPlayerLocked(ZERO_UUID) } returns true
 
       PlayerMiniGameManager.preparePlayerForRoundSearch(
-        fakePlayer, MINI_GAME_ID, roundSearchProvider);
+        fakePlayer,
+        MINI_GAME_ID,
+        roundSearchProvider,
+      )
 
-      miniGameManager.verify(() -> PlayerMiniGameManager.addLockedPlayer(ZERO_UUID, MINI_GAME_ID));
+      verify(inverse = true) {
+        PlayerMiniGameManager.addLockedPlayer(ZERO_UUID, MINI_GAME_ID)
+      }
     }
   }
 
   @Test
-  void testDoesPlayerDoesNotPreparedWhenInGame() {
-    try (MockedStatic<PlayerMiniGameManager> miniGameManager =
-           Mockito.mockStatic(PlayerMiniGameManager.class)) {
-      miniGameManager
-        .when(
-          () ->
-            PlayerMiniGameManager.preparePlayerForRoundSearch(
-              fakePlayer, MINI_GAME_ID, roundSearchProvider))
-        .thenCallRealMethod();
-      miniGameManager
-        .when(
-          () ->
-            PlayerMiniGameManager.preparePlayerForRoundSearch(
-              ArgumentMatchers.eq(fakePlayer),
-              ArgumentMatchers.eq(MINI_GAME_ID),
-              ArgumentMatchers.eq(roundSearchProvider),
-              ArgumentMatchers.any(),
-              ArgumentMatchers.any()))
-        .thenCallRealMethod();
+  fun testDoesPlayerUnlockedWhenCancelledPreparation() {
+    val queueData = PlayerMiniGameQueueData(MINI_GAME_ID, roundSearchProvider)
 
-      miniGameManager.when(() -> PlayerMiniGameManager.isPlayerLocked(ZERO_UUID)).thenReturn(true);
-
-      PlayerMiniGameManager.preparePlayerForRoundSearch(
-        fakePlayer, MINI_GAME_ID, roundSearchProvider);
-
-      miniGameManager.verify(
-        () -> PlayerMiniGameManager.addLockedPlayer(ZERO_UUID, MINI_GAME_ID), Mockito.never());
-    }
-  }
-
-  @Test
-  void testDoesPlayerUnlockedWhenCancelledPreparation() {
-    PlayerMiniGameQueueData queueData =
-      new PlayerMiniGameQueueData(MINI_GAME_ID, roundSearchProvider);
-
-    try (MockedStatic<PlayerMiniGameManager> miniGameManager =
-           Mockito.mockStatic(PlayerMiniGameManager.class)) {
-      miniGameManager
-        .when(
-          () ->
-            PlayerMiniGameManager.onPlayerPreparationEnd(
-              fakePlayer, queueData, PlayerPreparationEndEvent.PreparationResult.CANCELLED))
-        .thenCallRealMethod();
-
+    mockkObject(PlayerMiniGameManager) {
       PlayerMiniGameManager.onPlayerPreparationEnd(
-        fakePlayer, queueData, PlayerPreparationEndEvent.PreparationResult.CANCELLED);
+        fakePlayer,
+        queueData,
+        PlayerPreparationEndEvent.PreparationResult.CANCELLED,
+      )
 
-      miniGameManager.verify(() -> PlayerMiniGameManager.removeLockedPlayer(ZERO_UUID));
+      verify { PlayerMiniGameManager.removeLockedPlayer(ZERO_UUID) }
     }
   }
 
   @Test
-  void testDoesPlayerProcessedWhenPrepared() {
-    PlayerMiniGameQueueData queueData =
-      new PlayerMiniGameQueueData(MINI_GAME_ID, roundSearchProvider);
+  fun testDoesPlayerProcessedWhenPrepared() {
+    val queueData = PlayerMiniGameQueueData(MINI_GAME_ID, roundSearchProvider)
 
-    try (MockedStatic<PlayerMiniGameManager> miniGameManager =
-           Mockito.mockStatic(PlayerMiniGameManager.class)) {
-      miniGameManager
-        .when(
-          () ->
-            PlayerMiniGameManager.onPlayerPreparationEnd(
-              fakePlayer,
-              queueData,
-              PlayerPreparationEndEvent.PreparationResult.ACTIVE_SEARCH))
-        .thenCallRealMethod();
-
+    mockkObject(PlayerMiniGameManager) {
       PlayerMiniGameManager.onPlayerPreparationEnd(
-        fakePlayer, queueData, PlayerPreparationEndEvent.PreparationResult.ACTIVE_SEARCH);
+        fakePlayer,
+        queueData,
+        PlayerPreparationEndEvent.PreparationResult.ACTIVE_SEARCH,
+      )
 
-      miniGameManager.verify(
-        () -> PlayerMiniGameManager.removeLockedPlayer(ZERO_UUID), Mockito.never());
+      verify(inverse = true) {
+        PlayerMiniGameManager.removeLockedPlayer(ZERO_UUID)
+      }
+    }
+  }
+
+  companion object {
+    private val fakePlayer = mockk<Player>(relaxed = true)
+
+    private val ZERO_UUID: UUID = UUID.fromString("00000000-0000-0000-0000-000000000000")
+
+    private val roundSearchProvider = spyk<IRoundSearchProvider>()
+
+    private const val MINI_GAME_ID = "awesomeMiniGame"
+
+    @BeforeAll
+    @JvmStatic
+    fun setup() {
+      every { fakePlayer.uuid } returns (ZERO_UUID)
+      every { fakePlayer.settings } returns mockk(relaxed = true)
+      every { fakePlayer.username } returns "MiniGameManagerTestBot"
     }
   }
 }

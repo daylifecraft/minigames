@@ -40,7 +40,6 @@ object PlayerMiniGameManager {
    *
    * @param playerUuid Player UUID
    */
-  @JvmStatic
   fun addLockedPlayer(playerUuid: UUID, miniGameId: String) {
     lockedPlayersUuids[playerUuid] = PlayerMiniGameLockData(miniGameId)
   }
@@ -51,7 +50,6 @@ object PlayerMiniGameManager {
    * @param playerUuid Player UUID
    * @return True if player blocked, otherwise false
    */
-  @JvmStatic
   fun isPlayerLocked(playerUuid: UUID): Boolean = lockedPlayersUuids.containsKey(playerUuid)
 
   /**
@@ -59,7 +57,6 @@ object PlayerMiniGameManager {
    *
    * @param playerUuid Player UUID
    */
-  @JvmStatic
   fun removeLockedPlayer(playerUuid: UUID) {
     lockedPlayersUuids.remove(playerUuid)
   }
@@ -82,8 +79,6 @@ object PlayerMiniGameManager {
    * @param defaultSettings JsonObject dict type with default player settings
    * @param defaultFilters JsonObject dict type with default player filters
    */
-  @JvmStatic
-  @JvmOverloads
   fun preparePlayerForRoundSearch(
     player: Player,
     miniGameId: String,
@@ -118,7 +113,6 @@ object PlayerMiniGameManager {
    * @param playerMiniGameQueueData MiniGameID & Settings/Filters
    * @param preparationResult Result of preparation. It can be: cancelled or ready to round search
    */
-  @JvmStatic
   fun onPlayerPreparationEnd(
     player: Player,
     playerMiniGameQueueData: PlayerMiniGameQueueData,
@@ -237,7 +231,6 @@ object PlayerMiniGameManager {
    *
    * @param playerUuid Player UUID
    */
-  @JvmStatic
   fun removeFromSearchQueueAndUnlockGroup(playerUuid: UUID) {
     val miniGameQueueElement = getMiniGameQueueElement(playerUuid) ?: return
 

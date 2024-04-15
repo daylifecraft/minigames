@@ -45,7 +45,7 @@ class DebugRoundStartCommand :
 
     val miniGameId: String = context[miniGameIdArgument]
     val miniGameSettings =
-      miniGamesSettingsManager!!.getGeneralGameSettings(miniGameId)
+      miniGamesSettingsManager.getGeneralGameSettings(miniGameId)
     if (miniGameSettings == null) {
       senderLanguage.sendMiniMessage(WRONG_MINIGAME_ID)
       return

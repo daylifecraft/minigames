@@ -23,7 +23,7 @@ class SinglePlayerRoundSearchProvider : IRoundSearchProvider {
       "rounds.new-round.queue.started",
       "minigameDisplayName" to
         TranslateText(
-          Init.miniGamesSettingsManager!!.getGeneralGameSettings(playerMiniGameQueueData.miniGameId)!!.displayNameKey,
+          Init.miniGamesSettingsManager.getGeneralGameSettings(playerMiniGameQueueData.miniGameId)!!.displayNameKey,
         ).string(player),
     )
   }

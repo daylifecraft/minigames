@@ -14,7 +14,7 @@ class MiniGameIdSuggestion : SuggestionCallback {
     context: CommandContext,
     suggestion: Suggestion,
   ) {
-    miniGamesSettingsManager!!.loadedMiniGamesIds.forEach { miniGameId: String ->
+    miniGamesSettingsManager.loadedMiniGamesIds.forEach { miniGameId: String ->
       if (miniGameId.startsWith(suggestion.currentArgumentValue)) {
         suggestion.addEntry(SuggestionEntry(miniGameId))
       }

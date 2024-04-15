@@ -1,79 +1,81 @@
-package com.daylifecraft.minigames.games;
+package com.daylifecraft.minigames.games
 
-import com.daylifecraft.minigames.minigames.RoundPlayersSearcher;
-import com.daylifecraft.minigames.minigames.queue.MiniGameQueueElement;
+import com.daylifecraft.common.util.Range
+import com.daylifecraft.minigames.minigames.RoundPlayersSearcher.Companion.clampElementsListToBorder
+import com.daylifecraft.minigames.minigames.queue.MiniGameQueueElement
+import io.mockk.every
+import io.mockk.mockk
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import com.daylifecraft.common.util.Range;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
-class ClampingInRoundPlayersSearcherTest {
-
-  private static final List<MiniGameQueueElement> queueElementList = new ArrayList<>();
-
-  @BeforeAll
-  static void setup() {
-    // Filling list with groups of total players count: 1, 2, 3, ... 10
-    for (var playersCount = 1; playersCount <= 10; playersCount++) {
-      var mocked = Mockito.mock(MiniGameQueueElement.class);
-      Mockito.doReturn(playersCount).when(mocked).getTotalPlayersCount();
-      queueElementList.add(mocked);
-    }
+internal class ClampingInRoundPlayersSearcherTest {
+  @Test
+  fun testMinGroupsClamping() {
+    val playersBorder = Range(1, 10)
+    assertEquals(
+      expected = 1,
+      actual = clampElementsListToBorder(queueElementList, playersBorder).size,
+      message = "Expected that one group selected (priority to max players group)",
+    )
   }
 
   @Test
-  void testMinGroupsClamping() {
-    Range<Integer> playersBorder = new Range<>(1, 10);
-    Assertions.assertEquals(
-      1,
-      RoundPlayersSearcher.clampElementsListToBorder(queueElementList, playersBorder).size(),
-      "Expected that one group selected (priority to max players group)");
+  fun testMinGroupsClampingSize() {
+    val playersBorder = Range(1, 10)
+    assertEquals(
+      expected = setOf(10),
+      actual = clampElementsListToBorder(queueElementList, playersBorder)
+        .map(MiniGameQueueElement::totalPlayersCount).toSet(),
+      message = "Expected that one group selected & has 10 players",
+    )
   }
 
   @Test
-  void testMinGroupsClampingSize() {
-    Range<Integer> playersBorder = new Range<>(1, 10);
-    Assertions.assertIterableEquals(
-      Collections.singleton(10),
-      RoundPlayersSearcher.clampElementsListToBorder(queueElementList, playersBorder).stream()
-        .map(MiniGameQueueElement::getTotalPlayersCount)
-        .toList(),
-      "Expected that one group selected & has 10 players");
+  fun testMaxGroupsClamping() {
+    val playersBorder = Range(1, 55)
+    assertEquals(
+      expected = 10,
+      actual = clampElementsListToBorder(queueElementList, playersBorder).size,
+      message = "Expected that all 10 groups selected",
+    )
   }
 
   @Test
-  void testMaxGroupsClamping() {
-    Range<Integer> playersBorder = new Range<>(1, 55);
-    Assertions.assertEquals(
-      10,
-      RoundPlayersSearcher.clampElementsListToBorder(queueElementList, playersBorder).size(),
-      "Expected that all 10 groups selected");
+  fun testMiddleGroupsClamping() {
+    val playersBorder = Range(1, 20)
+    assertEquals(
+      expected = 3,
+      actual = clampElementsListToBorder(queueElementList, playersBorder).size,
+      message = "Expected that 3 groups selected",
+    )
   }
 
   @Test
-  void testMiddleGroupsClamping() {
-    Range<Integer> playersBorder = new Range<>(1, 20);
-    Assertions.assertEquals(
-      3,
-      RoundPlayersSearcher.clampElementsListToBorder(queueElementList, playersBorder).size(),
-      "Expected that 3 groups selected");
-  }
-
-  @Test
-  void testMiddleGroupsClampingSize() {
-    Range<Integer> playersBorder = new Range<>(1, 20);
-    Assertions.assertIterableEquals(
-      List.of(1, 9, 10),
-      RoundPlayersSearcher.clampElementsListToBorder(queueElementList, playersBorder).stream()
-        .map(MiniGameQueueElement::getTotalPlayersCount)
+  fun testMiddleGroupsClampingSize() {
+    val playersBorder = Range(1, 20)
+    assertEquals(
+      expected = listOf(1, 9, 10),
+      actual = clampElementsListToBorder(queueElementList, playersBorder).stream()
+        .map(MiniGameQueueElement::totalPlayersCount)
         .sorted()
         .toList(),
-      "Expected that 3 groups selected");
+      message = "Expected that 3 groups selected",
+    )
+  }
+
+  companion object {
+    private val queueElementList: MutableList<MiniGameQueueElement> = ArrayList()
+
+    @BeforeAll
+    @JvmStatic
+    fun setup() {
+      // Filling list with groups of total players count: 1, 2, 3, ... 10
+      for (playersCount in 1..10) {
+        val mocked = mockk<MiniGameQueueElement>()
+        every { mocked.totalPlayersCount } returns playersCount
+        queueElementList.add(mocked)
+      }
+    }
   }
 }
