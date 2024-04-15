@@ -135,9 +135,9 @@ abstract class AbstractCraftInstance {
    * @param sender Message sender
    * @param message Message text
    */
-  fun sendInstanceChatMessage(sender: Player?, message: String?) {
+  fun sendInstanceChatMessage(sender: Player, message: String) {
     val recipients: MutableList<Player> = ArrayList()
-    val formattedMessage = checkMiniMessage(sender!!, message!!)
+    val formattedMessage = checkMiniMessage(sender, message)
 
     for (recipient in instance.players) {
       if (!canReceiveMessageFrom(recipient, sender)) {

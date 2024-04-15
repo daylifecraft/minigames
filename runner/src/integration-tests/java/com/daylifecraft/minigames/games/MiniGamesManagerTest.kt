@@ -39,7 +39,7 @@ internal class MiniGamesManagerTest {
         roundSearchProvider,
       )
 
-      verify(inverse = true) {
+      verify(exactly = 0) {
         PlayerMiniGameManager.addLockedPlayer(ZERO_UUID, MINI_GAME_ID)
       }
     }
@@ -71,7 +71,7 @@ internal class MiniGamesManagerTest {
         PlayerPreparationEndEvent.PreparationResult.ACTIVE_SEARCH,
       )
 
-      verify(inverse = true) {
+      verify(exactly = 0) {
         PlayerMiniGameManager.removeLockedPlayer(ZERO_UUID)
       }
     }

@@ -1,6 +1,7 @@
 package com.daylifecraft.minigames.commands
 
-import com.daylifecraft.minigames.UtilsForTesting
+import io.mockk.every
+import io.mockk.mockk
 import net.minestom.server.MinecraftServer
 import net.minestom.server.command.builder.CommandResult
 import net.minestom.server.entity.Player
@@ -93,26 +94,18 @@ internal class CommandRegistrationTest {
   }
 
   companion object {
-    private lateinit var player: Player
-    private lateinit var player2: Player
+    private val player: Player = mockk(relaxed = true)
 
     @BeforeAll
     @Throws(InterruptedException::class)
     @JvmStatic
     fun start() {
-      player = UtilsForTesting.initFakePlayer("Bot")
-      player.addPermission(Permission("isAdmin"))
-
-      player2 = UtilsForTesting.initFakePlayer("Bot2")
-
-      UtilsForTesting.waitUntilPlayerJoin(player, player2)
+      every { player.allPermissions } returns setOf(Permission("isAdmin"))
     }
 
     @AfterAll
     @JvmStatic
     fun kickPlayers() {
-      player.kick("")
-      player2.kick("")
     }
   }
 }

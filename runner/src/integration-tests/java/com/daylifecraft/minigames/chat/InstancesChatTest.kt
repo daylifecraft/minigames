@@ -36,7 +36,7 @@ internal class InstancesChatTest {
 
     abstractCraftInstance.sendInstanceChatMessage(fakePlayer1, TEST_MESSAGE)
 
-    verify(inverse = true) {
+    verify(exactly = 0) {
       chatManager.sendPlayerChatMessage(
         fakePlayer1,
         fakePlayer2,

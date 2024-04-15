@@ -41,8 +41,8 @@ internal class GroupRoundSearchProviderTest {
         PlayerMiniGameQueueData(generalGameSettings!!.name, roundSearchProvider!!),
       )
 
-      verify(inverse = true) { PlayerMiniGameManager.removeLockedPlayer(fakePlayer1.uuid) }
-      verify(inverse = true) { PlayerMiniGameManager.removeLockedPlayer(fakePlayer2.uuid) }
+      verify(exactly = 0) { PlayerMiniGameManager.removeLockedPlayer(fakePlayer1.uuid) }
+      verify(exactly = 0) { PlayerMiniGameManager.removeLockedPlayer(fakePlayer2.uuid) }
     }
   }
 
