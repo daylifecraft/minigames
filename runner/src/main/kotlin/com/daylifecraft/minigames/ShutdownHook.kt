@@ -54,9 +54,13 @@ class ShutdownHook {
   companion object {
     private val LOGGER = createLogger<ShutdownHook>()
 
+    /** Global shutdown hook for this server */
     lateinit var global: ShutdownHook
       private set
 
+    /**
+     * Initializes [global] shutdown hook
+     */
     fun init() {
       global = ShutdownHook()
       Signal.handle(Signal("INT")) { _ -> global.run(0) }

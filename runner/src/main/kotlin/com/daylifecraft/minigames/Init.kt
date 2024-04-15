@@ -46,6 +46,7 @@ object Init {
   var chatManager: ChatManager? = null
     private set
 
+  /** Global mini-games settings manager */
   lateinit var miniGamesSettingsManager: MiniGamesSettingManager
     private set
 
