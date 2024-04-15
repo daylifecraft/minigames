@@ -28,22 +28,23 @@ class MinestomMetricsTests {
     ],
   )
   fun registrationTest(metricName: String) {
-    mockkStatic(MinecraftServer::class)
-    val mockedEventHandler = mockk<GlobalEventHandler>(relaxed = true)
-    every { mockedEventHandler.addListener(any()) } returns mockedEventHandler
-    every { MinecraftServer.getGlobalEventHandler() } returns mockedEventHandler
+    mockkStatic(MinecraftServer::class) {
+      val mockedEventHandler = mockk<GlobalEventHandler>(relaxed = true)
+      every { mockedEventHandler.addListener(any()) } returns mockedEventHandler
+      every { MinecraftServer.getGlobalEventHandler() } returns mockedEventHandler
 
-    val registry = mockk<PrometheusRegistry>(relaxed = true)
-    MinestomMetrics.builder().register(registry)
+      val registry = mockk<PrometheusRegistry>(relaxed = true)
+      MinestomMetrics.builder().register(registry)
 
-    verify {
-      registry.register(
-        match<Collector> {
-          it.prometheusName == metricName
-        },
-      )
+      verify {
+        registry.register(
+          match<Collector> {
+            it.prometheusName == metricName
+          },
+        )
+      }
+
+      registry.scrape { true }
     }
-
-    registry.scrape { true }
   }
 }

@@ -1,12 +1,5 @@
 package com.daylifecraft.minigames;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Consumer;
-
 import com.daylifecraft.minigames.fakeplayer.FakePlayer;
 import com.daylifecraft.minigames.fakeplayer.FakePlayerOption;
 import net.minestom.server.MinecraftServer;
@@ -18,6 +11,9 @@ import net.minestom.server.event.EventNode;
 import net.minestom.server.event.player.PlayerSpawnEvent;
 import net.minestom.server.event.trait.PlayerEvent;
 import net.minestom.server.instance.Instance;
+
+import java.util.*;
+import java.util.function.Consumer;
 
 public class UtilsForTesting {
 
@@ -56,7 +52,8 @@ public class UtilsForTesting {
     final UUID uuid,
     final String playerName,
     final FakePlayerOption options,
-    final Instance spawnInstance) {
+    final Instance spawnInstance
+  ) {
     spawnInstancesMap.put(uuid, spawnInstance);
     return initFakePlayer(
       uuid,

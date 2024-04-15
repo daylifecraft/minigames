@@ -1,43 +1,35 @@
-package com.daylifecraft.minigames.commands;
+package com.daylifecraft.minigames.commands
 
-import com.daylifecraft.minigames.Init;
-import com.daylifecraft.minigames.ShutdownHook;
-import net.minestom.server.MinecraftServer;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
+import com.daylifecraft.minigames.ShutdownHook
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.verify
+import net.minestom.server.MinecraftServer
+import org.junit.jupiter.api.Test
 
-class DebugStopCommandTest {
+internal class DebugStopCommandTest {
+  @Test
+  fun testStopDryRun() {
+    val shutdownHookMock = mockk<ShutdownHook>(relaxed = true)
+    mockkObject(ShutdownHook) {
+      every { ShutdownHook.global } returns shutdownHookMock
 
-  private static long lastShutdownReason = -1;
+      MinecraftServer.getCommandManager().executeServerCommand("~ stop dry-run")
 
-  @BeforeAll
-  static void start() {
-    final ShutdownHook shutdownHook = Mockito.mock(ShutdownHook.class);
-    Mockito.doAnswer(
-        answer -> {
-          lastShutdownReason = answer.getArgument(0);
-
-          return null;
-        })
-      .when(shutdownHook)
-      .run(ArgumentMatchers.anyLong());
-
-    Init.setupShutdownHook(shutdownHook);
+      verify(exactly = 1) { shutdownHookMock.run(1) }
+    }
   }
 
   @Test
-  void testStopDryRun() {
-    MinecraftServer.getCommandManager().executeServerCommand("~ stop dry-run");
-    Assertions.assertEquals(
-      1, lastShutdownReason, "assert that shutdown hook has been running by dry run");
-  }
+  fun testStopRun() {
+    val shutdownHookMock = mockk<ShutdownHook>(relaxed = true)
+    mockkObject(ShutdownHook) {
+      every { ShutdownHook.global } returns shutdownHookMock
 
-  @Test
-  void testStopRun() {
-    MinecraftServer.getCommandManager().executeServerCommand("~ stop");
-    Assertions.assertEquals(0, lastShutdownReason, "assert that server has been stopped");
+      MinecraftServer.getCommandManager().executeServerCommand("~ stop")
+
+      verify(exactly = 1) { shutdownHookMock.run(0) }
+    }
   }
 }

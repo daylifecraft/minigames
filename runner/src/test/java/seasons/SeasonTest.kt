@@ -1,32 +1,31 @@
-package seasons;
+package seasons
 
-import com.daylifecraft.common.seasons.Season;
-import com.daylifecraft.common.seasons.SeasonDate;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.daylifecraft.common.seasons.Season
+import com.daylifecraft.common.seasons.SeasonDate
+import org.junit.jupiter.api.Test
+import kotlin.test.assertFailsWith
 
-class SeasonTest {
-  private Season season;
+internal class SeasonTest {
 
-  @BeforeEach
-  void initSeason() {
-    season = new Season("name", "displayName", new SeasonDate("01.01"), new SeasonDate("12.31"));
+  @Test
+  fun testAttachmentOnSetActivenessValidation() {
+    val season = Season("name", "displayName", SeasonDate("01.01"), SeasonDate("12.31"))
+
+    assertFailsWith<IllegalStateException>(
+      message = "Season should be attached to list before this.",
+    ) {
+      season.setActiveness(Season.Activeness.FORCE_ACTIVE)
+    }
   }
 
   @Test
-  void testAttachmentOnSetActivenessValidation() {
-    Assertions.assertThrows(
-      IllegalStateException.class,
-      () -> season.setActiveness(Season.Activeness.FORCE_ACTIVE),
-      "Season should be attached to list before this.");
-  }
+  fun testAttachmentOnSetPriorityValidation() {
+    val season = Season("name", "displayName", SeasonDate("01.01"), SeasonDate("12.31"))
 
-  @Test
-  void testAttachmentOnSetPriorityValidation() {
-    Assertions.assertThrows(
-      IllegalStateException.class,
-      () -> season.setPriority(10),
-      "Season should be attached to list before this.");
+    assertFailsWith<IllegalStateException>(
+      message = "Season should be attached to list before this.",
+    ) {
+      season.priority = 10
+    }
   }
 }

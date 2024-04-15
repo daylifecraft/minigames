@@ -2,7 +2,7 @@ package com.daylifecraft.minigames.command.debug.server
 
 import com.daylifecraft.common.command.SubCommand
 import com.daylifecraft.common.util.extensions.minestom.currentArgumentValue
-import com.daylifecraft.minigames.Init.shutdownHook
+import com.daylifecraft.minigames.ShutdownHook
 import com.daylifecraft.minigames.command.CommandsManager
 import com.daylifecraft.minigames.command.debug.AbstractDebugCommand
 import net.minestom.server.command.CommandSender
@@ -32,15 +32,15 @@ class DebugStopCommand :
   override fun onCommandUse(sender: CommandSender, context: CommandContext) {
     val senderLanguage = CommandsManager.getSenderLanguage(sender)
 
-    val hook = shutdownHook
+    val hook = ShutdownHook.global
 
     if (context.has(dryRunArgument)) {
       senderLanguage.sendMiniMessage(SERVER_STOP_DRY)
-      hook!!.run(1)
+      hook.run(1)
       return
     }
     senderLanguage.sendMiniMessage(SERVER_STOP)
-    hook!!.run(0)
+    hook.run(0)
   }
 
   companion object {

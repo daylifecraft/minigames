@@ -381,7 +381,6 @@ object PlayerManager {
    * @param player player's instance
    * @param value boolean variable for setting the view
    */
-  @JvmStatic
   fun setPlayerHide(player: Entity, value: Boolean) {
     player.setAutoViewEntities(!value)
   }

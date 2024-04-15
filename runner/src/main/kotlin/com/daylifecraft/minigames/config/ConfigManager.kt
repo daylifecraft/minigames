@@ -14,7 +14,6 @@ object ConfigManager {
     private set
 
   /** Load configs  */
-  @JvmStatic
   fun load() {
     mainConfig = ConfigFile(FilesUtil.getResourceStreamByPath("server.yml"))
   }

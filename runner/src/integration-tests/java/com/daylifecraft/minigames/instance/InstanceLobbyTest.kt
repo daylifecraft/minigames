@@ -1,67 +1,63 @@
-package com.daylifecraft.minigames.instance;
+package com.daylifecraft.minigames.instance
 
-import com.daylifecraft.common.instance.InstanceType;
-import net.minestom.server.coordinate.Pos;
-import net.minestom.server.instance.Chunk;
-import net.minestom.server.instance.Instance;
-import net.minestom.server.instance.LightingChunk;
-import net.minestom.server.instance.Section;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import com.daylifecraft.common.instance.InstanceType
+import com.daylifecraft.minigames.instance.CraftInstancesManager.Companion.get
+import net.minestom.server.instance.Chunk
+import net.minestom.server.instance.Instance
+import net.minestom.server.instance.LightingChunk
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertIs
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
-class InstanceLobbyTest {
-
-  private static Instance lobbyInstance;
-  private static Chunk spawnChunk;
-
-  @BeforeAll
-  static void start() {
-    final AbstractCraftInstance lobbyCraftInstance =
-      CraftInstancesManager.get().getAnyInstanceByType(InstanceType.LOBBY);
-    lobbyInstance = lobbyCraftInstance.getInstance();
-
-    final Pos pos = lobbyCraftInstance.getSpawnPos(null);
-    int chunkX = (int) Math.floor(pos.x() / 16);
-    int chunkZ = (int) Math.floor(pos.z() / 16);
-
-    lobbyInstance.loadChunk(chunkX, chunkZ);
-    spawnChunk = lobbyInstance.getChunk(chunkX, chunkZ);
+internal class InstanceLobbyTest {
+  @Test
+  fun testLobbyInstanceRegistration() {
+    assertTrue(lobbyInstance.isRegistered, "assert that lobby is registered")
   }
 
   @Test
-  void testLobbyInstanceRegistration() {
-    Assertions.assertTrue(lobbyInstance.isRegistered(), "assert that lobby is registered");
+  fun testLobbyWorldIsNotNull() {
+    assertNotNull(spawnChunk, "assert that spawn chunk is not null")
   }
 
   @Test
-  void testLobbyWorldIsNotNull() {
-    Assertions.assertNotNull(spawnChunk, "assert that spawn chunk is not null");
+  fun testLobbyWorldIsNotEmpty() {
+    assertFalse(isChunkEmpty(spawnChunk), "assert that spawn chunk is not empty")
   }
 
   @Test
-  void testLobbyWorldIsNotEmpty() {
-    Assertions.assertFalse(isChunkEmpty(spawnChunk), "assert that spawn chunk is not empty");
+  fun testLobbyWorldChunkSupplier() {
+    assertIs<LightingChunk>(spawnChunk, "assert that lobby chunks is lighting chunks")
   }
 
-  @Test
-  void testLobbyWorldChunkSupplier() {
-    Assertions.assertInstanceOf(
-      LightingChunk.class, spawnChunk, "assert that lobby chunks is lighting chunks");
-  }
+  private fun isChunkEmpty(chunk: Chunk): Boolean =
+    chunk.sections.all { it.blockPalette().count() == 0 }
 
-  @AfterAll
-  static void finish() {
-    lobbyInstance.unloadChunk(spawnChunk);
-  }
+  companion object {
+    private lateinit var lobbyInstance: Instance
+    private lateinit var spawnChunk: Chunk
 
-  public boolean isChunkEmpty(final Chunk chunk) {
-    for (final Section section : chunk.getSections()) {
-      if (section.blockPalette().count() > 0) {
-        return false;
-      }
+    @BeforeAll
+    @JvmStatic
+    fun start() {
+      val lobbyCraftInstance = get().getAnyInstanceByType(InstanceType.LOBBY)
+      lobbyInstance = lobbyCraftInstance!!.instance
+
+      val pos = lobbyCraftInstance.getSpawnPos(null)
+      val chunkX = pos.chunkX()
+      val chunkZ = pos.chunkZ()
+
+      spawnChunk = lobbyInstance.loadChunk(chunkX, chunkZ).join()
     }
-    return true;
+
+    @AfterAll
+    @JvmStatic
+    fun finish() {
+      lobbyInstance.unloadChunk(spawnChunk)
+    }
   }
 }

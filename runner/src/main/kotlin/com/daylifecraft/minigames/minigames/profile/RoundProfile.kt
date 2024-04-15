@@ -1,7 +1,7 @@
 package com.daylifecraft.minigames.minigames.profile
 
 import com.daylifecraft.common.util.safeCastToArray
-import com.daylifecraft.minigames.Init.uUID
+import com.daylifecraft.minigames.ServerUuidProvider
 import com.daylifecraft.minigames.minigames.profile.RoundStatus.Companion.getByStringRepresentation
 import com.daylifecraft.minigames.profile.AbstractProfile
 import com.daylifecraft.minigames.profile.AbstractProfileDetails
@@ -125,7 +125,7 @@ class RoundProfile private constructor(
       val roundProfile =
         RoundProfile(
           ObjectId(),
-          uUID,
+          ServerUuidProvider.uuid,
           miniGameId,
           Timestamp(System.currentTimeMillis()),
           RoundStatus.INITIALIZING,

@@ -1,23 +1,24 @@
-package com.daylifecraft.minigames;
+package com.daylifecraft.minigames
 
-import com.daylifecraft.minigames.event.server.ServerStopEvent;
+import com.daylifecraft.minigames.event.server.ServerStopEvent
+import io.mockk.every
+import io.mockk.mockkStatic
+import io.mockk.spyk
+import io.mockk.verify
+import net.minestom.server.MinecraftServer
+import org.junit.jupiter.api.Test
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import net.minestom.server.MinecraftServer;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-class ShutdownHookTest {
-
+internal class ShutdownHookTest {
   @Test
-  void test() {
-    final var eventCalled = new AtomicBoolean(false);
-    MinecraftServer.getGlobalEventHandler()
-      .addListener(ServerStopEvent.class, serverStopEvent -> eventCalled.set(true));
-    final ShutdownHook shutdownHook = Init.getShutdownHook();
-    shutdownHook.run(1);
+  fun test() {
+    val spiedGlobalEventHandler = spyk(MinecraftServer.getGlobalEventHandler())
 
-    Assertions.assertTrue(eventCalled.get(), "ServerStopEvent should be called");
+    mockkStatic(MinecraftServer::class) {
+      every { MinecraftServer.getGlobalEventHandler() } returns spiedGlobalEventHandler
+
+      ShutdownHook.global.run(1)
+
+      verify(exactly = 1) { spiedGlobalEventHandler.call(ofType<ServerStopEvent>()) }
+    }
   }
 }

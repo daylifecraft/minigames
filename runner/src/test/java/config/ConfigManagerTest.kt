@@ -1,13 +1,15 @@
-package config;
+package config
 
-import com.daylifecraft.minigames.config.ConfigManager;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import com.daylifecraft.minigames.config.ConfigManager
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 
-class ConfigManagerTest {
+internal class ConfigManagerTest {
+
   @Test
-  void testLoadSuccess() {
-    Assertions.assertDoesNotThrow(
-      ConfigManager::load, "ConfigManager.load() should not throw an exception");
+  fun testLoadSuccess() {
+    assertDoesNotThrow("ConfigManager.load() should not throw an exception") {
+      ConfigManager.load()
+    }
   }
 }

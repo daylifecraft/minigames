@@ -2,11 +2,11 @@ package com.daylifecraft.minigames
 
 import com.daylifecraft.common.logging.building.Logger
 import com.daylifecraft.common.logging.building.createLogger
-import com.daylifecraft.common.logging.foundation.Level
 import com.daylifecraft.common.logging.foundation.LogEvent
 import com.daylifecraft.common.metrics.MinestomMetrics
 import com.daylifecraft.common.variable.VariablesManager
 import com.daylifecraft.common.variable.VariablesRegistry
+import com.daylifecraft.minigames.ServerUuidProvider.uuid
 import com.daylifecraft.minigames.command.CommandsManager
 import com.daylifecraft.minigames.config.ConfigManager
 import com.daylifecraft.minigames.database.DatabaseManager
@@ -26,7 +26,6 @@ import io.prometheus.metrics.instrumentation.jvm.JvmMetrics
 import net.minestom.server.MinecraftServer
 import net.minestom.server.extras.MojangAuth
 import net.minestom.server.extras.velocity.VelocityProxy
-import sun.misc.Signal
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.util.UUID
@@ -41,15 +40,9 @@ object Init {
 
   private lateinit var logger: Logger
 
-  @JvmStatic
-  var uUID: UUID? = null
-    private set
-
-  @JvmStatic
   var craftInstancesManager: CraftInstancesManager? = null
     private set
 
-  @JvmStatic
   var chatManager: ChatManager? = null
     private set
 
@@ -57,16 +50,12 @@ object Init {
   var miniGamesSettingsManager: MiniGamesSettingManager? = null
     private set
 
-  @JvmStatic
   var onlineMode: Boolean = false
-    private set
-
-  @JvmStatic
-  var shutdownHook: ShutdownHook? = null
     private set
 
   lateinit var guiManager: GuiManager
     private set
+
   lateinit var miniGameControllersManager: MiniGameControllersManager
     private set
 
@@ -118,18 +107,6 @@ object Init {
   }
 
   @JvmStatic
-  fun initServerUuid() {
-    if (uUID != null) {
-      logger.build(LogEvent.GENERAL_DEBUG) {
-        level(Level.WARN)
-        message("Init::initServerUuid() called more than once! Init.uuid already set: return")
-      }
-      return
-    }
-    uUID = UUID.randomUUID()
-  }
-
-  @JvmStatic
   fun initVariablesManager() {
     VariablesManager.load()
   }
@@ -145,23 +122,14 @@ object Init {
     Lang.init()
   }
 
-  /** Setup signal handlers for shutdown hook  */
-  @JvmStatic
-  fun initShutdownHook() {
-    shutdownHook = ShutdownHook()
-    Signal.handle(Signal("INT")) { _ -> shutdownHook!!.run(0) }
-    Signal.handle(Signal("TERM")) { _ -> shutdownHook!!.run(0) }
-  }
-
   @Throws(Exception::class)
   private fun initialize() {
-    initServerUuid()
     initVariablesManager()
     initLogger()
     initLicenseMode()
 
     // Create server stop handler
-    initShutdownHook()
+    ShutdownHook.init()
 
     // add uncaught exception handler
     Thread.currentThread().uncaughtExceptionHandler =
@@ -171,7 +139,7 @@ object Init {
 
     logger.debug(
       """
-      Initializing mini-games server $uUID
+      Initializing mini-games server $uuid
       SERVER_ENV="$serverEnv"
       """.trimIndent(),
     )
@@ -243,7 +211,7 @@ object Init {
 
     logger.build(LogEvent.SERVER_STARTED) {
       message("Server successfully started")
-      details("assignedServerUuid", uUID)
+      details("assignedServerUuid", uuid)
       details("serverIp", MinecraftServer.getServer().address)
       details("serverPort", MinecraftServer.getServer().port)
     }
@@ -267,7 +235,6 @@ object Init {
     }
   }
 
-  @JvmStatic
   fun setupGuiManager(toSetup: GuiManager) {
     if (isInsideTests) {
       guiManager = toSetup
@@ -276,24 +243,13 @@ object Init {
     }
   }
 
-  @JvmStatic
-  fun setupShutdownHook(toSetup: ShutdownHook) {
-    if (isInsideTests) {
-      shutdownHook = toSetup
-    } else {
-      setOnlyForTestError("ShutdownHook")
-    }
-  }
-
   /** Loads the instances. Lobby, etc.  */
-  @JvmStatic
   fun loadCraftInstances() {
     craftInstancesManager = CraftInstancesManager(MinecraftServer.getInstanceManager())
     craftInstancesManager!!.addInstance(LobbyInstance())
   }
 
   /** Setup chat manager  */
-  @JvmStatic
   fun setupChatManager() {
     chatManager = ChatManager()
   }
@@ -313,12 +269,10 @@ object Init {
   }
 
   /** Setup mini games manager  */
-  @JvmStatic
   fun setupMiniGamesManager() {
     miniGamesSettingsManager = MiniGamesSettingManager()
   }
 
-  @JvmStatic
   fun enableTests() {
     isInsideTests = true
   }

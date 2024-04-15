@@ -5,7 +5,7 @@ import com.daylifecraft.common.logging.loggers.consumers.ComposedLogsConsumer
 import com.daylifecraft.common.logging.loggers.consumers.JsonLogsConsumer
 import com.daylifecraft.common.logging.loggers.consumers.PlainTextLogsConsumer
 import com.daylifecraft.minigames.Dev
-import com.daylifecraft.minigames.Init
+import com.daylifecraft.minigames.ServerUuidProvider
 import com.daylifecraft.minigames.debug.logging.consumers.StackTraceToPlayerLogConsumer
 import org.slf4j.ILoggerFactory
 import org.slf4j.Logger
@@ -20,7 +20,7 @@ internal class LoggerFactory : ILoggerFactory {
       )
     } else {
       JsonLogsConsumer(
-        defaultProperties = mapOf("serverUuid" to Init.uUID.toString()),
+        defaultProperties = mapOf("serverUuid" to ServerUuidProvider.uuid.toString()),
       )
     }
 

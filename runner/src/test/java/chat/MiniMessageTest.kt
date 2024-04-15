@@ -1,54 +1,49 @@
-package chat;
+package chat
 
-import com.daylifecraft.minigames.Init;
-import com.daylifecraft.minigames.PermissionManager;
-import com.daylifecraft.minigames.util.ChatUtil;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.minestom.server.entity.Player;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
+import com.daylifecraft.minigames.Init
+import com.daylifecraft.minigames.PermissionManager
+import com.daylifecraft.minigames.util.ChatUtil.checkMiniMessage
+import io.mockk.every
+import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockkObject
+import net.kyori.adventure.text.minimessage.MiniMessage
+import net.minestom.server.entity.Player
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
-class MiniMessageTest {
+private const val TEST_MESSAGE = "<b>Test</b> <blue>message</blue>"
 
-  private static final String TEST_MESSAGE = "<b>Test</b> <blue>message</blue>";
+internal class MiniMessageTest {
 
-  private static Player fakePlayer;
+  @RelaxedMockK
+  private lateinit var fakePlayer: Player
 
-  @BeforeAll
-  static void setup() {
-    Init.enableTests();
-
-    fakePlayer = Mockito.mock(Player.class);
+  @BeforeEach
+  fun setup() {
+    Init.enableTests()
   }
 
   @Test
-  void testMessageWasStripped() {
-    Assertions.assertEquals(
-      ChatUtil.checkMiniMessage(fakePlayer, TEST_MESSAGE),
+  fun testMessageWasStripped() {
+    assertEquals(
+      checkMiniMessage(fakePlayer, TEST_MESSAGE),
       MiniMessage.miniMessage().stripTags(TEST_MESSAGE),
-      "Expected that tags was removed for no permission player");
+      "Expected that tags was removed for no permission player",
+    )
   }
 
   @Test
-  void testMessage() {
-    try (MockedStatic<PermissionManager> permissionManager =
-           Mockito.mockStatic(PermissionManager.class)) {
-      permissionManager
-        .when(
-          () ->
-            PermissionManager.hasPermission(
-              ArgumentMatchers.eq(fakePlayer),
-              ArgumentMatchers.eq("chat.minimessage.full")))
-        .thenReturn(true);
+  fun testMessage() {
+    mockkObject(PermissionManager)
+    every {
+      PermissionManager.hasPermission(eq(fakePlayer), eq("chat.minimessage.full"))
+    } returns true
 
-      Assertions.assertEquals(
-        TEST_MESSAGE,
-        ChatUtil.checkMiniMessage(fakePlayer, TEST_MESSAGE),
-        "Expected that tags was not removed!");
-    }
+    assertEquals(
+      TEST_MESSAGE,
+      checkMiniMessage(fakePlayer, TEST_MESSAGE),
+      "Expected that tags was not removed!",
+    )
   }
 }

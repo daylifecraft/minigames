@@ -1,68 +1,60 @@
-package instance;
+package instance
 
-import com.daylifecraft.minigames.Init;
-import com.daylifecraft.minigames.instance.AbstractCraftInstance;
-import com.daylifecraft.minigames.instance.CraftInstancesManager;
-import net.minestom.server.entity.Player;
-import net.minestom.server.instance.Instance;
-import net.minestom.server.instance.InstanceManager;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
+import com.daylifecraft.minigames.Init.enableTests
+import com.daylifecraft.minigames.Init.setupCraftInstancesManager
+import com.daylifecraft.minigames.instance.AbstractCraftInstance
+import com.daylifecraft.minigames.instance.CraftInstancesManager
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.spyk
+import net.minestom.server.entity.Player
+import net.minestom.server.instance.Instance
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import java.util.UUID
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
-import java.util.UUID;
+internal class LastInstanceUpdateTest {
+  @Test
+  fun testDoesInstanceUpdatedOnSpawn() {
+    craftInstancesManager.notifyPlayerSpawn(spawnInstance, player)
 
-class LastInstanceUpdateTest {
-
-  private static final CraftInstancesManager craftInstancesManager =
-    Mockito.spy(new CraftInstancesManager(Mockito.mock(InstanceManager.class)));
-
-  private static final Instance spawnInstance = Mockito.mock(Instance.class);
-  private static final AbstractCraftInstance abstractCraftInstance =
-    Mockito.mock(AbstractCraftInstance.class);
-
-  private static Player player;
-
-  private static final UUID playerUuid = UUID.fromString("00000000-0000-0000-0000-000000000000");
-
-  @BeforeAll
-  static void setup() {
-    Init.enableTests();
-    Init.setupCraftInstancesManager(craftInstancesManager);
-
-    player = Mockito.mock(Player.class);
-
-    Mockito.doReturn(playerUuid).when(player).getUuid();
-
-    Mockito.doReturn(abstractCraftInstance)
-      .when(craftInstancesManager)
-      .getInstance(ArgumentMatchers.any());
-    Mockito.doCallRealMethod().when(craftInstancesManager).notifyPlayerSpawn(spawnInstance, player);
-    Mockito.doCallRealMethod()
-      .when(craftInstancesManager)
-      .notifyPlayerDisconnect(spawnInstance, player);
-
-    Mockito.doCallRealMethod().when(craftInstancesManager).getLastPlayerInstance(player);
+    assertEquals(
+      expected = spawnInstance,
+      actual = craftInstancesManager.getLastPlayerInstance(player),
+      message = "Expected that last player instance updated on spawn",
+    )
   }
 
   @Test
-  void testDoesInstanceUpdatedOnSpawn() {
-    craftInstancesManager.notifyPlayerSpawn(spawnInstance, player);
+  fun testDoesInstanceRemovedOnDisconnect() {
+    craftInstancesManager.notifyPlayerDisconnect(spawnInstance, player)
 
-    Assertions.assertEquals(
-      spawnInstance,
+    assertNull(
       craftInstancesManager.getLastPlayerInstance(player),
-      "Expected that last player instance updated on spawn");
+      message = "Expected that last player instance removed on disconnect",
+    )
   }
 
-  @Test
-  void testDoesInstanceRemovedOnDisconnect() {
-    craftInstancesManager.notifyPlayerDisconnect(spawnInstance, player);
+  companion object {
+    private val craftInstancesManager = spyk(CraftInstancesManager(mockk(relaxed = true)))
 
-    Assertions.assertNull(
-      craftInstancesManager.getLastPlayerInstance(player),
-      "Expected that last player instance removed on disconnect");
+    private val spawnInstance = mockk<Instance>(relaxed = true)
+    private val abstractCraftInstance = mockk<AbstractCraftInstance>(relaxed = true)
+
+    private lateinit var player: Player
+
+    @BeforeAll
+    @JvmStatic
+    fun setup() {
+      enableTests()
+      setupCraftInstancesManager(craftInstancesManager)
+
+      player = mockk()
+      every { player.uuid } returns UUID.fromString("00000000-0000-0000-0000-000000000000")
+
+      every { craftInstancesManager.getInstance(any()) } returns abstractCraftInstance
+    }
   }
 }

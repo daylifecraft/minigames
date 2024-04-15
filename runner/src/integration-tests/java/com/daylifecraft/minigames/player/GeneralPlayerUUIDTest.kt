@@ -1,41 +1,39 @@
-package com.daylifecraft.minigames.player;
+package com.daylifecraft.minigames.player
 
-import com.daylifecraft.minigames.PlayerManager;
-import com.daylifecraft.minigames.UtilsForTesting;
-import com.daylifecraft.minigames.exception.InvalidPlayerUsername;
+import com.daylifecraft.minigames.PlayerManager
+import com.daylifecraft.minigames.UtilsForTesting
+import com.daylifecraft.minigames.exception.InvalidPlayerUsername
+import org.junit.jupiter.api.Test
+import java.nio.charset.StandardCharsets
+import java.util.UUID
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertNotNull
 
-import java.nio.charset.StandardCharsets;
-import java.util.UUID;
-
-import net.minestom.server.entity.Entity;
-import net.minestom.server.entity.Player;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-class GeneralPlayerUUIDTest {
-  private final UUID playerUuid = UUID.fromString("49e96464-aa17-46b3-b5c6-87574b6b48b4");
+internal class GeneralPlayerUUIDTest {
+  private val playerUuid: UUID = UUID.fromString("49e96464-aa17-46b3-b5c6-87574b6b48b4")
 
   @Test
-  void testPlayerUUID() {
-    Assertions.assertEquals(
-      UUID.nameUUIDFromBytes(("Bot3").getBytes(StandardCharsets.UTF_8)),
+  fun testPlayerUUID() {
+    assertEquals(
+      UUID.nameUUIDFromBytes("Bot3".toByteArray(StandardCharsets.UTF_8)),
       PlayerManager.getPlayerUuid("Bot3"),
-      "assert that UUID of a player is the same");
+      message = "assert that UUID of a player is the same",
+    )
   }
 
   @Test
-  void testIncorrectPlayerUUID() {
-    Assertions.assertThrows(
-      InvalidPlayerUsername.class,
-      () -> PlayerManager.getPlayerUuid("A"),
-      "assert that we don't get UUID");
+  fun testIncorrectPlayerUUID() {
+    assertFailsWith<InvalidPlayerUsername>(message = "Player UUID should be returned only for correct nicknames") {
+      PlayerManager.getPlayerUuid("A")
+    }
   }
 
   @Test
-  void testRegisteredPlayerUUID() {
-    UtilsForTesting.initFakePlayer(playerUuid, "Bot");
-    Assertions.assertNotNull(PlayerManager.getPlayerUuid("Bot"), "assert that we get the UUID");
+  fun testRegisteredPlayerUUID() {
+    val fakePlayer = UtilsForTesting.initFakePlayer(playerUuid, "Bot")
+    assertNotNull(PlayerManager.getPlayerUuid("Bot"), "assert that we get the UUID")
 
-    ((Player) Entity.getEntity(playerUuid)).kick("");
+    fakePlayer.kick("")
   }
 }

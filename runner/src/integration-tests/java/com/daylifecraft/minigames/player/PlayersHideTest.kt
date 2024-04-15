@@ -1,72 +1,72 @@
-package com.daylifecraft.minigames.player;
+package com.daylifecraft.minigames.player
 
-import com.daylifecraft.minigames.PlayerManager;
-import com.daylifecraft.minigames.UtilsForTesting;
-import com.daylifecraft.minigames.database.DatabaseManager;
-import com.daylifecraft.minigames.instance.instances.lobby.LobbyInstance;
-import com.daylifecraft.minigames.profile.player.PlayerProfile;
-import com.daylifecraft.minigames.profile.settings.SettingsProfile;
-import net.minestom.server.entity.Player;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.ArgumentMatchers;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
+import com.daylifecraft.minigames.PlayerManager
+import com.daylifecraft.minigames.UtilsForTesting
+import com.daylifecraft.minigames.database.DatabaseManager
+import com.daylifecraft.minigames.instance.instances.lobby.LobbyInstance
+import com.daylifecraft.minigames.profile.player.PlayerProfile
+import com.daylifecraft.minigames.profile.settings.SettingsProfile
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.verify
+import net.minestom.server.entity.Player
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.MethodOrderer
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestMethodOrder
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class PlayersHideTest {
-
-  private static Player fakePlayer;
-
-  private static final LobbyInstance lobbyInstance = new LobbyInstance();
-
-  private static final SettingsProfile playerSettings = Mockito.mock(SettingsProfile.class);
-
-  private static final PlayerProfile playerProfile = Mockito.mock(PlayerProfile.class);
-
-  @BeforeAll
-  static void start() throws InterruptedException {
-    fakePlayer = UtilsForTesting.initFakePlayer("HideTest1");
-
-    UtilsForTesting.waitUntilPlayerJoin(fakePlayer);
-
-    Mockito.doReturn(playerSettings).when(playerProfile).getSettings();
-  }
-
+@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
+internal class PlayersHideTest {
   @ParameterizedTest
-  @ValueSource(booleans = {true, false})
-  void testPlayerViewLoaded(boolean hidePlayers) {
-    try (MockedStatic<DatabaseManager> databaseManager = Mockito.mockStatic(DatabaseManager.class);
-         MockedStatic<PlayerManager> playerManager = Mockito.mockStatic(PlayerManager.class)) {
-      Mockito.doReturn(hidePlayers).when(playerSettings).getHidePlayers();
-      databaseManager
-        .when(() -> DatabaseManager.getPlayerProfile(ArgumentMatchers.eq(fakePlayer)))
-        .thenReturn(playerProfile);
+  @ValueSource(booleans = [true, false])
+  fun testPlayerViewLoaded(hidePlayers: Boolean) {
+    mockkObject(DatabaseManager, PlayerManager) {
+      every { playerSettings.hidePlayers } returns hidePlayers
+      every { DatabaseManager.getPlayerProfile(fakePlayer) } returns playerProfile
 
-      lobbyInstance.playerJoin(fakePlayer);
-
-      playerManager.verify(() -> PlayerManager.setPlayerHide(fakePlayer, hidePlayers));
+      lobbyInstance.playerJoin(fakePlayer)
+      verify(exactly = 1) { PlayerManager.setPlayerHide(eq(fakePlayer), eq(hidePlayers)) }
     }
   }
 
   @Test
-  void testPlayerViewWhenLeaveInstance() {
-    PlayerManager.setPlayerHide(fakePlayer, true);
+  fun testPlayerViewWhenLeaveInstance() {
+    PlayerManager.setPlayerHide(fakePlayer, true)
 
-    try (MockedStatic<PlayerManager> playerManager = Mockito.mockStatic(PlayerManager.class)) {
-      lobbyInstance.playerLeave(fakePlayer);
-
-      playerManager.verify(() -> PlayerManager.setPlayerHide(fakePlayer, false));
+    mockkObject(PlayerManager) {
+      lobbyInstance.playerLeave(fakePlayer)
+      verify(exactly = 1) { PlayerManager.setPlayerHide(fakePlayer, false) }
     }
   }
 
-  @AfterAll
-  public static void kickPlayer() {
-    fakePlayer.kick("");
+  companion object {
+    private lateinit var fakePlayer: Player
+
+    private val lobbyInstance = LobbyInstance()
+
+    private val playerSettings = mockk<SettingsProfile>(relaxed = true)
+
+    private val playerProfile = mockk<PlayerProfile>(relaxed = true)
+
+    @BeforeAll
+    @Throws(InterruptedException::class)
+    @JvmStatic
+    fun start() {
+      fakePlayer = UtilsForTesting.initFakePlayer("HideTest1")
+
+      UtilsForTesting.waitUntilPlayerJoin(fakePlayer)
+
+      every { playerProfile.settings } returns playerSettings
+    }
+
+    @AfterAll
+    @JvmStatic
+    fun kickPlayer() {
+      fakePlayer.kick("")
+    }
   }
 }

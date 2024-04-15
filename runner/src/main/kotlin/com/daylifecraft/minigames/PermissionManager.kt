@@ -68,7 +68,6 @@ object PermissionManager {
    * @param permissionName name for permission
    * @return return true if player have permission
    */
-  @JvmStatic
   fun hasPermission(player: Player, permissionName: String): Boolean {
     val permissions = player.allPermissions
 

@@ -1,48 +1,54 @@
-package com.daylifecraft.minigames.debug;
+package com.daylifecraft.minigames.debug
 
-import net.minestom.server.MinecraftServer;
-import net.minestom.server.command.builder.CommandResult;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import net.minestom.server.MinecraftServer
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
-class DebugCommandExecutionTest {
-
-  @BeforeAll
-  static void registerDebugCommand() {
-    Assertions.assertTrue(
-      MinecraftServer.getCommandManager().commandExists("~"),
-      "Assert that debug command is registered");
-
-    MinecraftServer.getCommandManager().getCommand("~").addSubcommand(new DebugTestSubCommand());
+internal class DebugCommandExecutionTest {
+  @Test
+  fun testDebugCommandExecutes() {
+    val result = MinecraftServer.getCommandManager().executeServerCommand("~")
+    assertEquals(
+      expected = "debug.command.usage",
+      actual = result.commandData!!.dataMap["value"],
+      message = "test for the correct ~ command",
+    )
   }
 
   @Test
-  void testDebugCommandExecutes() {
-    final CommandResult result = MinecraftServer.getCommandManager().executeServerCommand("~");
-    Assertions.assertEquals(
-      "debug.command.usage",
-      result.getCommandData().getDataMap().get("value"),
-      "test for the correct ~ command");
-  }
-
-  @Test
-  void testIncorrectUseDebugSubCommand() {
+  fun testIncorrectUseDebugSubCommand() {
     // test for the incorrect command
-    final var result = MinecraftServer.getCommandManager().executeServerCommand("~ test");
-    Assertions.assertEquals(
-      "debug.command.fail.general",
-      result.getCommandData().getDataMap().get("value"),
-      "test for the incorrect subcommand");
+    val result = MinecraftServer.getCommandManager().executeServerCommand("~ test")
+    assertEquals(
+      expected = "debug.command.fail.general",
+      actual = result.commandData!!.dataMap["value"],
+      message = "test for the incorrect subcommand",
+    )
   }
 
   @Test
-  void testCorrectUseDebugSubCommand() {
+  fun testCorrectUseDebugSubCommand() {
     // test for the correct command
-    final var result = MinecraftServer.getCommandManager().executeServerCommand("~ test 2");
-    Assertions.assertEquals(
-      "correct_command",
-      result.getCommandData().getDataMap().get("value"),
-      "test for the correct subcommand");
+    val result = MinecraftServer.getCommandManager().executeServerCommand("~ test 2")
+    assertEquals(
+      expected = "correct_command 3",
+      actual = result.commandData!!.dataMap["value"],
+      message = "test for the correct subcommand",
+    )
+  }
+
+  companion object {
+    @BeforeAll
+    @JvmStatic
+    fun registerDebugCommand() {
+      assertTrue(
+        MinecraftServer.getCommandManager().commandExists("~"),
+        message = "Assert that debug command is registered",
+      )
+
+      MinecraftServer.getCommandManager().getCommand("~")!!.addSubcommand(DebugTestSubCommand())
+    }
   }
 }

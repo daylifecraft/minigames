@@ -5,8 +5,9 @@ import com.daylifecraft.common.variable.VariablesRegistry
 import com.daylifecraft.minigames.Init.isInDebugMode
 import io.mockk.every
 import io.mockk.mockkObject
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 internal class DebugStatusTest {
   @Test
@@ -14,7 +15,7 @@ internal class DebugStatusTest {
     mockkObject(VariablesManager)
     every { VariablesManager.getString(VariablesRegistry.SETTINGS_DEBUG_COMMANDS) } returns "true"
 
-    Assertions.assertTrue(isInDebugMode, "Expected that debug commands was enabled")
+    assertTrue(isInDebugMode, "Expected that debug commands was enabled")
   }
 
   @Test
@@ -22,7 +23,7 @@ internal class DebugStatusTest {
     mockkObject(VariablesManager)
     every { VariablesManager.getString(VariablesRegistry.SETTINGS_DEBUG_COMMANDS) } returns "false"
 
-    Assertions.assertFalse(isInDebugMode, "Expected that debug commands was disabled")
+    assertFalse(isInDebugMode, "Expected that debug commands was disabled")
   }
 
   @Test
@@ -31,6 +32,6 @@ internal class DebugStatusTest {
     every { VariablesManager.getString(VariablesRegistry.SETTINGS_DEBUG_COMMANDS) } returns null
     every { VariablesManager.getString(VariablesRegistry.SETTINGS_OPERATION_MODE) } returns "DEV"
 
-    Assertions.assertTrue(isInDebugMode, "Expected that DEV mode enabled!")
+    assertTrue(isInDebugMode, "Expected that DEV mode enabled!")
   }
 }
