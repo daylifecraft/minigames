@@ -53,7 +53,6 @@ object Lang {
     LOGGER.debug("Languages loaded success!")
   }
 
-  @JvmStatic
   fun string(
     lang: String,
     key: String,

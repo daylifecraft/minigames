@@ -30,7 +30,6 @@ object DatabaseManager {
   private val LOGGER = createLogger()
 
   /** Setup connection and load database  */
-  @JvmStatic
   fun load(
     dbName: String = getString(VariablesRegistry.SETTINGS_MONGODB_DATABASE)!!,
   ) {
@@ -59,7 +58,6 @@ object DatabaseManager {
   /**
    * Drops database and reloads collections
    */
-  @JvmStatic
   fun drop() {
     database.drop()
   }
@@ -111,7 +109,6 @@ object DatabaseManager {
    * @param player player instance
    * @return PlayerProfile object
    */
-  @JvmStatic
   fun getPlayerProfile(player: Player): PlayerProfile? = getPlayerProfile("uuid", player.uuid.toString())
 
   /**
@@ -210,7 +207,6 @@ object DatabaseManager {
   }
 
   /** Cancel all rounds  */
-  @JvmStatic
   fun resetRounds() {
     val status = "roundStatus"
     val collection = database.getCollection("rounds")
@@ -253,7 +249,6 @@ object DatabaseManager {
   }
 
   /** Reload database collections  */
-  @JvmStatic
   fun reload() {
     // Load Collections
     loadCollections()

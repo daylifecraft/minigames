@@ -232,7 +232,6 @@ class CraftInstancesManager(private val instanceManager: InstanceManager) {
   companion object {
     private val LOGGER = createLogger<CraftInstancesManager>()
 
-    @JvmStatic
     fun get(): CraftInstancesManager = craftInstancesManager!!
   }
 }

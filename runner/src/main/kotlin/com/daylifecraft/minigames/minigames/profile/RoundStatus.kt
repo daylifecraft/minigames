@@ -19,7 +19,6 @@ enum class RoundStatus(val stringRepresentation: String, val isStopState: Boolea
      * @param stringRepresentation string representation (used in database)
      * @return RoundStatus enum object
      */
-    @JvmStatic
     fun getByStringRepresentation(stringRepresentation: String): RoundStatus? {
       for (roundStatus in entries) {
         if (roundStatus.stringRepresentation == stringRepresentation) {

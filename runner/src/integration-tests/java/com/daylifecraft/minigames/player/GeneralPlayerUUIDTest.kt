@@ -31,7 +31,7 @@ internal class GeneralPlayerUUIDTest {
 
   @Test
   fun testRegisteredPlayerUUID() {
-    val fakePlayer = UtilsForTesting.initFakePlayer(playerUuid, "Bot")
+    val fakePlayer = UtilsForTesting.initFakePlayer("Bot", playerUuid)
     assertNotNull(PlayerManager.getPlayerUuid("Bot"), "assert that we get the UUID")
 
     fakePlayer.kick("")

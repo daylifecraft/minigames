@@ -40,7 +40,6 @@ class PlayerLanguage private constructor(val player: Player) : Language {
   companion object {
     private const val LANGUAGE_KEY_AUTO = SettingsProfile.LANGUAGE_KEY_AUTO
 
-    @JvmStatic
     fun get(player: Player): PlayerLanguage = PlayerLanguage(player)
   }
 }

@@ -92,7 +92,6 @@ class FriendRemoveConfirmationGui private constructor(
     private const val VAR_TARGET_PLAYER = "targetPlayer"
     private val BACKGROUND_RT1 = ItemStack.of(Material.RED_STAINED_GLASS_PANE).withDisplayName(Component.empty())
 
-    @JvmStatic
     fun showFriendRemoveConfirmationGui(
       player: Player,
       previousGui: GUI?,

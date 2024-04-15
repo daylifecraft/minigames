@@ -51,7 +51,6 @@ object CommandsManager {
    * @param commandManager manager for commands
    * @param debugMode debug mod
    */
-  @JvmStatic
   fun load(commandManager: CommandManager, debugMode: Boolean) {
     for (commandClass in COMMANDS) {
       try {
@@ -134,7 +133,6 @@ object CommandsManager {
    * @param sender who send command
    * @return Player language
    */
-  @JvmStatic
   fun getSenderLanguage(sender: CommandSender): Language = if (sender is Player) {
     PlayerLanguage.get(sender)
   } else {
@@ -149,7 +147,6 @@ object CommandsManager {
    * @return Player UUID or null, if parse failed
    */
   @JvmOverloads
-  @JvmStatic
   fun parseUuidOrUserNameToUuid(playerInputData: String?, onParseFailed: Runnable = Runnable {}): UUID? {
     val findParameter = get(playerInputData!!)
     return when (findParameter) {

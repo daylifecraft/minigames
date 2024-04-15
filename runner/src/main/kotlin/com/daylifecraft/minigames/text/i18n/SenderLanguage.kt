@@ -22,7 +22,7 @@ class SenderLanguage private constructor(val sender: CommandSender) : Language {
   val lang: String = Lang.DEFAULT_LANGUAGE
 
   companion object {
-    @JvmStatic
+
     fun get(player: CommandSender): SenderLanguage = SenderLanguage(player)
   }
 }

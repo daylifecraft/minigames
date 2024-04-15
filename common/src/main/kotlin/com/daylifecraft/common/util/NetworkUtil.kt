@@ -15,7 +15,6 @@ object NetworkUtil {
    * @param socketAddress socket address of player
    * @return player ip address
    */
-  @JvmStatic
   fun getPlayerIp(socketAddress: InetSocketAddress): String {
     val inetAddress = socketAddress.address
     if (inetAddress is Inet6Address) {
@@ -30,7 +29,6 @@ object NetworkUtil {
    * @param player the player instance from which we need to get the IP
    * @return player socket address
    */
-  @JvmStatic
   fun getPlayerAddress(player: Player): InetSocketAddress {
     val connection = player.playerConnection
     val remoteAddress = connection.remoteAddress

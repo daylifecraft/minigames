@@ -67,7 +67,6 @@ object Init {
   private val serverOperationMode: String?
     get() = VariablesManager.getString(VariablesRegistry.SETTINGS_OPERATION_MODE)
 
-  @JvmStatic
   val isInDebugMode: Boolean
     get() {
       // Get DEBUG_COMMANDS from environment variable
@@ -89,7 +88,6 @@ object Init {
     }
   }
 
-  @JvmStatic
   fun stopServer() {
     MinecraftServer.stopCleanly()
   }
@@ -105,17 +103,14 @@ object Init {
     exitProcess(1)
   }
 
-  @JvmStatic
   fun initVariablesManager() {
     VariablesManager.load()
   }
 
-  @JvmStatic
   fun initLogger() {
     logger = createLogger()
   }
 
-  @JvmStatic
   @Throws(IOException::class)
   fun initLang() {
     Lang.init()
@@ -216,7 +211,6 @@ object Init {
     }
   }
 
-  @JvmStatic
   fun setupChatManager(toSetup: ChatManager?) {
     if (isInsideTests) {
       chatManager = toSetup
@@ -225,7 +219,6 @@ object Init {
     }
   }
 
-  @JvmStatic
   fun setupCraftInstancesManager(toSetup: CraftInstancesManager) {
     if (isInsideTests) {
       craftInstancesManager = toSetup

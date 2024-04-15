@@ -87,7 +87,6 @@ class SettingsProfile private constructor(
     private const val DISABLE_PARTY_INVITES_KEY = "disablePartyInvites"
     private const val DISABLE_PM_KEY = "disablePM"
 
-    @JvmStatic
     fun createSettings(profile: PlayerProfile): SettingsProfile = SettingsProfile(
       id = ObjectId(),
       language = LANGUAGE_KEY_AUTO,
@@ -100,7 +99,6 @@ class SettingsProfile private constructor(
     )
 
     // TODO Review nullability here. Probably some fields should become nullable
-    @JvmStatic
     fun serialize(document: Document, profile: PlayerProfile): SettingsProfile = SettingsProfile(
       document["_id"] as ObjectId,
       document.getString(LANGUAGE_KEY)!!,

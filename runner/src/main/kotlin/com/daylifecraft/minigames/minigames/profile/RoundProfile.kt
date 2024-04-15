@@ -115,7 +115,6 @@ class RoundProfile private constructor(
      * @param rating Rating documents
      * @return Created RoundProfile
      */
-    @JvmStatic
     fun createNewRound(
       miniGameId: String,
       players: Collection<UUID>,
@@ -150,7 +149,6 @@ class RoundProfile private constructor(
      * @param document MongoDB document
      * @return RoundProfile object from document
      */
-    @JvmStatic
     fun getRoundProfileFromDocument(document: Document): RoundProfile {
       val roundProfile =
         RoundProfile(

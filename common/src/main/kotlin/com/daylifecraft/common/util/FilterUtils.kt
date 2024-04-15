@@ -12,7 +12,6 @@ object FilterUtils {
    * @param objects Filters objects
    * @return result filters
    */
-  @JvmStatic
   fun getResultFilters(vararg objects: JsonObject): JsonObject = getResultFilters(listOf(*objects))
 
   /**
@@ -21,7 +20,6 @@ object FilterUtils {
    * @param objects Filters objects
    * @return result filters
    */
-  @JvmStatic
   fun getResultFilters(objects: List<JsonObject>): JsonObject {
     val finalFilters = JsonObject()
 

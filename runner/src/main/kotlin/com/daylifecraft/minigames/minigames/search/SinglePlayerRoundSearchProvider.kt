@@ -38,7 +38,7 @@ class SinglePlayerRoundSearchProvider : IRoundSearchProvider {
   }
 
   companion object {
-    @JvmStatic
+
     val defaultRoundSearchProvider: SinglePlayerRoundSearchProvider = SinglePlayerRoundSearchProvider()
   }
 }

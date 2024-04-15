@@ -44,7 +44,6 @@ class RoundTeamProfile(
      * @param roundProfile Including profile
      * @return new database object
      */
-    @JvmStatic
     fun createRoundTeam(players: List<UUID>, roundProfile: RoundProfile): RoundTeamProfile = RoundTeamProfile(ObjectId(), players, roundProfile)
 
     /**
@@ -54,7 +53,6 @@ class RoundTeamProfile(
      * @param roundProfile url to parent profile
      * @return deserialized RoundTeamProfile
      */
-    @JvmStatic
     fun deserialize(document: Document, roundProfile: RoundProfile): RoundTeamProfile = RoundTeamProfile(
       document.getObjectId("_id"),
       document.getList(PLAYERS_KEY, String::class.java).map(UUID::fromString),

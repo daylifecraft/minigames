@@ -7,7 +7,7 @@ import com.daylifecraft.minigames.config.ConfigManager
 
 /** Singleton which can load and hold seasons list loaded from default config  */
 object SeasonsManager {
-  @JvmStatic
+
   var configSeasonsList: SeasonsList? = null
     private set
 

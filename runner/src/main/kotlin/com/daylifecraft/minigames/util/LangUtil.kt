@@ -18,7 +18,6 @@ internal object LangUtil {
    * @param variables the variables we will replace with
    * @return translated string with replaced values
    */
-  @JvmStatic
   fun replaceAllTranslateKeys(
     playerLanguage: PlayerLanguage,
     source: String,

@@ -43,7 +43,6 @@ class GroupLeaveCommand :
      * @param playersGroup a group to leave
      * @param playerLanguage language
      */
-    @JvmStatic
     fun leave(
       executor: Player,
       playersGroup: PlayersGroup,

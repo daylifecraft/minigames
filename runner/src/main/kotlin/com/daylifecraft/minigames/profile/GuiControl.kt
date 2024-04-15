@@ -15,7 +15,6 @@ object GuiControl {
    * @param player player instance
    * @param status status to set
    */
-  @JvmStatic
   fun setSettingsOnlineMode(player: Player, status: OnlineStatus) {
     DatabaseManager.getPlayerProfile(player)!!.settings!!.onlineStatus = status.dbKey
   }
@@ -25,7 +24,6 @@ object GuiControl {
    *
    * @param player player instance
    */
-  @JvmStatic
   fun getSettingsOnlineStatus(player: Player): OnlineStatus = OnlineStatus.ofDBKey(
     DatabaseManager.getPlayerProfile(player)!!.settings!!.onlineStatus,
   )
@@ -35,7 +33,6 @@ object GuiControl {
    *
    * @param player player instance
    */
-  @JvmStatic
   fun isDisablePrivateMessages(player: Player): Boolean = DatabaseManager.getPlayerProfile(player)!!.settings!!.disablePM
 
   /**
@@ -44,7 +41,6 @@ object GuiControl {
    * @param player player instance
    * @param b status
    */
-  @JvmStatic
   fun setDisablePrivateMessages(player: Player, b: Boolean) {
     DatabaseManager.getPlayerProfile(player)!!.settings!!.disablePM = b
   }
@@ -54,7 +50,6 @@ object GuiControl {
    *
    * @param player player instance
    */
-  @JvmStatic
   fun isDisablePartyInvites(player: Player): Boolean = DatabaseManager.getPlayerProfile(player)!!.settings!!.disablePartyInvites
 
   /**
@@ -63,7 +58,6 @@ object GuiControl {
    * @param player player instance
    * @param b status
    */
-  @JvmStatic
   fun setDisablePartyInvites(player: Player, b: Boolean) {
     DatabaseManager.getPlayerProfile(player)!!.settings!!.disablePartyInvites = b
   }
@@ -73,7 +67,6 @@ object GuiControl {
    *
    * @param player player instance
    */
-  @JvmStatic
   fun isHideGlobalChat(player: Player): Boolean = DatabaseManager.getPlayerProfile(player)!!.settings!!.hideGlobalChat
 
   /**
@@ -82,7 +75,6 @@ object GuiControl {
    * @param player player instance
    * @param b status
    */
-  @JvmStatic
   fun setHideGlobalChat(player: Player, b: Boolean) {
     DatabaseManager.getPlayerProfile(player)!!.settings!!.hideGlobalChat = b
   }
@@ -92,7 +84,6 @@ object GuiControl {
    *
    * @param player player instance
    */
-  @JvmStatic
   fun isHidePlayers(player: Player): Boolean = DatabaseManager.getPlayerProfile(player)!!.settings!!.hidePlayers
 
   /**
@@ -101,7 +92,6 @@ object GuiControl {
    * @param player player instance
    * @param b status
    */
-  @JvmStatic
   fun setHidePlayers(player: Player, b: Boolean) {
     DatabaseManager.getPlayerProfile(player)!!.settings!!.hidePlayers = b
     PlayerManager.setPlayerHide(player, b)
@@ -112,7 +102,6 @@ object GuiControl {
    *
    * @param player player instance
    */
-  @JvmStatic
   fun getFriendsCount(player: Player): Int = DatabaseManager.getPlayerProfile(player)!!.getFriends()!!.size
 
   /**
@@ -120,7 +109,6 @@ object GuiControl {
    *
    * @param player player instance
    */
-  @JvmStatic
   fun getFriendsStringUuids(player: Player): Array<String> = DatabaseManager.getPlayerProfile(player)!!.getFriends()!!.toTypedArray<String>()
 
   /**
@@ -128,11 +116,9 @@ object GuiControl {
    *
    * @param friendUuid player uuid
    */
-  @JvmStatic
   fun getPlayerProfileByStringUuid(friendUuid: String): PlayerProfile? = DatabaseManager.getPlayerProfile("uuid", friendUuid)
 
   // TODO 08.09.2023 currently check only current instance
-  @JvmStatic
   fun isPlayerOnlineInServer(profile: PlayerProfile): Boolean = (
     MinecraftServer.getConnectionManager()
       .getOnlinePlayerByUuid(UUID.fromString(profile.uuid))

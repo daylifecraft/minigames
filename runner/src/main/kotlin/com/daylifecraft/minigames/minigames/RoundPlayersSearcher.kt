@@ -61,7 +61,6 @@ class RoundPlayersSearcher {
 
     private val MIN_SEARCH_TIME_MILLIS = mainConfig.getInt("roundSearchTime")!!.toLong()
 
-    @JvmStatic
     fun findMaxPlayersCombination(
       miniGameQueueElements: List<MiniGameQueueElement>,
       playersBorder: Range<Int>,
@@ -134,7 +133,6 @@ class RoundPlayersSearcher {
       .reduce { a: Int, b: Int -> Integer.sum(a, b) }
       .orElse(0)
 
-    @JvmStatic
     fun clampElementsListToBorder(
       queueElements: List<MiniGameQueueElement>,
       playersBorder: Range<Int>,
