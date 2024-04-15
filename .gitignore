@@ -1,3 +1,5 @@
 .idea/
 .gradle/
 build/
+runner/bin
+common/bin
