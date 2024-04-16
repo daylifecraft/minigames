@@ -66,7 +66,6 @@ internal class PrivateMiniMessageTest {
     private val chatManager = mockk<ChatManager>(relaxed = true)
 
     @BeforeAll
-    @Throws(InterruptedException::class)
     @JvmStatic
     fun start() {
       fakePlayer1 = UtilsForTesting.initFakePlayer("PMTest1")

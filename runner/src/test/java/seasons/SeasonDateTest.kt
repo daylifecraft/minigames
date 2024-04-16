@@ -15,7 +15,7 @@ internal class SeasonDateTest {
   @ParameterizedTest
   @ValueSource(strings = ["2004.12.01", "10", ""])
   fun testExactlyTwoTokens(dateString: String) {
-    assertFailsWith<IllegalArgumentException>(message = "String should contain exactly 2 tokens") {
+    assertFailsWith<IllegalArgumentException>("String should contain exactly 2 tokens") {
       SeasonDate(dateString)
     }
   }
@@ -23,7 +23,7 @@ internal class SeasonDateTest {
   @ParameterizedTest
   @ValueSource(strings = ["13.10", "0.10"])
   fun testMonthValidation(dateString: String) {
-    assertFailsWith<IllegalArgumentException>(message = "Month should be in [1, 12]") {
+    assertFailsWith<IllegalArgumentException>("Month should be in [1, 12]") {
       SeasonDate(dateString)
     }
   }
@@ -31,7 +31,7 @@ internal class SeasonDateTest {
   @ParameterizedTest
   @ValueSource(strings = ["2.32", "2.32"])
   fun testDayValidation(dateString: String) {
-    assertFailsWith<IllegalArgumentException>(message = "Day should be in [1, 31]") {
+    assertFailsWith<IllegalArgumentException>("Day should be in [1, 31]") {
       SeasonDate(dateString)
     }
   }
@@ -47,7 +47,7 @@ internal class SeasonDateTest {
   @ParameterizedTest
   @ValueSource(strings = ["01.01", "12.31"])
   fun testCorrectDatesNotThrow(dateString: String) {
-    assertDoesNotThrow {
+    assertDoesNotThrow("$dateString is correct date and should not cause error") {
       SeasonDate(dateString)
     }
   }
@@ -77,21 +77,21 @@ internal class SeasonDateTest {
     assertTrue(secondDate.isBetween(firstDate, thirdDate), "01.01 <= 02.02 <= 03.03")
     assertFalse(
       secondDate.isBetween(thirdDate, firstDate),
-      "Time segment starts at 03.03 of this year and stops at 01.01 of next year",
+      message = "Time segment starts at 03.03 of this year and stops at 01.01 of next year",
     )
 
     assertTrue(
       firstDate.isBetween(thirdDate, secondDate),
-      "Time segment starts at 03.03 of this year and stops at 02.02 of next year",
+      message = "Time segment starts at 03.03 of this year and stops at 02.02 of next year",
     )
 
     assertFalse(
       secondDate.isBetween(firstDate, firstDate),
-      "01.01 - 01.01 considered one day not a whole year",
+      message = "01.01 - 01.01 considered one day not a whole year",
     )
     assertTrue(
       firstDate.isBetween(firstDate, firstDate),
-      "01.01 - 01.01 considered one day not a whole year",
+      message = "01.01 - 01.01 considered one day not a whole year",
     )
   }
 }

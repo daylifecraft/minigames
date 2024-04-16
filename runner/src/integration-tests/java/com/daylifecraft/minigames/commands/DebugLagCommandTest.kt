@@ -24,9 +24,9 @@ class DebugLagCommandTest {
       verify(exactly = 1) {
         schedulerManager.scheduleTask(
           any(),
-          eq(TaskSchedule.tick(1)),
-          eq(TaskSchedule.tick(1)),
-          eq(ExecutionType.TICK_START),
+          TaskSchedule.tick(1),
+          TaskSchedule.tick(1),
+          ExecutionType.TICK_START,
         )
       }
     }

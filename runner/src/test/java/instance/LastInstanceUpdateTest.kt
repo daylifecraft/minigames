@@ -43,7 +43,7 @@ internal class LastInstanceUpdateTest {
     private val spawnInstance = mockk<Instance>(relaxed = true)
     private val abstractCraftInstance = mockk<AbstractCraftInstance>(relaxed = true)
 
-    private lateinit var player: Player
+    private val player = mockk<Player>()
 
     @BeforeAll
     @JvmStatic
@@ -51,7 +51,6 @@ internal class LastInstanceUpdateTest {
       enableTests()
       setupCraftInstancesManager(craftInstancesManager)
 
-      player = mockk()
       every { player.uuid } returns UUID.fromString("00000000-0000-0000-0000-000000000000")
 
       every { craftInstancesManager.getInstance(any()) } returns abstractCraftInstance

@@ -146,7 +146,6 @@ object CommandsManager {
    * @param onParseFailed that calls when input string does not match any pattern
    * @return Player UUID or null, if parse failed
    */
-  @JvmOverloads
   fun parseUuidOrUserNameToUuid(playerInputData: String?, onParseFailed: Runnable = Runnable {}): UUID? {
     val findParameter = get(playerInputData!!)
     return when (findParameter) {

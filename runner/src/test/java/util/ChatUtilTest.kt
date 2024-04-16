@@ -7,12 +7,11 @@ import kotlin.test.assertEquals
 internal class ChatUtilTest {
   @Test
   fun testReplaceVariables() {
-    val s =
-      replaceVariables(
-        "Hello $(name)$(suffix.last)",
-        "name" to "v1val",
-        "suffix.last" to "!!!",
-      )
+    val s = replaceVariables(
+      "Hello $(name)$(suffix.last)",
+      "name" to "v1val",
+      "suffix.last" to "!!!",
+    )
 
     assertEquals(
       expected = "Hello v1val!!!",

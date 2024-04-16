@@ -5,17 +5,14 @@ import com.daylifecraft.common.util.Range
 import com.daylifecraft.minigames.Init
 import com.daylifecraft.minigames.minigames.settings.GeneralGameSettings
 import net.minestom.server.item.Material
-import org.junit.jupiter.api.MethodOrderer
-import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestMethodOrder
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
+private val EMPTY_CONFIG = ConfigFile(emptyMap())
+
 internal class MiniGamesSettingManagerTest {
   @Test
-  @Order(1)
   fun testConfigsLoadedSuccessful() {
     val totalConfigsLoaded = Init.miniGamesSettingsManager.onStartupLoad()
 
@@ -23,7 +20,6 @@ internal class MiniGamesSettingManagerTest {
   }
 
   @Test
-  @Order(2)
   fun testSettingsLoaded() {
     assertNotNull(
       Init.miniGamesSettingsManager.getGeneralGameSettings("testMiniGame"),
@@ -36,7 +32,6 @@ internal class MiniGamesSettingManagerTest {
   }
 
   @Test
-  @Order(3)
   fun testInternalSettingsValues() {
     val settings = Init.miniGamesSettingsManager.getGeneralGameSettings("testMiniGame")
 
@@ -58,7 +53,6 @@ internal class MiniGamesSettingManagerTest {
   }
 
   @Test
-  @Order(4)
   fun testInternalSettingsValues2() {
     val settings = Init.miniGamesSettingsManager.getGeneralGameSettings("testMiniGame2")
 
@@ -77,9 +71,5 @@ internal class MiniGamesSettingManagerTest {
       actual = settings,
       message = "TestMiniGame2 settings loaded not correct",
     )
-  }
-
-  companion object {
-    private val EMPTY_CONFIG = ConfigFile(emptyMap())
   }
 }

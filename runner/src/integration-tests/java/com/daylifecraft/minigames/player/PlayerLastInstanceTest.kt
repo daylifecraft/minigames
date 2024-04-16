@@ -7,17 +7,13 @@ import net.minestom.server.event.EventDispatcher
 import net.minestom.server.event.player.PlayerDisconnectEvent
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.MethodOrderer
-import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestMethodOrder
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 internal class PlayerLastInstanceTest {
+
   @Test
-  @Order(1)
   fun testPlayerLastInstance() {
     val lastPlayerInstance = CraftInstancesManager.get().getLastPlayerInstance(fakePlayer1)
 
@@ -25,7 +21,6 @@ internal class PlayerLastInstanceTest {
   }
 
   @Test
-  @Order(2)
   fun testPlayerDisconnectInstance() {
     fakePlayer1.playerConnection.disconnect()
     EventDispatcher.call(PlayerDisconnectEvent(fakePlayer1))
@@ -38,7 +33,6 @@ internal class PlayerLastInstanceTest {
     private lateinit var fakePlayer1: Player
 
     @BeforeAll
-    @Throws(InterruptedException::class)
     @JvmStatic
     fun start() {
       fakePlayer1 = UtilsForTesting.initFakePlayer("LastInstance")

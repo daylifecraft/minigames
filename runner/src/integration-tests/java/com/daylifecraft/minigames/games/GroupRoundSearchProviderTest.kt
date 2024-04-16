@@ -92,7 +92,6 @@ internal class GroupRoundSearchProviderTest {
     private var generalGameSettings: GeneralGameSettings? = null
 
     @BeforeAll
-    @Throws(InterruptedException::class)
     @JvmStatic
     fun setup() {
       UtilsForTesting.waitUntilPlayerJoin(fakePlayer1, fakePlayer2)

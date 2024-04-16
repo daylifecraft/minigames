@@ -43,8 +43,6 @@ class MinestomMetricsTests {
           },
         )
       }
-
-      registry.scrape { true }
     }
   }
 }

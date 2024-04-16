@@ -16,8 +16,8 @@ internal class GeneralPlayerUUIDTest {
   @Test
   fun testPlayerUUID() {
     assertEquals(
-      UUID.nameUUIDFromBytes("Bot3".toByteArray(StandardCharsets.UTF_8)),
-      PlayerManager.getPlayerUuid("Bot3"),
+      expected = UUID.nameUUIDFromBytes("Bot3".toByteArray(StandardCharsets.UTF_8)),
+      actual = PlayerManager.getPlayerUuid("Bot3"),
       message = "assert that UUID of a player is the same",
     )
   }

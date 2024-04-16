@@ -73,7 +73,7 @@ class PlayerInventoryGuiTest {
     playerInventoryGui.attachEvents(parentNode)
 
     parentNode.call(event)
-    assertEquals(expectedCallsCount, leftClickCalled)
+    assertEquals(expectedCallsCount, leftClickCalled, "Inventory must be clicked exactly $expectedCallsCount times")
   }
 
   @ParameterizedTest
@@ -94,7 +94,7 @@ class PlayerInventoryGuiTest {
     playerInventoryGui.attachEvents(parentNode)
 
     parentNode.call(event)
-    assertEquals(expectedCallsCount, rightClickCalled)
+    assertEquals(expectedCallsCount, rightClickCalled, "Inventory must be clicked exactly $expectedCallsCount times")
   }
 
   @ParameterizedTest
@@ -115,7 +115,7 @@ class PlayerInventoryGuiTest {
     playerInventoryGui.attachEvents(parentNode)
 
     parentNode.call(event)
-    assertEquals(expectedCallsCount, inventoryClickCalled)
+    assertEquals(expectedCallsCount, inventoryClickCalled, "Inventory must be clicked exactly $expectedCallsCount times")
   }
 
   companion object {

@@ -44,7 +44,6 @@ internal class RoundSearchProviderTest {
     private val fakePlayer: Player = UtilsForTesting.initFakePlayer("GProviderT")
 
     @BeforeAll
-    @Throws(InterruptedException::class)
     @JvmStatic
     fun setup() {
       UtilsForTesting.waitUntilPlayerJoin(fakePlayer)

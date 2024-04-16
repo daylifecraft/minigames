@@ -27,9 +27,9 @@ internal class MiniMessageTest {
   @Test
   fun testMessageWasStripped() {
     assertEquals(
-      checkMiniMessage(fakePlayer, TEST_MESSAGE),
-      MiniMessage.miniMessage().stripTags(TEST_MESSAGE),
-      "Expected that tags was removed for no permission player",
+      expected = checkMiniMessage(fakePlayer, TEST_MESSAGE),
+      actual = MiniMessage.miniMessage().stripTags(TEST_MESSAGE),
+      message = "Expected that tags was removed for no permission player",
     )
   }
 
@@ -37,13 +37,13 @@ internal class MiniMessageTest {
   fun testMessage() {
     mockkObject(PermissionManager)
     every {
-      PermissionManager.hasPermission(eq(fakePlayer), eq("chat.minimessage.full"))
+      PermissionManager.hasPermission(fakePlayer, "chat.minimessage.full")
     } returns true
 
     assertEquals(
-      TEST_MESSAGE,
-      checkMiniMessage(fakePlayer, TEST_MESSAGE),
-      "Expected that tags was not removed!",
+      expected = TEST_MESSAGE,
+      actual = checkMiniMessage(fakePlayer, TEST_MESSAGE),
+      message = "Expected that tags was not removed!",
     )
   }
 }

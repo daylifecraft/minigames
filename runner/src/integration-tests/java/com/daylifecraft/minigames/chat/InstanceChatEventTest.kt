@@ -11,16 +11,11 @@ import net.minestom.server.event.EventDispatcher
 import net.minestom.server.event.player.PlayerChatEvent
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.MethodOrderer
-import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestMethodOrder
 import kotlin.test.assertTrue
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 internal class InstanceChatEventTest {
   @Test
-  @Order(1)
   fun testDoesEventCalled() {
     val event = PlayerChatEvent(fakePlayer, emptyList(), { Component.empty() }, "Some text")
     EventDispatcher.call(event)
@@ -42,7 +37,6 @@ internal class InstanceChatEventTest {
     private val chatManager = mockk<ChatManager>(relaxed = true)
 
     @BeforeAll
-    @Throws(InterruptedException::class)
     @JvmStatic
     fun start() {
       setupChatManager(chatManager)

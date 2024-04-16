@@ -25,7 +25,7 @@ class RoundProfile private constructor(
   roundTeamsProfiles: List<RoundTeamProfile>?,
   rating: Array<Document>?,
 ) : AbstractProfile(id, 1, COLLECTION_NAME) {
-  @JvmField
+
   val miniGameId: String
   private val startDate: Date
   var roundStatus: RoundStatus?

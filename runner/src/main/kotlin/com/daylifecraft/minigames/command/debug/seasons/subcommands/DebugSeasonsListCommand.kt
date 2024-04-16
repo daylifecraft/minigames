@@ -28,7 +28,7 @@ class DebugSeasonsListCommand :
     val seasons =
       when (listType) {
         ListType.ALL -> seasonsList.allSeasons
-        ListType.ACTIVE -> seasonsList.activeSeasonsPrioritized!!
+        ListType.ACTIVE -> seasonsList.activeSeasonsPrioritized
         ListType.INACTIVE -> seasonsList.inactiveSeasons
       }
 

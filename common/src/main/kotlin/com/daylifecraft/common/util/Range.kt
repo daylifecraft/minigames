@@ -1,9 +1,8 @@
 package com.daylifecraft.common.util
 
-@JvmRecord
 data class Range<T : Comparable<T>?>(
-  @JvmField val minValue: T,
-  @JvmField val maxValue: T,
+  val minValue: T,
+  val maxValue: T,
 ) {
   /**
    * Trim value if it exceeds the bound

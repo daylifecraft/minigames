@@ -1,5 +1,6 @@
 package com.daylifecraft.minigames
 
+import com.daylifecraft.common.util.extensions.minestom.addListener
 import com.daylifecraft.minigames.PlayerManager.getPlayerUuid
 import com.daylifecraft.minigames.fakeplayer.FakePlayer
 import com.daylifecraft.minigames.fakeplayer.FakePlayerOption
@@ -7,30 +8,26 @@ import net.minestom.server.MinecraftServer
 import net.minestom.server.entity.Entity
 import net.minestom.server.entity.Player
 import net.minestom.server.event.EventFilter
-import net.minestom.server.event.EventListener
 import net.minestom.server.event.EventNode
 import net.minestom.server.event.player.PlayerSpawnEvent
 import net.minestom.server.instance.Instance
-import java.util.*
+import java.util.UUID
 
 object UtilsForTesting {
   private val DEFAULT_FAKE_PLAYER_OPTIONS: FakePlayerOption =
     FakePlayerOption().setRegistered(true).setInTabList(true)
 
-  private const val DEFAULT_WAITING_TIMEOUT_MS: Long = 250
+  private const val DEFAULT_WAITING_TIMEOUT_MS: Long = 100
 
-  private val spawnInstancesMap: MutableMap<UUID, Instance> = HashMap()
-
-  private val spawnedPlayers: MutableList<UUID> = ArrayList()
+  private val spawnInstancesMap = mutableMapOf<UUID, Instance>()
+  private val spawnedPlayers = mutableSetOf<UUID>()
 
   fun loadOnStartup() {
-    val listener =
-      EventListener.builder(PlayerSpawnEvent::class.java)
-        .handler { event: PlayerSpawnEvent -> spawnedPlayers.add(event.player.uuid) }
-        .build()
     val eventNode = EventNode.type("spawn-listener", EventFilter.PLAYER)
     eventNode.setPriority(Int.MAX_VALUE)
-    eventNode.addListener(listener)
+    eventNode.addListener { event: PlayerSpawnEvent ->
+      spawnedPlayers.add(event.player.uuid)
+    }
 
     MinecraftServer.getGlobalEventHandler().addChild(eventNode)
   }
@@ -63,7 +60,6 @@ object UtilsForTesting {
     }
   }
 
-  @Throws(InterruptedException::class)
   fun waitUntilPlayerJoin(player: Player) {
     val joinInstance = spawnInstancesMap.getOrDefault(player.uuid, null)
     if (joinInstance == null) {
@@ -81,19 +77,15 @@ object UtilsForTesting {
     }
 
     spawnInstancesMap.remove(player.uuid)
+    spawnedPlayers.remove(player.uuid)
   }
 
-  @Throws(InterruptedException::class)
   fun waitUntilPlayerJoin(vararg players: Player) {
     for (player in players) {
       waitUntilPlayerJoin(player)
     }
   }
 
-  private fun isPlayerSpawned(player: Player): Boolean {
-    val result = spawnedPlayers.contains(player.uuid)
-    spawnedPlayers.remove(player.uuid)
-
-    return result
-  }
+  private fun isPlayerSpawned(player: Player): Boolean =
+    spawnedPlayers.contains(player.uuid)
 }

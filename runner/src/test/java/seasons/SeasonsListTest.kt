@@ -10,7 +10,18 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
+private const val FIRST_SEASON_NAME = "mock-name"
+private val SEASON_DATE = SeasonDate(10, 10)
+private val NOT_SEASON_DATE = SeasonDate(1, 1)
+
 internal class SeasonsListTest {
+
+  private val seasonsList = SeasonsList(
+    listOf(
+      Season(FIRST_SEASON_NAME, "1", SEASON_DATE, SEASON_DATE),
+    ),
+  )
+
   @Test
   fun testGetByName() {
     mockkObject(SeasonDate) {
@@ -29,35 +40,25 @@ internal class SeasonsListTest {
 
       val season = seasonsList.getSeasonByName(FIRST_SEASON_NAME)
 
+      assertNotNull(season, "$FIRST_SEASON_NAME must be in the season list")
+
       assertTrue(
-        seasonsList.activeSeasonsPrioritized!!.isEmpty(),
+        seasonsList.activeSeasonsPrioritized.isEmpty(),
         message = "First season should not be active",
       )
 
-      season!!.setActiveness(Season.Activeness.FORCE_ACTIVE)
+      season.setActiveness(Season.Activeness.FORCE_ACTIVE)
       assertEquals(
         expected = 1,
-        actual = seasonsList.activeSeasonsPrioritized!!.size,
+        actual = seasonsList.activeSeasonsPrioritized.size,
         message = "First season should be activated",
       )
 
       season.setActiveness(Season.Activeness.FORCE_STOPPED)
       assertTrue(
-        seasonsList.activeSeasonsPrioritized!!.isEmpty(),
+        seasonsList.activeSeasonsPrioritized.isEmpty(),
         message = "First season should not be active",
       )
     }
-  }
-
-  companion object {
-    private const val FIRST_SEASON_NAME = "mock-name"
-    private val SEASON_DATE = SeasonDate(10, 10)
-    private val NOT_SEASON_DATE = SeasonDate(1, 1)
-
-    private val seasonsList = SeasonsList(
-      listOf(
-        Season(FIRST_SEASON_NAME, "1", SEASON_DATE, SEASON_DATE),
-      ),
-    )
   }
 }

@@ -11,9 +11,7 @@ internal class SeasonTest {
   fun testAttachmentOnSetActivenessValidation() {
     val season = Season("name", "displayName", SeasonDate("01.01"), SeasonDate("12.31"))
 
-    assertFailsWith<IllegalStateException>(
-      message = "Season should be attached to list before this.",
-    ) {
+    assertFailsWith<IllegalStateException>("Season should be attached to list to perform setActiveness.") {
       season.setActiveness(Season.Activeness.FORCE_ACTIVE)
     }
   }
@@ -22,9 +20,7 @@ internal class SeasonTest {
   fun testAttachmentOnSetPriorityValidation() {
     val season = Season("name", "displayName", SeasonDate("01.01"), SeasonDate("12.31"))
 
-    assertFailsWith<IllegalStateException>(
-      message = "Season should be attached to list before this.",
-    ) {
+    assertFailsWith<IllegalStateException>("Season should be attached to list to perform setPriority.") {
       season.priority = 10
     }
   }

@@ -8,9 +8,7 @@ import com.google.gson.JsonObject
  * Class that provides information about player, who search the game. It contains MiniGameID and his
  * settings & filters
  */
-class PlayerMiniGameQueueData
-@JvmOverloads
-constructor(
+class PlayerMiniGameQueueData(
   val miniGameId: String,
   val roundSearchProvider: IRoundSearchProvider,
   var settings: JsonObject = JsonObject(),

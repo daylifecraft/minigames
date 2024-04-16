@@ -8,8 +8,8 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 abstract class AbstractProfileDetails protected constructor(
-  @JvmField protected val profile: AbstractProfile,
-  @JvmField var language: Language,
+  protected val profile: AbstractProfile,
+  var language: Language,
 ) {
   /** Show profile details  */
   fun show(): Component =

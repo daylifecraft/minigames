@@ -3,10 +3,8 @@ package com.daylifecraft.common.seasons
 import com.daylifecraft.common.seasons.SeasonDate.Companion.current
 
 /** Represents a season with name, display name, start and end date.  */
-class Season
-@JvmOverloads
-constructor(
-  @JvmField val name: String,
+class Season(
+  val name: String,
   val displayName: String,
   val startDate: SeasonDate,
   val endDate: SeasonDate,

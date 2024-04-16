@@ -14,8 +14,8 @@ import java.util.function.Supplier
 
 class BuildingTest {
 
-  private val mockedBuilder: LoggingEventBuilder = mockk()
-  private val mockedLogger: Logger = mockk()
+  private val mockedBuilder = mockk<LoggingEventBuilder>()
+  private val mockedLogger = mockk<Logger>()
 
   @BeforeEach
   fun setupMocks() {

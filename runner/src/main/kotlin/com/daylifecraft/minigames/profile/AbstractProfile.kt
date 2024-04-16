@@ -20,7 +20,6 @@ abstract class AbstractProfile protected constructor(
       field = value
     }
 
-  @JvmField
   protected var parameters: MutableMap<String, Any?> = LinkedHashMap()
 
   init {

@@ -56,8 +56,8 @@ internal class FilterUtilsTest {
   @Test
   fun testMergeOnNoIdenticalOnes() {
     assertEquals(
-      JsonObject(),
-      FilterUtils.getResultFilters(maps123, maps23, maps3, maps4),
+      expected = JsonObject(),
+      actual = FilterUtils.getResultFilters(maps123, maps23, maps3, maps4),
       message = "Expected empty filters object when no identical on all",
     )
   }
@@ -84,7 +84,7 @@ internal class FilterUtilsTest {
       )
 
     assertEquals(
-      JsonUtils.getJsonObjectFromString(
+      expected = JsonUtils.getJsonObjectFromString(
         """
           {
             "maps": ["map2"],
@@ -92,7 +92,7 @@ internal class FilterUtilsTest {
           }
         """.trimIndent(),
       ),
-      FilterUtils.getResultFilters(first, second),
+      actual = FilterUtils.getResultFilters(first, second),
       message = "Expected that primitives types are in result filters",
     )
   }

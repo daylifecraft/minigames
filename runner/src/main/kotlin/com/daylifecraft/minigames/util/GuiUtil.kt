@@ -33,7 +33,6 @@ object GuiUtil {
 
   object ReusableElements {
     /** langKey = "menu.reusable.return.name" action = open GlobalGui item = ENDER_PEARL  */
-    @JvmField
     val GLOBAL_GUI_ENDER_PEARL: GuiItem =
       GuiItem(
         Material.ENDER_PEARL,

@@ -42,7 +42,6 @@ internal class PlayerJoinInstanceTest {
     private val fakePlayer: Player = UtilsForTesting.initFakePlayer("InstanceTest")
 
     @BeforeAll
-    @Throws(InterruptedException::class)
     @JvmStatic
     fun start() {
       UtilsForTesting.waitUntilPlayerJoin(fakePlayer)

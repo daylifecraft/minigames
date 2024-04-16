@@ -60,7 +60,6 @@ internal class GroupMiniMessageTest {
     private val chatManager = mockk<ChatManager>(relaxed = true)
 
     @BeforeAll
-    @Throws(InterruptedException::class)
     @JvmStatic
     fun start() {
       val testInstance = get().getAnyInstanceByType(InstanceType.LOBBY)!!.instance

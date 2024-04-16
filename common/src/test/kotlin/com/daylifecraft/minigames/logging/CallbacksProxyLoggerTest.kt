@@ -54,7 +54,8 @@ class CallbacksProxyLoggerTest {
 
     logger.makeLoggingEventBuilder(actualLevel.toSlf4j()).log("{}", logRecord)
 
-    assertEquals(expectation, wasCalled)
+    val expectationMessage = if (expectation) "should" else "should not"
+    assertEquals(expectation, wasCalled, "Logger $expectationMessage be called")
   }
 
   @ParameterizedTest
@@ -79,7 +80,8 @@ class CallbacksProxyLoggerTest {
 
     logger.debug("{}", logRecord)
 
-    assertEquals(expectation, wasCalled)
+    val expectationMessage = if (expectation) "should" else "should not"
+    assertEquals(expectation, wasCalled, "Logger $loggerName $expectationMessage be called")
   }
 
   companion object {

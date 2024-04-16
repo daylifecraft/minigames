@@ -4,6 +4,7 @@ import com.daylifecraft.common.util.Range
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 private val TEST_BORDER_VALUE = Range(1, 20)
 
@@ -12,7 +13,10 @@ internal class RangeTest {
   @ParameterizedTest
   @ValueSource(ints = [1, 2, 3, 4, 5, 20])
   fun testInBound(value: Int) {
-    assert(TEST_BORDER_VALUE.isInBorder(value)) { "Value must be in border" }
+    assertTrue(
+      TEST_BORDER_VALUE.isInBorder(value),
+      message = "Value must be in border",
+    )
   }
 
   @ParameterizedTest
