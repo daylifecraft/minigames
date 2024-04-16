@@ -117,21 +117,19 @@ class GlobalGui private constructor(private val viewer: Player) : GUI(InventoryT
         getPlayerMiniGameLockData(viewer.uuid)
 
       if (playerMiniGameLock != null) {
-        val miniGameSettings =
-          miniGamesSettingsManager!!
-            .getGeneralGameSettings(playerMiniGameLock.miniGameId)
+        val miniGameSettings = miniGamesSettingsManager.getGeneralGameSettings(
+          playerMiniGameLock.miniGameId,
+        )
         material = miniGameSettings!!.guiBlock
         text = TranslateText("menu.global.games-in-queue.name")
-        lore =
-          TranslateText(
-            "menu.global.games-in-queue.description",
-            "minigameDisplayName" to TranslateText(miniGameSettings.displayNameKey),
-            "eTime" to
-              formatSeconds(
-                getElapsedSecondsByTime(playerMiniGameLock.startStageSeconds),
-                TIME_FORMAT,
-              ),
-          )
+        lore = TranslateText(
+          "menu.global.games-in-queue.description",
+          "minigameDisplayName" to TranslateText(miniGameSettings.displayNameKey),
+          "eTime" to formatSeconds(
+            getElapsedSecondsByTime(playerMiniGameLock.startStageSeconds),
+            TIME_FORMAT,
+          ),
+        )
       } else {
         material = Material.RECOVERY_COMPASS
         text = TranslateText("menu.global.games.name")

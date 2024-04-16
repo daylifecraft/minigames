@@ -4,7 +4,7 @@ import com.daylifecraft.common.util.TimeUtil.currentUtcSeconds
 
 /** Data-Class to control player MiniGames Lock  */
 class PlayerMiniGameLockData(
-  @JvmField val miniGameId: String,
+  val miniGameId: String,
 ) {
   /**
    * Returns time, when player change queue state. So, they got in queue/game

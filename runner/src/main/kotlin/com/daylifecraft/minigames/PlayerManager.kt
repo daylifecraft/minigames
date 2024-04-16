@@ -174,7 +174,6 @@ object PlayerManager {
    * @param defaultValue Default username
    * @return Username
    */
-  @JvmStatic
   fun getPlayerNameByUuidOrDefault(uuid: UUID, defaultValue: String): String {
     val player = getPlayerByUuid(uuid) ?: return defaultValue
 
@@ -187,7 +186,6 @@ object PlayerManager {
    * @param uuid Player uuid
    * @return player with that uuid
    */
-  @JvmStatic
   fun getPlayerByUuid(uuid: UUID): Player? = MinecraftServer.getConnectionManager().getOnlinePlayerByUuid(uuid)
 
   /**
@@ -295,7 +293,6 @@ object PlayerManager {
    * @param username player username
    * @return uuid for player
    */
-  @JvmStatic
   fun getPlayerUuid(username: String): UUID {
     if (!username_PATTERN.matcher(username).matches()) {
       throw InvalidPlayerUsername(username)
@@ -381,7 +378,6 @@ object PlayerManager {
    * @param player player's instance
    * @param value boolean variable for setting the view
    */
-  @JvmStatic
   fun setPlayerHide(player: Entity, value: Boolean) {
     player.setAutoViewEntities(!value)
   }

@@ -1,6 +1,10 @@
 package com.daylifecraft.minigames.gui.player.inventory
 
 import com.daylifecraft.common.gui.player.inventory.PlayerInventoryGui
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.spyk
+import io.mockk.verify
 import net.minestom.server.entity.Player
 import net.minestom.server.event.EventNode
 import net.minestom.server.event.inventory.InventoryPreClickEvent
@@ -15,12 +19,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import org.mockito.kotlin.any
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.spy
-import org.mockito.kotlin.times
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
 import java.util.UUID
 import kotlin.test.assertEquals
 
@@ -29,13 +27,13 @@ class PlayerInventoryGuiTest {
   fun testEventsLifecycle() {
     val playerInventoryGui = PlayerInventoryGui(player)
 
-    val parentNode = spy(EventNode.all("parent"))
+    val parentNode = spyk(EventNode.all("parent"))
 
     playerInventoryGui.attachEvents(parentNode)
-    verify(parentNode, times(1)).addChild(any())
+    verify(exactly = 1) { parentNode.addChild(any()) }
 
     playerInventoryGui.detachEvents()
-    verify(parentNode, times(1)).removeChild(any())
+    verify(exactly = 1) { parentNode.removeChild(any()) }
   }
 
   @Test
@@ -44,7 +42,7 @@ class PlayerInventoryGuiTest {
       setItem(0, itemStack)
     }
 
-    val parentNode = spy(EventNode.all("parent"))
+    val parentNode = spyk(EventNode.all("parent"))
 
     playerInventoryGui.attachEvents(parentNode)
 
@@ -70,12 +68,12 @@ class PlayerInventoryGuiTest {
       }
     }
 
-    val parentNode = spy(EventNode.all("parent"))
+    val parentNode = EventNode.all("parent")
 
     playerInventoryGui.attachEvents(parentNode)
 
     parentNode.call(event)
-    assertEquals(expectedCallsCount, leftClickCalled)
+    assertEquals(expectedCallsCount, leftClickCalled, "Inventory must be clicked exactly $expectedCallsCount times")
   }
 
   @ParameterizedTest
@@ -91,12 +89,12 @@ class PlayerInventoryGuiTest {
       }
     }
 
-    val parentNode = spy(EventNode.all("parent"))
+    val parentNode = spyk(EventNode.all("parent"))
 
     playerInventoryGui.attachEvents(parentNode)
 
     parentNode.call(event)
-    assertEquals(expectedCallsCount, rightClickCalled)
+    assertEquals(expectedCallsCount, rightClickCalled, "Inventory must be clicked exactly $expectedCallsCount times")
   }
 
   @ParameterizedTest
@@ -112,17 +110,17 @@ class PlayerInventoryGuiTest {
       }
     }
 
-    val parentNode = spy(EventNode.all("parent"))
+    val parentNode = spyk(EventNode.all("parent"))
 
     playerInventoryGui.attachEvents(parentNode)
 
     parentNode.call(event)
-    assertEquals(expectedCallsCount, inventoryClickCalled)
+    assertEquals(expectedCallsCount, inventoryClickCalled, "Inventory must be clicked exactly $expectedCallsCount times")
   }
 
   companion object {
-    private val player = mock<Player>()
-    private val anotherPlayer = mock<Player>()
+    private val player = mockk<Player>(relaxed = true)
+    private val anotherPlayer = mockk<Player>(relaxed = true)
 
     val itemStack = ItemStack.of(Material.DIAMOND)
     val cursorItem = ItemStack.of(Material.AIR)
@@ -130,11 +128,11 @@ class PlayerInventoryGuiTest {
     @JvmStatic
     @BeforeAll
     fun setup() {
-      whenever(player.inventory).thenReturn(mock())
-      whenever(player.uuid).thenReturn(UUID.randomUUID())
+      every { player.inventory } returns mockk(relaxed = true)
+      every { player.uuid } returns UUID.randomUUID()
 
-      whenever(anotherPlayer.inventory).thenReturn(mock())
-      whenever(anotherPlayer.uuid).thenReturn(UUID.randomUUID())
+      every { anotherPlayer.inventory } returns mockk(relaxed = true)
+      every { anotherPlayer.uuid } returns UUID.randomUUID()
     }
 
     @JvmStatic

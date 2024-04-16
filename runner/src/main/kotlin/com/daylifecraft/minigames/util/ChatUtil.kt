@@ -20,7 +20,6 @@ object ChatUtil {
    * @param message message sent by the sender
    * @return processed message depending on the sender's permission
    */
-  @JvmStatic
   fun checkMiniMessage(sender: Player, message: String): String {
     if (PermissionManager.hasPermission(sender, "chat.minimessage.full")) {
       return message
@@ -36,7 +35,6 @@ object ChatUtil {
    * @param message the message we need to send
    * @param variables set of variables to replace
    */
-  @JvmStatic
   fun sendMiniMessage(
     recipient: Player,
     message: String,
@@ -62,7 +60,6 @@ object ChatUtil {
    * @param player an instance of the player whose color we need
    * @return player color
    */
-  @JvmStatic
   fun getGlobalChatMessageColorFromPlayer(player: Player): String {
     val playerProfile =
       DatabaseManager.getPlayerProfile(player)
@@ -83,7 +80,6 @@ object ChatUtil {
    * @param player an instance of the player whose badge we need
    * @return player badge
    */
-  @JvmStatic
   fun getGlobalChatPlayerBadge(player: Player): String {
     val playerProfile =
       DatabaseManager.getPlayerProfile(player)
@@ -105,7 +101,6 @@ object ChatUtil {
    * @param variables the variables we will replace with
    * @return string with replaced values
    */
-  @JvmStatic
   fun replaceVariables(source: String, vararg variables: Pair<String, String?>): String {
     var currentString = source
 

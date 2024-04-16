@@ -3,9 +3,9 @@ package com.daylifecraft.minigames.command.confirm
 import com.daylifecraft.common.util.extensions.miniMessage
 import com.daylifecraft.minigames.command.CommandsManager
 import com.daylifecraft.minigames.text.i18n.PlayerLanguage
-import net.minestom.server.MinecraftServer
 import net.minestom.server.command.CommandSender
 import net.minestom.server.command.builder.CommandContext
+import net.minestom.server.entity.Player
 
 interface ConfirmableCommand {
   fun showConfirm(sender: CommandSender, context: CommandContext) {
@@ -15,15 +15,8 @@ interface ConfirmableCommand {
     // TODO this probably should be rewritten
     val id = CommandsManager.createConfirmRequest(this, sender, context)
 
-    // Get sender uuid
-    val senderUuid = CommandsManager.getUuidFromSender(sender)
-
     // Get sender`s language
-    val language =
-      // TODO search for companion functions imports and remove them
-      PlayerLanguage.get(
-        MinecraftServer.getConnectionManager().getOnlinePlayerByUuid(senderUuid)!!,
-      )
+    val language = PlayerLanguage.get(sender as Player)
 
     val message =
       """

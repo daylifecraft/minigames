@@ -20,7 +20,6 @@ object PlayersGroupManager {
     return null
   }
 
-  @JvmStatic
   fun createGroup(leaderUUID: UUID, vararg members: UUID): PlayersGroup? = createGroup(leaderUUID, listOf(*members))
 
   private fun createGroup(leaderUUID: UUID, members: List<UUID>): PlayersGroup? {

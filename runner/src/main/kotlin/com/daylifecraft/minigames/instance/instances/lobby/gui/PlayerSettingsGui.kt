@@ -202,7 +202,6 @@ class PlayerSettingsGui private constructor(player: Player) : BindingGUI(player,
   companion object {
     private val BACKGROUND_R1 = ItemStack.of(Material.GRAY_STAINED_GLASS_PANE).withDisplayName(Component.empty())
 
-    @JvmStatic
     fun showSettingsGui(player: Player) {
       val gui = PlayerSettingsGui(player)
       gui.setup()

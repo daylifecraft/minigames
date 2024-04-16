@@ -25,8 +25,8 @@ import net.minestom.server.event.trait.PlayerEvent
  * settings, game filters And provides abstract interaction
  */
 abstract class AbstractMiniGameInstance protected constructor(
-  @JvmField val miniGameWorldInstance: MiniGameWorldInstance,
-  @JvmField val roundProfile: RoundProfile,
+  val miniGameWorldInstance: MiniGameWorldInstance,
+  val roundProfile: RoundProfile,
   roundPlayerSettings: Map<Player, JsonObject>?,
   val gameFilters: JsonObject,
 ) {

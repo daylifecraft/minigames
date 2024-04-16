@@ -97,7 +97,6 @@ class ConfirmationMiniGameGui private constructor(
      * @param onPlayerClosedInventory Function, that called on player close inventory (no close
      * currently)
      */
-    @JvmStatic
     fun showConfirmationGui(
       player: Player,
       generalGameSettings: GeneralGameSettings,

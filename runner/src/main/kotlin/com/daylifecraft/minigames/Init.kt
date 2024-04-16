@@ -2,11 +2,11 @@ package com.daylifecraft.minigames
 
 import com.daylifecraft.common.logging.building.Logger
 import com.daylifecraft.common.logging.building.createLogger
-import com.daylifecraft.common.logging.foundation.Level
 import com.daylifecraft.common.logging.foundation.LogEvent
 import com.daylifecraft.common.metrics.MinestomMetrics
 import com.daylifecraft.common.variable.VariablesManager
 import com.daylifecraft.common.variable.VariablesRegistry
+import com.daylifecraft.minigames.ServerUuidProvider.uuid
 import com.daylifecraft.minigames.command.CommandsManager
 import com.daylifecraft.minigames.config.ConfigManager
 import com.daylifecraft.minigames.database.DatabaseManager
@@ -26,7 +26,6 @@ import io.prometheus.metrics.instrumentation.jvm.JvmMetrics
 import net.minestom.server.MinecraftServer
 import net.minestom.server.extras.MojangAuth
 import net.minestom.server.extras.velocity.VelocityProxy
-import sun.misc.Signal
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.util.UUID
@@ -41,32 +40,22 @@ object Init {
 
   private lateinit var logger: Logger
 
-  @JvmStatic
-  var uUID: UUID? = null
-    private set
-
-  @JvmStatic
   var craftInstancesManager: CraftInstancesManager? = null
     private set
 
-  @JvmStatic
   var chatManager: ChatManager? = null
     private set
 
-  @JvmStatic
-  var miniGamesSettingsManager: MiniGamesSettingManager? = null
+  /** Global mini-games settings manager */
+  lateinit var miniGamesSettingsManager: MiniGamesSettingManager
     private set
 
-  @JvmStatic
   var onlineMode: Boolean = false
-    private set
-
-  @JvmStatic
-  var shutdownHook: ShutdownHook? = null
     private set
 
   lateinit var guiManager: GuiManager
     private set
+
   lateinit var miniGameControllersManager: MiniGameControllersManager
     private set
 
@@ -79,7 +68,6 @@ object Init {
   private val serverOperationMode: String?
     get() = VariablesManager.getString(VariablesRegistry.SETTINGS_OPERATION_MODE)
 
-  @JvmStatic
   val isInDebugMode: Boolean
     get() {
       // Get DEBUG_COMMANDS from environment variable
@@ -101,7 +89,6 @@ object Init {
     }
   }
 
-  @JvmStatic
   fun stopServer() {
     MinecraftServer.stopCleanly()
   }
@@ -117,51 +104,27 @@ object Init {
     exitProcess(1)
   }
 
-  @JvmStatic
-  fun initServerUuid() {
-    if (uUID != null) {
-      logger.build(LogEvent.GENERAL_DEBUG) {
-        level(Level.WARN)
-        message("Init::initServerUuid() called more than once! Init.uuid already set: return")
-      }
-      return
-    }
-    uUID = UUID.randomUUID()
-  }
-
-  @JvmStatic
   fun initVariablesManager() {
     VariablesManager.load()
   }
 
-  @JvmStatic
   fun initLogger() {
     logger = createLogger()
   }
 
-  @JvmStatic
   @Throws(IOException::class)
   fun initLang() {
     Lang.init()
   }
 
-  /** Setup signal handlers for shutdown hook  */
-  @JvmStatic
-  fun initShutdownHook() {
-    shutdownHook = ShutdownHook()
-    Signal.handle(Signal("INT")) { _ -> shutdownHook!!.run(0) }
-    Signal.handle(Signal("TERM")) { _ -> shutdownHook!!.run(0) }
-  }
-
   @Throws(Exception::class)
   private fun initialize() {
-    initServerUuid()
     initVariablesManager()
     initLogger()
     initLicenseMode()
 
     // Create server stop handler
-    initShutdownHook()
+    ShutdownHook.init()
 
     // add uncaught exception handler
     Thread.currentThread().uncaughtExceptionHandler =
@@ -171,7 +134,7 @@ object Init {
 
     logger.debug(
       """
-      Initializing mini-games server $uUID
+      Initializing mini-games server $uuid
       SERVER_ENV="$serverEnv"
       """.trimIndent(),
     )
@@ -201,7 +164,7 @@ object Init {
 
     // Load mini games
     setupMiniGamesManager()
-    miniGamesSettingsManager!!.onStartupLoad()
+    miniGamesSettingsManager.onStartupLoad()
 
     // Get instance manager
     loadCraftInstances()
@@ -237,19 +200,18 @@ object Init {
     CommandsManager.load(MinecraftServer.getCommandManager(), isInDebugMode)
 
     // Start the server on port 25565
-    minecraftServer.start(SERVER_IP, ConfigManager.mainConfig!!.getInt("ports.minecraft")!!)
+    minecraftServer.start(SERVER_IP, ConfigManager.mainConfig.getInt("ports.minecraft")!!)
 
     setupMetrics()
 
     logger.build(LogEvent.SERVER_STARTED) {
       message("Server successfully started")
-      details("assignedServerUuid", uUID)
+      details("assignedServerUuid", uuid)
       details("serverIp", MinecraftServer.getServer().address)
       details("serverPort", MinecraftServer.getServer().port)
     }
   }
 
-  @JvmStatic
   fun setupChatManager(toSetup: ChatManager?) {
     if (isInsideTests) {
       chatManager = toSetup
@@ -258,7 +220,6 @@ object Init {
     }
   }
 
-  @JvmStatic
   fun setupCraftInstancesManager(toSetup: CraftInstancesManager) {
     if (isInsideTests) {
       craftInstancesManager = toSetup
@@ -267,7 +228,6 @@ object Init {
     }
   }
 
-  @JvmStatic
   fun setupGuiManager(toSetup: GuiManager) {
     if (isInsideTests) {
       guiManager = toSetup
@@ -276,24 +236,13 @@ object Init {
     }
   }
 
-  @JvmStatic
-  fun setupShutdownHook(toSetup: ShutdownHook) {
-    if (isInsideTests) {
-      shutdownHook = toSetup
-    } else {
-      setOnlyForTestError("ShutdownHook")
-    }
-  }
-
   /** Loads the instances. Lobby, etc.  */
-  @JvmStatic
   fun loadCraftInstances() {
     craftInstancesManager = CraftInstancesManager(MinecraftServer.getInstanceManager())
     craftInstancesManager!!.addInstance(LobbyInstance())
   }
 
   /** Setup chat manager  */
-  @JvmStatic
   fun setupChatManager() {
     chatManager = ChatManager()
   }
@@ -308,23 +257,21 @@ object Init {
     MinestomMetrics.builder().register()
     RunnerMetrics.builder().register()
 
-    val prometheusPort = ConfigManager.mainConfig!!.getInt("ports.prometheus")!!
+    val prometheusPort = ConfigManager.mainConfig.getInt("ports.prometheus")!!
     HTTPServer.builder().port(prometheusPort).buildAndStart()
   }
 
   /** Setup mini games manager  */
-  @JvmStatic
   fun setupMiniGamesManager() {
     miniGamesSettingsManager = MiniGamesSettingManager()
   }
 
-  @JvmStatic
   fun enableTests() {
     isInsideTests = true
   }
 
   private fun setupMiniGamesControllersManager() {
-    miniGameControllersManager = MiniGameControllersManager(miniGamesSettingsManager!!)
+    miniGameControllersManager = MiniGameControllersManager(miniGamesSettingsManager)
   }
 
   private fun enableVelocityProxy(): Boolean {

@@ -38,7 +38,6 @@ class MiniGameQueueElement private constructor(
   }
 
   companion object {
-    @JvmStatic
     fun createFromPlayers(
       miniGameId: String,
       roundSearchProvider: IRoundSearchProvider,

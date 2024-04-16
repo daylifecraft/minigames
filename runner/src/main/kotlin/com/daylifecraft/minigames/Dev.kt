@@ -20,7 +20,6 @@ object Dev {
   // is use LOGGER_FILTER
   val LOGGER_FILTERING: Boolean = isDev
 
-  @JvmStatic
   var isDev: Boolean
     get() = devStatus ?: "DEV".equals(serverEnv, ignoreCase = true).also { devStatus = it }
     set(value) {

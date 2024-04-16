@@ -78,7 +78,6 @@ class SeasonDate : Comparable<SeasonDate> {
     private const val MONTHS_IN_YEAR = 12
     private const val MIN_TWO_DIGITS_INT = 10
 
-    @JvmStatic
     fun current(): SeasonDate {
       val currentDate = LocalDate.now()
       return SeasonDate(currentDate.monthValue, currentDate.dayOfMonth)

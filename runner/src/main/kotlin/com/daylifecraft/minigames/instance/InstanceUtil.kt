@@ -19,7 +19,6 @@ object InstanceUtil {
    * @param players array with player instances
    * @param instance instance, where need to move
    */
-  @JvmStatic
   fun moveAllPlayersToInstance(players: Array<Player>, instance: AbstractCraftInstance) {
     for (player in players) {
       player.setInstance(instance.instance)
@@ -29,7 +28,6 @@ object InstanceUtil {
   /**
    * @see .isEventRelated
    */
-  @JvmStatic
   fun isEventRelated(event: Event, instance: AbstractCraftInstance): Boolean = isEventRelated(event, instance.instance)
 
   /**
@@ -39,7 +37,6 @@ object InstanceUtil {
    * 2023: used by a global listener to pass an event to an instance (CraftInstance) if it is
    * associated with it (returned true)
    */
-  @JvmStatic
   fun isEventRelated(event: Event, instance: Instance): Boolean {
     if (event is InstanceEvent &&
       (event.instance === instance)
@@ -59,7 +56,6 @@ object InstanceUtil {
    * @param entity entity instance
    * @param instance instance
    */
-  @JvmStatic
   fun isEntityInInstance(entity: Entity, instance: Instance): Boolean = entity.instance === instance
 
   /**
@@ -76,7 +72,6 @@ object InstanceUtil {
    * @param name team name
    * @param collisionRule collision rule
    */
-  @JvmStatic
   fun createCollisionTeam(name: String?, collisionRule: TeamsPacket.CollisionRule?): Team = MinecraftServer.getTeamManager()
     .createBuilder(name!!)
     .collisionRule(collisionRule)

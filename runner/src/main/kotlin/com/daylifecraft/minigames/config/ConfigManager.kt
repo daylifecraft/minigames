@@ -9,12 +9,10 @@ object ConfigManager {
    *
    * @return server.yml ConfigFile
    */
-  @JvmStatic
-  var mainConfig: ConfigFile? = null // TODO lateinit it
+  lateinit var mainConfig: ConfigFile
     private set
 
   /** Load configs  */
-  @JvmStatic
   fun load() {
     mainConfig = ConfigFile(FilesUtil.getResourceStreamByPath("server.yml"))
   }

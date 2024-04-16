@@ -94,13 +94,11 @@ object PunishmentsManager {
 
   fun getTotalEndTime(uuid: UUID?, type: PunishmentType): Long = getTotalEndTime(type, getList(uuid))
 
-  @JvmStatic
   fun getTotalDuration(
     uuid: UUID?,
     type: PunishmentType,
     ignorePermDuration: Boolean,
   ): Long = getTotalDuration(type, getList(uuid), ignorePermDuration)
 
-  @JvmStatic
   fun getTotalStartTime(uuid: UUID?, type: PunishmentType): Long = getTotalStartTime(type, getList(uuid))
 }

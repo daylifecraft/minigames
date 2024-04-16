@@ -74,9 +74,6 @@ testing {
       dependencies {
         implementation(kotlin("test"))
         implementation("io.mockk:mockk:1.13.10")
-        implementation("org.mockito:mockito-core:5.11.0")
-        implementation("org.mockito.kotlin:mockito-kotlin:5.3.1")
-        implementation("org.mockito:mockito-junit-jupiter:5.11.0")
       }
     }
   }

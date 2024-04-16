@@ -54,7 +54,6 @@ class GroupKickCommand :
      * @param playersGroup group to kick from
      * @param playerLanguage language
      */
-    @JvmStatic
     fun kick(
       executor: Player,
       targetName: String,

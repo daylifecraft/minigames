@@ -22,13 +22,13 @@ private const val CHAT_MESSAGE_TEXT_KEY = "chatMessageText"
  */
 class ChatManager {
   // TODO create dto
-  private val simpyChatPattern = mainConfig!!.getString("chat.global.pattern")!!
-  private val groupMemberPattern = mainConfig!!.getString("chat.group.members_pattern")!!
-  private val groupLeaderPattern = mainConfig!!.getString("chat.group.leader_pattern")!!
-  private val privateMessageFromDefaultPattern = mainConfig!!.getString("chat.privateMessages.from_default_pattern")!!
-  private val privateMessageToDefaultPattern = mainConfig!!.getString("chat.privateMessages.to_default_pattern")!!
-  private val privateMessageFromAdminPattern = mainConfig!!.getString("chat.privateMessages.from_admin_pattern")!!
-  private val privateMessageToAdminPattern = mainConfig!!.getString("chat.privateMessages.to_admin_pattern")!!
+  private val simpyChatPattern = mainConfig.getString("chat.global.pattern")!!
+  private val groupMemberPattern = mainConfig.getString("chat.group.members_pattern")!!
+  private val groupLeaderPattern = mainConfig.getString("chat.group.leader_pattern")!!
+  private val privateMessageFromDefaultPattern = mainConfig.getString("chat.privateMessages.from_default_pattern")!!
+  private val privateMessageToDefaultPattern = mainConfig.getString("chat.privateMessages.to_default_pattern")!!
+  private val privateMessageFromAdminPattern = mainConfig.getString("chat.privateMessages.from_admin_pattern")!!
+  private val privateMessageToAdminPattern = mainConfig.getString("chat.privateMessages.to_admin_pattern")!!
 
   /**
    * send a message from player to player and format for chat

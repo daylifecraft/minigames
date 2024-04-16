@@ -16,7 +16,6 @@ import net.minestom.server.item.Material
  * @param playersCount Range of players count
  * @param groupSize Range of current group
  */
-@JvmRecord
 data class GeneralGameSettings(
   val name: String,
   val displayNameKey: String,

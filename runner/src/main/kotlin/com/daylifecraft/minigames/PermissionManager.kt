@@ -68,7 +68,6 @@ object PermissionManager {
    * @param permissionName name for permission
    * @return return true if player have permission
    */
-  @JvmStatic
   fun hasPermission(player: Player, permissionName: String): Boolean {
     val permissions = player.allPermissions
 
@@ -134,5 +133,5 @@ object PermissionManager {
    * @param group group id
    * @return map of permission for group
    */
-  private fun getGroupParameters(group: String): Map<String, Any?> = mainConfig!!.getValueFromList("groups", "name", group)
+  private fun getGroupParameters(group: String): Map<String, Any?> = mainConfig.getValueFromList("groups", "name", group)
 }

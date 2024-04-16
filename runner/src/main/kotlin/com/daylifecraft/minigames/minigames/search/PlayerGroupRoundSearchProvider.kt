@@ -180,7 +180,7 @@ class PlayerGroupRoundSearchProvider(
         "rounds.new-round.queue.started",
         "minigameDisplayName" to
           TranslateText(
-            Init.miniGamesSettingsManager!!
+            Init.miniGamesSettingsManager
               .getGeneralGameSettings(ownerQueueData.miniGameId)!!.displayNameKey,
           ),
       )

@@ -1,7 +1,7 @@
 package com.daylifecraft.minigames.minigames.profile
 
 import com.daylifecraft.common.util.safeCastToArray
-import com.daylifecraft.minigames.Init.uUID
+import com.daylifecraft.minigames.ServerUuidProvider
 import com.daylifecraft.minigames.minigames.profile.RoundStatus.Companion.getByStringRepresentation
 import com.daylifecraft.minigames.profile.AbstractProfile
 import com.daylifecraft.minigames.profile.AbstractProfileDetails
@@ -25,7 +25,7 @@ class RoundProfile private constructor(
   roundTeamsProfiles: List<RoundTeamProfile>?,
   rating: Array<Document>?,
 ) : AbstractProfile(id, 1, COLLECTION_NAME) {
-  @JvmField
+
   val miniGameId: String
   private val startDate: Date
   var roundStatus: RoundStatus?
@@ -115,7 +115,6 @@ class RoundProfile private constructor(
      * @param rating Rating documents
      * @return Created RoundProfile
      */
-    @JvmStatic
     fun createNewRound(
       miniGameId: String,
       players: Collection<UUID>,
@@ -125,7 +124,7 @@ class RoundProfile private constructor(
       val roundProfile =
         RoundProfile(
           ObjectId(),
-          uUID,
+          ServerUuidProvider.uuid,
           miniGameId,
           Timestamp(System.currentTimeMillis()),
           RoundStatus.INITIALIZING,
@@ -150,7 +149,6 @@ class RoundProfile private constructor(
      * @param document MongoDB document
      * @return RoundProfile object from document
      */
-    @JvmStatic
     fun getRoundProfileFromDocument(document: Document): RoundProfile {
       val roundProfile =
         RoundProfile(

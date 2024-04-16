@@ -75,7 +75,6 @@ class MuteCommand : GivePunishmentCommand("mute") {
      *
      * @param player player to ban uuid
      */
-    @JvmStatic
     fun canMute(player: Player): Boolean {
       val profiles: List<PunishmentProfile>
       try {

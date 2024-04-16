@@ -6,16 +6,13 @@ import com.daylifecraft.minigames.database.DatabaseManager
 import com.daylifecraft.minigames.event.server.ServerStopEvent
 import net.minestom.server.MinecraftServer
 import net.minestom.server.event.EventDispatcher
+import sun.misc.Signal
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.system.exitProcess
 
 /** Shutdown hook, uses for call ServerStopEvent and stop server clearly  */
 class ShutdownHook {
-  /**
-   * gets current shutdown hook state
-   *
-   * @return boolean that show current shutdown hook state.
-   */
-  private var isShuttingDown: Boolean = false
+  private val isShuttingDown = AtomicBoolean(false)
 
   /**
    * Call ServerStopEvent and shutdown server
@@ -24,10 +21,9 @@ class ShutdownHook {
    */
   fun run(args: Long) {
     // Check if server already shutting down
-    if (isShuttingDown) {
+    if (isShuttingDown.getAndSet(true)) {
       return
     }
-    isShuttingDown = true
 
     // Check if run reason is server
     if (args == 0L) {
@@ -40,7 +36,7 @@ class ShutdownHook {
 
     // Check shutdownHook run reason: 0 -> server, 1 -> test (dry-run)
     if (args != 0L) {
-      isShuttingDown = false
+      isShuttingDown.set(false)
       return
     }
 
@@ -57,5 +53,18 @@ class ShutdownHook {
 
   companion object {
     private val LOGGER = createLogger<ShutdownHook>()
+
+    /** Global shutdown hook for this server */
+    lateinit var global: ShutdownHook
+      private set
+
+    /**
+     * Initializes [global] shutdown hook
+     */
+    fun init() {
+      global = ShutdownHook()
+      Signal.handle(Signal("INT")) { _ -> global.run(0) }
+      Signal.handle(Signal("TERM")) { _ -> global.run(0) }
+    }
   }
 }

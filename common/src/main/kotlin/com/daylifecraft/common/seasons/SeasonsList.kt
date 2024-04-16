@@ -2,7 +2,7 @@ package com.daylifecraft.common.seasons
 
 /** Represents system of seasons with ability to get active seasons ordered by their priorities  */
 class SeasonsList(val allSeasons: List<Season>) {
-  private val seasonsByNames: MutableMap<String?, Season> = HashMap()
+  private val seasonsByNames: MutableMap<String, Season> = HashMap()
   private var activeSeasonsCache: List<Season>? = null
   private val cacheLock = Any()
 
@@ -15,22 +15,20 @@ class SeasonsList(val allSeasons: List<Season>) {
     }
   }
 
-  fun getSeasonByName(name: String?): Season? = seasonsByNames[name]
+  fun getSeasonByName(name: String): Season? = seasonsByNames[name]
 
   /**
    * Returns list of active seasons sorted by their priority. Note that this method returns cache if
    * possible.
    */
-  val activeSeasonsPrioritized: List<Season>?
+  val activeSeasonsPrioritized: List<Season>
     get() {
       synchronized(cacheLock) {
-        if (activeSeasonsCache == null) {
-          activeSeasonsCache =
-            allSeasons.filter(Season::isActive).sortedByDescending { it.priority }
-        }
+        return activeSeasonsCache ?: allSeasons
+          .filter(Season::isActive)
+          .sortedByDescending { it.priority }
+          .also { activeSeasonsCache = it }
       }
-
-      return activeSeasonsCache
     }
 
   /** Returns list of inactive seasons. Note that this method generates new list every call.  */

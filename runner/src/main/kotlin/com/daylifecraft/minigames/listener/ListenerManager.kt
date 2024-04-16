@@ -40,7 +40,6 @@ object ListenerManager {
    *
    * @param handler main event handler
    */
-  @JvmStatic
   fun load(handler: GlobalEventHandler) {
     for (listenerClass in LISTENERS) {
       handler.tryAddListener(listenerClass)

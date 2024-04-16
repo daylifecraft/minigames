@@ -155,7 +155,6 @@ class GroupManageGui private constructor(
      *
      * @param player player to try
      */
-    @JvmStatic
     fun showGroupManageGui(player: Player) {
       val playerGroup = PlayersGroupManager.getGroupByPlayer(player)
       if (playerGroup == null ||
