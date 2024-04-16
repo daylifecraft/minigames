@@ -1,0 +1,25 @@
+{
+  "image": "mcr.microsoft.com/vscode/devcontainers/base:1.0.9-ubuntu22.04",
+  "forwardPorts": [
+    25565, // minecraft
+    9119, // metrics
+    27017, // mongodb
+    8081 // mongo-express
+  ],
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2.10.2": {},
+    "ghcr.io/devcontainers/features/git-lfs:1.2.0": {},
+    "ghcr.io/devcontainers/features/java:1.4.1": {
+      "version": "21",
+      "jdkDistro": "tem"
+    }
+  },
+  "remoteEnv": {
+    "DAYLIFECRAFT_SETTINGS_MONGODB_HOSTNAME": "127.0.0.1",
+    "DAYLIFECRAFT_SETTINGS_MONGODB_USER": "root",
+    "DAYLIFECRAFT_SETTINGS_MONGODB_PASSWORD": "example",
+    "DAYLIFECRAFT_SETTINGS_SERVER_ENV": "DEV",
+    "DAYLIFECRAFT_SETTINGS_DEBUG_COMMANDS": "true"
+  },
+  "postAttachCommand": "docker compose up -d"
+}

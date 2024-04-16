@@ -1,0 +1,23 @@
+services:
+  mongo:
+    image: docker.io/library/mongo:7.0.8
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - mongodb:/data/db
+    network_mode: "host"
+
+  mongo-express:
+    image: docker.io/library/mongo-express:1.0.2-20-alpine3.19
+    restart: always
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@127.0.0.1:27017/
+      ME_CONFIG_BASICAUTH: false
+    network_mode: "host"
+
+volumes:
+  mongodb:
