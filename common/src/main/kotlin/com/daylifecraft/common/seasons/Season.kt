@@ -2,7 +2,14 @@ package com.daylifecraft.common.seasons
 
 import com.daylifecraft.common.seasons.SeasonDate.Companion.current
 
-/** Represents a season with name, display name, start and end date.  */
+/**
+ * Represents a season with name, display name, start and end date.
+ *
+ * @property name unique name of the season
+ * @property displayName i18n key
+ * @property startDate season start date inclusive
+ * @property endDate season end date also inclusive
+ */
 class Season(
   val name: String,
   val displayName: String,
@@ -24,12 +31,11 @@ class Season(
 
   /** Returns true when season was force active, or now it's time.  */
   val isActive: Boolean
-    get() =
-      when (activeness) {
-        Activeness.FORCE_ACTIVE -> true
-        Activeness.FORCE_STOPPED -> false
-        Activeness.INITIAL -> isInitiallyActive
-      }
+    get() = when (activeness) {
+      Activeness.FORCE_ACTIVE -> true
+      Activeness.FORCE_STOPPED -> false
+      Activeness.INITIAL -> isInitiallyActive
+    }
 
   /**
    * Creates season from map with properties. And calculates is it active or not.
