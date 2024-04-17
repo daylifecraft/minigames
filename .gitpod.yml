@@ -1,0 +1,8 @@
+tasks:
+  - name: Setup
+    before: "
+      bash -c 'docker compose up -d;
+      . /home/gitpod/.sdkman/bin/sdkman-init.sh && yes | sdk install java 21.0.2-tem;
+      ./gradlew assemble;
+      docker build -t server .;
+      docker run --network host server'"
