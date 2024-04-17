@@ -6,6 +6,20 @@
     27017,
     8081
   ],
+  "portsAttributes": {
+    "8081": {
+      "label": "mongo-express"
+    },
+    "9119": {
+      "label": "metrics"
+    },
+    "25565": {
+      "label": "minecraft"
+    },
+    "27017": {
+      "label": "mongodb"
+    }
+  },
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2.10.2": {},
     "ghcr.io/devcontainers/features/java:1.4.1": {
@@ -20,19 +34,5 @@
     "DAYLIFECRAFT_SETTINGS_SERVER_ENV": "DEV",
     "DAYLIFECRAFT_SETTINGS_DEBUG_COMMANDS": "true"
   },
-  "postAttachCommand": "docker compose up -d",
-  "portsAttributes": {
-    "8081": {
-      "label": "mongo-express"
-    },
-    "9119": {
-      "label": "metrics"
-    },
-    "25565": {
-      "label": "minecraft"
-    },
-    "27017": {
-      "label": "mongodb"
-    }
-  }
+  "postAttachCommand": "docker compose up -d"
 }
