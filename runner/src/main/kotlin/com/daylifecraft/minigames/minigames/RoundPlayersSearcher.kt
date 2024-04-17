@@ -2,10 +2,10 @@ package com.daylifecraft.minigames.minigames
 
 import com.daylifecraft.common.util.FilterUtils.getResultFilters
 import com.daylifecraft.common.util.extensions.minestom.scheduleTask
+import com.daylifecraft.minigames.Init
 import com.daylifecraft.minigames.config.ConfigManager.mainConfig
 import com.daylifecraft.minigames.minigames.queue.MiniGameQueueElement
 import com.daylifecraft.minigames.minigames.settings.GeneralGameSettings
-import com.daylifecraft.minigames.minigames.settings.MiniGamesSettingManager
 import com.google.gson.JsonObject
 import net.minestom.server.MinecraftServer
 import net.minestom.server.timer.ExecutionType
@@ -34,7 +34,7 @@ class RoundPlayersSearcher {
       it.isNotStartingGame && it.timeElapsedInSearch > MIN_SEARCH_TIME_MILLIS
     }
 
-    for (miniGameSetting in MiniGamesSettingManager.get()!!.allLoadedMiniGamesSettings) {
+    for (miniGameSetting in Init.miniGamesSettingsManager.allLoadedMiniGamesSettings) {
       val playersPool = playersSearchQueue.filter { it.miniGameId == miniGameSetting.name }
 
       if (getTotalPlayersCount(playersPool) < miniGameSetting.playersCountRange.first) {

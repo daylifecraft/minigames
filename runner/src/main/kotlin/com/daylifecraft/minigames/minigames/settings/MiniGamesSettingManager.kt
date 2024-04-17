@@ -2,7 +2,6 @@ package com.daylifecraft.minigames.minigames.settings
 
 import com.daylifecraft.common.config.ConfigFile
 import com.daylifecraft.common.logging.building.createLogger
-import com.daylifecraft.minigames.Init.miniGamesSettingsManager
 import com.daylifecraft.minigames.util.FilesUtil.getResourceStreamByPathCatching
 import com.daylifecraft.minigames.util.FilesUtil.walkThrowResourcesDir
 import net.minestom.server.item.Material
@@ -83,7 +82,5 @@ class MiniGamesSettingManager {
     private const val GAMES_FOLDER = "games"
 
     private val LOGGER = createLogger<MiniGamesSettingManager>()
-
-    fun get(): MiniGamesSettingManager? = miniGamesSettingsManager
   }
 }
