@@ -1,11 +1,25 @@
 {
   "image": "mcr.microsoft.com/vscode/devcontainers/base:1.0.9-ubuntu22.04",
   "forwardPorts": [
-    25565, // minecraft
-    9119, // metrics
-    27017, // mongodb
-    8081 // mongo-express
+    25565,
+    9119,
+    27017,
+    8081
   ],
+  "portsAttributes": {
+    "8081": {
+      "label": "mongo-express"
+    },
+    "9119": {
+      "label": "metrics"
+    },
+    "25565": {
+      "label": "minecraft"
+    },
+    "27017": {
+      "label": "mongodb"
+    }
+  },
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2.10.2": {},
     "ghcr.io/devcontainers/features/java:1.4.1": {
