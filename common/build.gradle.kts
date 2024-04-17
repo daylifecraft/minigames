@@ -12,7 +12,7 @@ repositories {
 
 dependencies {
   api(kotlin("stdlib-jdk8"))
-  api("net.minestom:minestom-snapshots:0c9527118a")
+  api("net.minestom:minestom-snapshots:7320437640")
 
   api("io.prometheus:prometheus-metrics-core:1.2.1")
   api("io.prometheus:prometheus-metrics-instrumentation-jvm:1.2.1")
