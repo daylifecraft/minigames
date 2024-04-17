@@ -2,7 +2,6 @@ package com.daylifecraft.minigames.minigames.controllers.games
 
 import com.daylifecraft.common.logging.building.createLogger
 import com.daylifecraft.common.util.RandomUtil
-import com.daylifecraft.common.util.Range
 import com.daylifecraft.minigames.event.minigame.RoundPreparationEvent
 import com.daylifecraft.minigames.event.player.minigame.PlayerPreparationEndEvent
 import com.daylifecraft.minigames.event.player.minigame.PlayerPreparationEndEvent.Companion.createFromPreparationEvent
@@ -42,7 +41,7 @@ class TestMiniGameController(miniGamesSettingManager: MiniGamesSettingManager) :
     val worldInstance =
       MiniGameWorldInstance(
         generalGameSettings.name,
-        worldName!!,
+        worldName,
         getPlayersPositionsOnMap(
           roundPlayerSettings.keys,
           getWorldSpawnPositions(worldName),
@@ -67,17 +66,19 @@ class TestMiniGameController(miniGamesSettingManager: MiniGamesSettingManager) :
     EventDispatcher.call(event)
   }
 
-  private fun getRandomWorldName(roundPlayerCount: Int): String? {
-    val worlds: MutableList<String?> = ArrayList()
+  private fun getRandomWorldName(roundPlayerCount: Int): String {
+    val worlds: MutableList<String> = ArrayList()
     for (worldMap in generalGameSettings.gameConfig.getValueList("worlds")) {
-      val playersLimitation =
-        Range(worldMap["minPlayers"] as Int, worldMap["maxPlayers"] as Int)
+      val mapEnabled = worldMap["enabled"] as Boolean
 
-      if (!playersLimitation.isInBorder(roundPlayerCount) || !(worldMap["enabled"] as Boolean)) {
-        continue
-      }
+      if (!mapEnabled) continue
 
-      worlds.add((worldMap["name"] as String?))
+      val minPlayers = worldMap["minPlayers"] as Int
+      val maxPlayers = worldMap["maxPlayers"] as Int
+
+      if (roundPlayerCount !in minPlayers..maxPlayers) continue
+
+      worlds.add((worldMap["name"] as String))
     }
 
     return worlds.random(RandomUtil.SHARED_SECURE_RANDOM)
