@@ -94,11 +94,15 @@ object Init {
   }
 
   fun stopServerWithError(throwable: Throwable): Nothing {
-    logger.build(LogEvent.SERVER_CRASHED) {
-      message("Server stopped with error: $throwable")
-      message(throwable.message)
-      details("stackTrace", throwable.stackTrace)
-      details("cause", throwable.cause)
+    if (::logger.isInitialized) {
+      logger.build(LogEvent.SERVER_CRASHED) {
+        message("Server stopped with error: $throwable")
+        message(throwable.message)
+        details("stackTrace", throwable.stackTrace)
+        details("cause", throwable.cause)
+      }
+    } else {
+      println("Server stopped with error before logger has been initialized $throwable")
     }
 
     exitProcess(1)
