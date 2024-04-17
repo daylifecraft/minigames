@@ -1,7 +1,6 @@
 package com.daylifecraft.minigames.games
 
 import com.daylifecraft.common.util.JsonUtils
-import com.daylifecraft.common.util.Range
 import com.daylifecraft.minigames.minigames.RoundPlayersSearcher
 import com.daylifecraft.minigames.minigames.queue.MiniGameQueueElement
 import com.google.gson.JsonObject
@@ -17,7 +16,7 @@ internal class RoundPlayersSearcherTest {
   fun testMaxPlayersCombination() {
     val resultCombination = RoundPlayersSearcher.findMaxPlayersCombination(
       miniGameQueueElements,
-      Range(1, 15),
+      1..15,
     )
 
     assertEquals(

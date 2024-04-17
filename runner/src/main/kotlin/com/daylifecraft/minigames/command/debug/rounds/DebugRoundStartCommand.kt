@@ -74,7 +74,7 @@ class DebugRoundStartCommand :
       if (playerGroup != null && playerGroup.isPlayerLeader(player)) {
         totalPlayersCount += playerGroup.groupSize
 
-        if (!miniGameSettings.groupSize.isInBorder(playerGroup.groupSize)) {
+        if (playerGroup.groupSize !in miniGameSettings.groupSizeRange) {
           // TODO 10.11.2023 i18n key
           return
         }
@@ -87,7 +87,7 @@ class DebugRoundStartCommand :
       return
     }
 
-    if (!miniGameSettings.playersCount.isInBorder(totalPlayersCount)) {
+    if (totalPlayersCount !in miniGameSettings.playersCountRange) {
       // TODO 10.11.2023 i18n key
       return
     }

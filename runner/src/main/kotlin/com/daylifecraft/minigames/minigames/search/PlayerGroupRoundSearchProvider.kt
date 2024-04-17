@@ -49,12 +49,12 @@ class PlayerGroupRoundSearchProvider(
       return false
     }
 
-    if (!generalGameSettings.groupSize.isInBorder(playersGroupSize)) {
+    if (playersGroupSize !in generalGameSettings.groupSizeRange) {
       sendMessageToAllPlayers(
         "rounds.queue.fail.player-amount",
         "curPlayersNum" to playersGroupSize.toString(),
-        "minStartSize" to generalGameSettings.groupSize.minValue.toString(),
-        "maxStartSize" to generalGameSettings.groupSize.maxValue.toString(),
+        "minStartSize" to generalGameSettings.groupSizeRange.first.toString(),
+        "maxStartSize" to generalGameSettings.groupSizeRange.last.toString(),
       )
       return false
     }

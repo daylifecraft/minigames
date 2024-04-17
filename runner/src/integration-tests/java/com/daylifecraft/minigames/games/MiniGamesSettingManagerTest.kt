@@ -1,7 +1,6 @@
 package com.daylifecraft.minigames.games
 
 import com.daylifecraft.common.config.ConfigFile
-import com.daylifecraft.common.util.Range
 import com.daylifecraft.minigames.Init
 import com.daylifecraft.minigames.minigames.settings.GeneralGameSettings
 import net.minestom.server.item.Material
@@ -43,8 +42,8 @@ internal class MiniGamesSettingManagerTest {
         Material.RED_SAND,
         false,
         null,
-        Range(1, 8),
-        Range(1, 8),
+        1..8,
+        1..8,
         EMPTY_CONFIG,
       ),
       actual = settings,
@@ -64,8 +63,8 @@ internal class MiniGamesSettingManagerTest {
         Material.RED_SAND,
         false,
         "test.permission",
-        Range(1, 8),
-        Range(2, 6),
+        1..8,
+        2..6,
         EMPTY_CONFIG,
       ),
       actual = settings,

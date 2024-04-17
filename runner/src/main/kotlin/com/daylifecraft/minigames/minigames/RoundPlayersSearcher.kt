@@ -1,12 +1,11 @@
 package com.daylifecraft.minigames.minigames
 
 import com.daylifecraft.common.util.FilterUtils.getResultFilters
-import com.daylifecraft.common.util.Range
 import com.daylifecraft.common.util.extensions.minestom.scheduleTask
+import com.daylifecraft.minigames.Init
 import com.daylifecraft.minigames.config.ConfigManager.mainConfig
 import com.daylifecraft.minigames.minigames.queue.MiniGameQueueElement
 import com.daylifecraft.minigames.minigames.settings.GeneralGameSettings
-import com.daylifecraft.minigames.minigames.settings.MiniGamesSettingManager
 import com.google.gson.JsonObject
 import net.minestom.server.MinecraftServer
 import net.minestom.server.timer.ExecutionType
@@ -31,26 +30,20 @@ class RoundPlayersSearcher {
   }
 
   private fun searchCycle() {
-    val playersSearchQueue =
-      PlayerMiniGameManager.playersSearchQueue
-        .filter {
-          it.isNotStartingGame && it.timeElapsedInSearch > MIN_SEARCH_TIME_MILLIS
-        }
+    val playersSearchQueue = PlayerMiniGameManager.playersSearchQueue.filter {
+      it.isNotStartingGame && it.timeElapsedInSearch > MIN_SEARCH_TIME_MILLIS
+    }
 
-    for (miniGameSetting in MiniGamesSettingManager.get()!!.allLoadedMiniGamesSettings) {
-      val playersPool =
-        playersSearchQueue.filter { queueElement: MiniGameQueueElement ->
-          queueElement.miniGameId == miniGameSetting.name
-        }
+    for (miniGameSetting in Init.miniGamesSettingsManager.allLoadedMiniGamesSettings) {
+      val playersPool = playersSearchQueue.filter { it.miniGameId == miniGameSetting.name }
 
-      if (getTotalPlayersCount(playersPool) < miniGameSetting.playersCount.minValue) {
+      if (getTotalPlayersCount(playersPool) < miniGameSetting.playersCountRange.first) {
         continue
       }
 
-      val foundedElements =
-        findMaxPlayersCombination(playersPool, miniGameSetting.playersCount)
+      val foundedElements = findMaxPlayersCombination(playersPool, miniGameSetting.playersCountRange)
 
-      if (miniGameSetting.playersCount.isInBorder(getTotalPlayersCount(foundedElements))) {
+      if (getTotalPlayersCount(foundedElements) in miniGameSetting.playersCountRange) {
         startRound(foundedElements, miniGameSetting)
       }
     }
@@ -63,19 +56,16 @@ class RoundPlayersSearcher {
 
     fun findMaxPlayersCombination(
       miniGameQueueElements: List<MiniGameQueueElement>,
-      playersBorder: Range<Int>,
+      playersRange: IntRange,
     ): List<MiniGameQueueElement> {
-      val emptyFilters =
-        miniGameQueueElements.filter { miniGameQueueElement ->
-          EMPTY_JSON_OBJECT == miniGameQueueElement.filters
-        }
+      val emptyFilters = miniGameQueueElements.filter { it.filters == EMPTY_JSON_OBJECT }
 
       val emptyFiltersPlayersCount = getTotalPlayersCount(emptyFilters)
-      if (emptyFiltersPlayersCount >= playersBorder.maxValue) {
-        return clampElementsListToBorder(emptyFilters, playersBorder)
+      if (emptyFiltersPlayersCount >= playersRange.last) {
+        return clampElementsListToBorder(emptyFilters, playersRange)
       }
 
-      val required = playersBorder.maxValue - emptyFiltersPlayersCount
+      val required = playersRange.last - emptyFiltersPlayersCount
 
       val nonEmptyFilters: MutableList<MiniGameQueueElement> = ArrayList(miniGameQueueElements)
       nonEmptyFilters.removeAll(emptyFilters)
@@ -111,7 +101,7 @@ class RoundPlayersSearcher {
           if (playersCount >= required) {
             return clampElementsListToBorder(
               Stream.concat(currentElements.stream(), emptyFilters.stream()).toList(),
-              playersBorder,
+              playersRange,
             )
           }
         }
@@ -124,18 +114,19 @@ class RoundPlayersSearcher {
 
       return clampElementsListToBorder(
         emptyFilters + maxPlayersCombination,
-        playersBorder,
+        playersRange,
       )
     }
 
-    private fun getTotalPlayersCount(miniGameQueueElements: List<MiniGameQueueElement>): Int = miniGameQueueElements.stream()
-      .map { obj: MiniGameQueueElement -> obj.totalPlayersCount }
-      .reduce { a: Int, b: Int -> Integer.sum(a, b) }
-      .orElse(0)
+    private fun getTotalPlayersCount(miniGameQueueElements: List<MiniGameQueueElement>): Int =
+      miniGameQueueElements.stream()
+        .map { it.totalPlayersCount }
+        .reduce(Integer::sum)
+        .orElse(0)
 
     fun clampElementsListToBorder(
       queueElements: List<MiniGameQueueElement>,
-      playersBorder: Range<Int>,
+      playersRange: IntRange,
     ): List<MiniGameQueueElement> {
       // Sort to start from the biggest groups of players
       val miniGameQueueElements: MutableList<MiniGameQueueElement> = ArrayList(queueElements)
@@ -147,7 +138,7 @@ class RoundPlayersSearcher {
       val resultList: MutableList<MiniGameQueueElement> = ArrayList()
       var count = 0
       for (miniGameQueueElement in miniGameQueueElements) {
-        if (count + miniGameQueueElement.totalPlayersCount > playersBorder.maxValue) {
+        if (count + miniGameQueueElement.totalPlayersCount > playersRange.last) {
           continue
         }
 
@@ -161,8 +152,7 @@ class RoundPlayersSearcher {
     private fun startRound(foundedElements: List<MiniGameQueueElement>, generalGameSettings: GeneralGameSettings) {
       val playersWithSettings: MutableMap<UUID, JsonObject> = HashMap()
       val playersSpreadByTeams: MutableSet<Set<UUID>> = HashSet()
-      val finalFilters =
-        getResultFilters(foundedElements.map { it.filters })
+      val finalFilters = getResultFilters(foundedElements.map { it.filters })
 
       for (foundedElement in foundedElements) {
         playersWithSettings.putAll(foundedElement.playersWithSettings)

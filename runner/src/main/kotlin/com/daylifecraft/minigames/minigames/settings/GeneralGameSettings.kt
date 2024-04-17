@@ -1,7 +1,6 @@
 package com.daylifecraft.minigames.minigames.settings
 
 import com.daylifecraft.common.config.ConfigFile
-import com.daylifecraft.common.util.Range
 import net.minestom.server.item.Material
 
 /**
@@ -13,8 +12,8 @@ import net.minestom.server.item.Material
  * @param guiBlock Material to draw in GUI
  * @param isPublic is MiniGae public or not
  * @param permission Permission to join
- * @param playersCount Range of players count
- * @param groupSize Range of current group
+ * @param playersCountRange Range of players count
+ * @param groupSizeRange Range of current group
  */
 data class GeneralGameSettings(
   val name: String,
@@ -23,7 +22,7 @@ data class GeneralGameSettings(
   val guiBlock: Material,
   val isPublic: Boolean,
   val permission: String?,
-  val playersCount: Range<Int>,
-  val groupSize: Range<Int>,
+  val playersCountRange: IntRange,
+  val groupSizeRange: IntRange,
   val gameConfig: ConfigFile,
 )

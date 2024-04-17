@@ -2,8 +2,6 @@ package com.daylifecraft.minigames.minigames.settings
 
 import com.daylifecraft.common.config.ConfigFile
 import com.daylifecraft.common.logging.building.createLogger
-import com.daylifecraft.common.util.Range
-import com.daylifecraft.minigames.Init.miniGamesSettingsManager
 import com.daylifecraft.minigames.util.FilesUtil.getResourceStreamByPathCatching
 import com.daylifecraft.minigames.util.FilesUtil.walkThrowResourcesDir
 import net.minestom.server.item.Material
@@ -58,8 +56,8 @@ class MiniGamesSettingManager {
         Material.fromNamespaceId(configFile.getString("guiBlock")!!.lowercase())!!,
         configFile.getBool("public")!!,
         configFile.getString("permission"),
-        Range(configFile.getInt("minPlayers")!!, configFile.getInt("maxPlayers")!!),
-        Range(configFile.getInt("minGroupSize")!!, configFile.getInt("maxGroupSize")!!),
+        configFile.getInt("minPlayers")!!..configFile.getInt("maxPlayers")!!,
+        configFile.getInt("minGroupSize")!!..configFile.getInt("maxGroupSize")!!,
         configFile.getConfigSection("gameConfig"),
       )
 
@@ -84,7 +82,5 @@ class MiniGamesSettingManager {
     private const val GAMES_FOLDER = "games"
 
     private val LOGGER = createLogger<MiniGamesSettingManager>()
-
-    fun get(): MiniGamesSettingManager? = miniGamesSettingsManager
   }
 }

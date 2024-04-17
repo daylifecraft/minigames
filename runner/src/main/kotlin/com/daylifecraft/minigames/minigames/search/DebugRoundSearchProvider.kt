@@ -42,13 +42,13 @@ class DebugRoundSearchProvider(
       return false
     }
 
-    if (!miniGameSettings.playersCount.isInBorder(roundPlayersCount)) {
+    if (roundPlayersCount !in miniGameSettings.playersCountRange) {
       PlayerLanguage.get(roundOwner)
         .sendMiniMessage(
           "debug.rounds.fail.wrong-players-size",
           "totalPlayers" to roundPlayersCount.toString(),
-          "minTotalPlayers" to miniGameSettings.playersCount.minValue.toString(),
-          "maxTotalPlayers" to miniGameSettings.playersCount.maxValue.toString(),
+          "minTotalPlayers" to miniGameSettings.playersCountRange.first.toString(),
+          "maxTotalPlayers" to miniGameSettings.playersCountRange.last.toString(),
         )
       return false
     }
@@ -72,13 +72,13 @@ class DebugRoundSearchProvider(
         return
       }
 
-      if (!miniGameSettings.playersCount.isInBorder(roundPlayersCount)) {
+      if (roundPlayersCount !in miniGameSettings.playersCountRange) {
         PlayerLanguage.get(roundOwner)
           .sendMiniMessage(
             "debug.rounds.fail.wrong-players-size",
             "totalPlayers" to roundPlayersCount.toString(),
-            "minTotalPlayers" to miniGameSettings.playersCount.minValue.toString(),
-            "maxTotalPlayers" to miniGameSettings.playersCount.maxValue.toString(),
+            "minTotalPlayers" to miniGameSettings.playersCountRange.first.toString(),
+            "maxTotalPlayers" to miniGameSettings.playersCountRange.last.toString(),
           )
         stopRoundPreparation()
         return

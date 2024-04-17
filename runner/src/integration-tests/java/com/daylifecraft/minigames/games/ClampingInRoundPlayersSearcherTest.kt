@@ -1,6 +1,5 @@
 package com.daylifecraft.minigames.games
 
-import com.daylifecraft.common.util.Range
 import com.daylifecraft.minigames.minigames.RoundPlayersSearcher.Companion.clampElementsListToBorder
 import com.daylifecraft.minigames.minigames.queue.MiniGameQueueElement
 import io.mockk.every
@@ -12,7 +11,7 @@ import kotlin.test.assertEquals
 internal class ClampingInRoundPlayersSearcherTest {
   @Test
   fun testMinGroupsClamping() {
-    val playersBorder = Range(1, 10)
+    val playersBorder = 1..10
     assertEquals(
       expected = 1,
       actual = clampElementsListToBorder(queueElementList, playersBorder).size,
@@ -22,7 +21,7 @@ internal class ClampingInRoundPlayersSearcherTest {
 
   @Test
   fun testMinGroupsClampingSize() {
-    val playersBorder = Range(1, 10)
+    val playersBorder = 1..10
     assertEquals(
       expected = setOf(10),
       actual = clampElementsListToBorder(queueElementList, playersBorder)
@@ -33,7 +32,7 @@ internal class ClampingInRoundPlayersSearcherTest {
 
   @Test
   fun testMaxGroupsClamping() {
-    val playersBorder = Range(1, 55)
+    val playersBorder = 1..55
     assertEquals(
       expected = 10,
       actual = clampElementsListToBorder(queueElementList, playersBorder).size,
@@ -43,7 +42,7 @@ internal class ClampingInRoundPlayersSearcherTest {
 
   @Test
   fun testMiddleGroupsClamping() {
-    val playersBorder = Range(1, 20)
+    val playersBorder = 1..20
     assertEquals(
       expected = 3,
       actual = clampElementsListToBorder(queueElementList, playersBorder).size,
@@ -53,7 +52,7 @@ internal class ClampingInRoundPlayersSearcherTest {
 
   @Test
   fun testMiddleGroupsClampingSize() {
-    val playersBorder = Range(1, 20)
+    val playersBorder = 1..20
     assertEquals(
       expected = listOf(1, 9, 10),
       actual = clampElementsListToBorder(queueElementList, playersBorder).stream()
