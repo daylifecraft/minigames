@@ -16,7 +16,7 @@ jobs:
           java-version: "21"
           check-latest: true
       - name: Setup gradle
-        uses: gradle/actions/setup-gradle@v3.3.0
+        uses: gradle/actions/setup-gradle@v3.3.1
         with:
           cache-read-only: false
       - name: Setup build cache
@@ -88,7 +88,7 @@ jobs:
           java-version: "21"
           check-latest: true
       - name: Setup gradle
-        uses: gradle/actions/setup-gradle@v3.3.0
+        uses: gradle/actions/setup-gradle@v3.3.1
         with:
           cache-read-only: false
       - name: Setup build cache
@@ -134,7 +134,7 @@ jobs:
           java-version: "21"
           check-latest: true
       - name: Setup gradle
-        uses: gradle/actions/setup-gradle@v3.3.0
+        uses: gradle/actions/setup-gradle@v3.3.1
         with:
           cache-read-only: false
       - name: Setup build cache
@@ -170,7 +170,7 @@ jobs:
           java-version: "21"
           check-latest: true
       - name: Setup gradle
-        uses: gradle/actions/setup-gradle@v3.3.0
+        uses: gradle/actions/setup-gradle@v3.3.1
         with:
           cache-read-only: false
       - name: Setup build cache
@@ -232,7 +232,7 @@ jobs:
           java-version: "21"
           check-latest: true
       - name: Setup gradle
-        uses: gradle/actions/setup-gradle@v3.3.0
+        uses: gradle/actions/setup-gradle@v3.3.1
         with:
           cache-read-only: false
       - name: Setup build cache
@@ -281,7 +281,7 @@ jobs:
           java-version: "21"
           check-latest: true
       - name: Setup gradle
-        uses: gradle/actions/setup-gradle@v3.3.0
+        uses: gradle/actions/setup-gradle@v3.3.1
         with:
           cache-read-only: false
       - name: Setup build cache
