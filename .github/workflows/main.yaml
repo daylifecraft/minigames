@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download server jar artifact
-        uses: actions/download-artifact@v4.1.4
+        uses: actions/download-artifact@v4.1.5
         with:
           name: jar-${{ env.GITHUB_SHA }}
       - name: Set up Docker Buildx
@@ -244,11 +244,11 @@ jobs:
             classes-${{ env.GITHUB_REF_NAME }}-
             classes-main-${{ github.event.pull_request.base.sha }}
       - name: Download unit tests artifact
-        uses: actions/download-artifact@v4.1.4
+        uses: actions/download-artifact@v4.1.5
         with:
           name: tests-unit-${{ env.GITHUB_SHA }}
       - name: Download integration tests artifact
-        uses: actions/download-artifact@v4.1.4
+        uses: actions/download-artifact@v4.1.5
         with:
           name: tests-integration-${{ env.GITHUB_SHA }}
       - name: Run jacoco
@@ -293,19 +293,19 @@ jobs:
             classes-${{ env.GITHUB_REF_NAME }}-
             classes-main-${{ github.event.pull_request.base.sha }}
       - name: Download unit tests artifact
-        uses: actions/download-artifact@v4.1.4
+        uses: actions/download-artifact@v4.1.5
         with:
           name: tests-unit-${{ env.GITHUB_SHA }}
       - name: Download integration tests artifact
-        uses: actions/download-artifact@v4.1.4
+        uses: actions/download-artifact@v4.1.5
         with:
           name: tests-integration-${{ env.GITHUB_SHA }}
       - name: Download jacoco coverage report artifact
-        uses: actions/download-artifact@v4.1.4
+        uses: actions/download-artifact@v4.1.5
         with:
           name: jacoco-coverage-${{ env.GITHUB_SHA }}
       - name: Download detekt report artifact
-        uses: actions/download-artifact@v4.1.4
+        uses: actions/download-artifact@v4.1.5
         with:
           name: detekt-${{ env.GITHUB_SHA }}
       - name: Run sonar scan
