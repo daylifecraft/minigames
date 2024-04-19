@@ -30,7 +30,7 @@ jobs:
       - name: Compile project
         run: ./gradlew --no-daemon --warning-mode=all --info --configuration-cache --build-cache classes testClasses integrationTestsClasses assemble
       - name: Upload server jar as an artifact
-        uses: actions/upload-artifact@v4.3.1
+        uses: actions/upload-artifact@v4.3.2
         with:
           name: jar-${{ env.GITHUB_SHA }}
           path: |
@@ -102,7 +102,7 @@ jobs:
       - name: Run unit tests
         run: ./gradlew --no-daemon --warning-mode=all --info --configuration-cache --build-cache testClasses test
       - name: Upload unit tests result as an artifact
-        uses: actions/upload-artifact@v4.3.1
+        uses: actions/upload-artifact@v4.3.2
         with:
           name: tests-unit-${{ env.GITHUB_SHA }}
           path: |
@@ -148,7 +148,7 @@ jobs:
       - name: Run integration tests
         run: ./gradlew --no-daemon --warning-mode=all --info --configuration-cache --build-cache integrationTestsClasses integration-tests
       - name: Upload integration tests result as an artifact
-        uses: actions/upload-artifact@v4.3.1
+        uses: actions/upload-artifact@v4.3.2
         with:
           name: tests-integration-${{ env.GITHUB_SHA }}
           path: |
@@ -184,7 +184,7 @@ jobs:
       - name: Run detekt
         run: ./gradlew --no-daemon --warning-mode=all --info --configuration-cache --build-cache detekt
       - name: Upload detekt report as an artifact
-        uses: actions/upload-artifact@v4.3.1
+        uses: actions/upload-artifact@v4.3.2
         with:
           name: detekt-${{ env.GITHUB_SHA }}
           path: "**/build/reports/detekt/detekt.xml"
@@ -254,7 +254,7 @@ jobs:
       - name: Run jacoco
         run: ./gradlew --no-daemon --warning-mode=all --info --configuration-cache --build-cache jacocoTestReport
       - name: Upload jacoco coverage report as an artifact
-        uses: actions/upload-artifact@v4.3.1
+        uses: actions/upload-artifact@v4.3.2
         with:
           name: jacoco-coverage-${{ env.GITHUB_SHA }}
           path: "**/build/reports/jacoco/test/jacocoTestReport.xml"
