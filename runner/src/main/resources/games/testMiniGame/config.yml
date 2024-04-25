@@ -2,13 +2,12 @@ name: testMiniGame
 displayNameKey: games.testMiniGame.displayName
 descriptionKey: games.testMiniGame.description
 guiBlock: RED_SAND
-public: true
-permission: null
+public: false
+permission: isAdmin
 minPlayers: 1
 maxPlayers: 8
 minGroupSize: 1
 maxGroupSize: 8
-
 
 gameConfig:
   worlds:

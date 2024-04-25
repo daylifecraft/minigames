@@ -1,0 +1,772 @@
+name: towerdefence
+displayNameKey: games.towerdefence.displayName
+descriptionKey: games.towerdefence.description
+guiBlock: SKELETON_SKULL
+public: true
+permission: null
+minPlayers: 1
+maxPlayers: 4
+minGroupSize: 1
+maxGroupSize: 1
+
+gameConfig:
+  # Tower configuration
+  tower_config:
+    # Directory path that contains world with towers
+    # This path should be relative to `<RESOURCE DIR>/games/towerdefence/worlds`
+    world: towers
+    # Tower size in blocks
+    # Size is a cube
+    # Height will be automaticaly detected for all towers
+    towersize: 3
+    # Number that represents % of current tower/upgrade price that will be refunded after tower sell
+    # Previous upgrades won't be refunded
+    buyback: 50
+    # Towers
+    towers:
+      # Internal ID
+      # Can be non-unique value
+      - tower: archer
+        # Item name as in Minestom
+        # This will be sent to client as item type to show correct block/item for GUI
+        item: BOW
+        # Upgrade path
+        # next_level - allows upgrade to next level
+        # replace - replaces this tower with a specific one, lowest possible level will be used for new tower
+        upgrade_path:
+          - type: next_level
+        # Tower cost
+        # This won't affect debug commands
+        cost: 10
+        # Tower level
+        # Unique value(per tower ID)
+        level: 0
+        # Tower coordinates
+        # Should be centered
+        # Y is a lowest point
+        x: 14
+        y: 2
+        z: 3
+
+      - tower: archer
+        item: BOW
+        upgrade_path:
+          - type: next_level
+        cost: 90
+        level: 1
+        x: 14
+        y: 2
+        z: -2
+
+      - tower: archer
+        item: BOW
+        upgrade_path:
+          - type: replace
+            tower:
+              name: minigun
+          - type: replace
+            tower:
+              name: sniper
+        cost: 1340
+        level: 2
+        x: 14
+        y: 2
+        z: -7
+
+      - tower: minigun
+        item: CROSSBOW
+        cost: 21340
+        level: 3
+        x: 14
+        y: 2
+        z: -12
+
+      - tower: sniper
+        item: ARROW
+        cost: 21340
+        level: 3
+        x: 14
+        y: 2
+        z: -17
+
+      - tower: artillery
+        item: GUNPOWDER
+        upgrade_path:
+          - type: next_level
+        cost: 50
+        level: 0
+        x: 19
+        y: 2
+        z: 3
+
+      - tower: artillery
+        item: GUNPOWDER
+        upgrade_path:
+          - type: next_level
+        cost: 650
+        level: 1
+        x: 19
+        y: 2
+        z: -2
+
+      - tower: artillery
+        item: GUNPOWDER
+        upgrade_path:
+          - type: replace
+            tower:
+              name: sticky
+          - type: replace
+            tower:
+              name: slime
+        cost: 8650
+        level: 2
+        x: 19
+        y: 2
+        z: -7
+
+      - tower: sticky
+        item: STICKY_PISTON
+        cost: 38650
+        level: 3
+        x: 19
+        y: 2
+        z: -12
+
+      - tower: slime
+        item: SLIME_BALL
+        cost: 38650
+        level: 3
+        x: 19
+        y: 2
+        z: -17
+
+      - tower: witch
+        item: SPLASH_POTION
+        upgrade_path:
+          - type: next_level
+        cost: 250
+        level: 0
+        x: 24
+        y: 2
+        z: 3
+
+      - tower: witch
+        item: SPLASH_POTION
+        cost: 5250
+        level: 1
+        x: 24
+        y: 2
+        z: -2
+
+      - tower: magic
+        item: FIRE_CHARGE
+        upgrade_path:
+          - type: next_level
+        cost: 625
+        level: 0
+        x: 29
+        y: 2
+        z: 3
+
+      - tower: magic
+        item: FIRE_CHARGE
+        upgrade_path:
+          - type: next_level
+        cost: 5425
+        level: 1
+        x: 29
+        y: 2
+        z: -2
+
+      - tower: magic
+        item: FIRE_CHARGE
+        upgrade_path:
+          - type: replace
+            tower:
+              name: inferno
+          - type: replace
+            tower:
+              name: volcano
+        cost: 20125
+        level: 2
+        x: 29
+        y: 2
+        z: -7
+
+      - tower: inferno
+        item: CAMPFIRE
+        cost: 43625
+        level: 3
+        x: 29
+        y: 2
+        z: -12
+
+      - tower: volcano
+        item: LAVA_BUCKET
+        cost: 43625
+        level: 3
+        x: 29
+        y: 2
+        z: -17
+
+      - tower: portal
+        item: END_CRYSTAL
+        upgrade_path:
+          - type: next_level
+        cost: 2500
+        level: 0
+        x: 34
+        y: 2
+        z: 3
+
+      - tower: portal
+        item: END_CRYSTAL
+        cost: 27500
+        level: 1
+        x: 34
+        y: 2
+        z: -2
+
+      - tower: lightning
+        item: LIGHT_BLUE_DYE
+        upgrade_path:
+          - type: next_level
+        cost: 625
+        level: 0
+        x: 39
+        y: 2
+        z: 3
+
+      - tower: lightning
+        item: LIGHT_BLUE_DYE
+        upgrade_path:
+          - type: next_level
+        cost: 5425
+        level: 1
+        x: 39
+        y: 2
+        z: -2
+
+      - tower: lightning
+        item: LIGHT_BLUE_DYE
+        upgrade_path:
+          - type: replace
+            tower:
+              name: biglightning
+          - type: replace
+            tower:
+              name: eyeoflightning
+        cost: 20125
+        level: 2
+        x: 39
+        y: 2
+        z: -7
+
+      - tower: biglightning
+        item: BLUE_DYE
+        cost: 43625
+        level: 3
+        x: 39
+        y: 2
+        z: -12
+
+      - tower: eyeoflightning
+        item: BEACON
+        cost: 43625
+        level: 3
+        x: 39
+        y: 2
+        z: -17
+
+  # Map configuration
+  map_config:
+    # Map ID(name)
+    - name: 1v1
+      # Teams on the map
+      # Should be at least 2
+      teams: 1
+      # Total number of players on the map
+      players: 1
+      # Maximum possible players per team
+      # 2 player + 2 teams + 1 ppr = 1v1 ; 6 player + 2 teams + 3 ppr = 3v3 ; 12 player + 3 teams + 4 ppr = 4v4v4
+      players_per_team: 1
+      # Team configuration
+      team_config:
+        # Team red
+        - players:
+            # Spawn coordinates for each player in this team
+            - x: -113
+              y: 1
+              z: 99
+              yaw: -179
+              pitch: 0
+              # Base zone
+              # Two(required but could be the same) points that represents a cuboid
+              towerzone:
+                - x: -110
+                  z: 99
+                - x: -115
+                  z: 99
+          # Block name from Minestom
+          # Used to limit the construction of towers only on this block
+          # Required, can't be null/empty/incorrect block
+          block: RED_WOOL
+
+          # Mob spawn zone for the team
+          # Used to spawn enemy monsters randomly in this area
+          # Y==OPTIONAL(can be null), if null then max height is automatically calculated based on highest block
+          mobspawnzone:
+            - x: -114
+              y: 1
+              z: 14
+
+            - x: -111
+              y: 1
+              z: 14
+
+          # Team blue
+        - players:
+            - x: -46
+              y: 1
+              z: 99
+              yaw: -179
+              pitch: 0
+              towerzone:
+                - x: -44
+                  z: 99
+                - x: -49
+                  z: 99
+          block: BLUE_WOOL
+
+          mobspawnzone:
+            - x: -48
+              y: 1
+              z: 14
+
+            - x: -45
+              y: 1
+              z: 14
+
+    - name: 2v2
+      teams: 2
+      players: 4
+      players_per_team: 2
+      team_config:
+        # Team Blue
+        - players:
+            # Player 1
+            - x: 24
+              y: -2
+              z: 11
+              yaw: 179
+              pitch: 0
+              towerzone:
+                - x: 27
+                  z: -11
+                - x: 21
+                  z: -11
+              # Player 2
+            - x: 24
+              y: -2
+              z: -87
+              yaw: 0
+              pitch: 0
+              towerzone:
+                - x: 21
+                  z: -87
+                - x: 28
+                  z: -87
+
+          block: BLUE_WOOL
+
+          mobspawnzone:
+            - x: 54
+              y: -2
+              z: -50
+            - x: 54
+              y: -2
+              z: -47
+
+          # Team Red
+        - players:
+            # Player 1
+            - x: 92
+              y: -2
+              z: -87
+              yaw: 0
+              pitch: 0
+              towerzone:
+                - x: 89
+                  z: -87
+                - x: 95
+                  z: -87
+              # Player 2
+            - x: 92
+              y: -2
+              z: -11
+              yaw: 179
+              pitch: 0
+              towerzone:
+                - x: 95
+                  z: -11
+                - x: 89
+                  z: -11
+
+          block: BLUE_WOOL
+
+          mobspawnzone:
+            - x: 62
+              y: -2
+              z: -47
+            - x: 62
+              y: -2
+              z: -50
+
+    - name: 1v3
+      teams: 4
+      players: 4
+      players_per_team: 1
+      team_config:
+        # Team Blue
+        - players:
+            # Player 1
+            - x: 91
+              y: 2
+              z: 141
+              yaw: 179
+              pitch: 0
+              towerzone:
+                - x: 92
+                  z: 141
+                - x: 89
+                  z: 141
+
+          block: BLUE_WOOL
+
+          mobspawnzone:
+            - x: 62
+              y: 2
+              z: 100
+            - x: 67
+              y: 2
+              z: 100
+
+          # Team Yellow
+        - players:
+            # Player 1
+            - x: 38
+              y: 2
+              z: 141
+              yaw: 179
+              pitch: 0
+              towerzone:
+                - x: 40
+                  z: 141
+                - x: 37
+                  z: 141
+
+          block: YELLOW_WOOL
+
+          mobspawnzone:
+            - x: 62
+              y: 2
+              z: 100
+            - x: 67
+              y: 2
+              z: 100
+
+          # Team Green
+        - players:
+            # Player 1
+            - x: 91
+              y: 2
+              z: 57
+              yaw: 0
+              pitch: 0
+              towerzone:
+                - x: 89
+                  z: 57
+                - x: 92
+                  z: 57
+
+          block: GREEN_WOOL
+
+          mobspawnzone:
+            - x: 67
+              y: 2
+              z: 98
+            - x: 62
+              y: 2
+              z: 98
+
+          # Team Red
+        - players:
+            # Player 1
+            - x: 38
+              y: 2
+              z: 57
+              yaw: 0
+              pitch: 0
+              towerzone:
+                - x: 37
+                  z: 57
+                - x: 40
+                  z: 57
+
+          block: RED_WOOL
+
+          mobspawnzone:
+            - x: 67
+              y: 2
+              z: 98
+            - x: 62
+              y: 2
+              z: 98
+
+  # Monster configuration
+  monster_config:
+    # Internal monster ID
+    # Used for i18n key retrieval
+    - name: silverfish
+      # Monster model type
+      # EntityType in Minestom
+      model: SILVERFISH
+      # Items that will be equipped by this monster
+      # Key: Value
+      # Key == Enum ; Value == Material
+      # Can be null/empty or miss some item slots
+      items: {}
+      # Additional NBT tags for this monster
+      # Can be null or empty
+      nbt: {}
+      # Passenger entity type that will be spawned on this monster
+      # Can be used to create the Spider Jockey or similar monsters
+      # Passenger is not functional
+      # Can be null
+      passenger: null
+      # Monster HP
+      hp: 5
+      # Monster speed, 1 == base(default), 0.5 == 50% of base, 1.5 = 150% of base
+      speed: 2
+      # Monster damage to player base
+      damage: 1
+      # Monster cost
+      cost: 5
+      # Income per second for this monster
+      # Will be granted to player that spawned this monster
+      # Income increase is permanent
+      # Stacks with the same monsters and any other income
+      income: 1
+
+    - name: chicken
+      model: CHICKEN
+      hp: 40
+      speed: 3
+      damage: 1
+      cost: 10
+      income: 2
+
+    - name: sheep
+      model: SHEEP
+      hp: 88
+      speed: 2.5
+      damage: 1
+      cost: 44
+      income: 4
+
+    - name: cave_spider
+      model: CAVE_SPIDER
+      hp: 200
+      speed: 3.5
+      damage: 1
+      cost: 50
+      income: 8
+
+    - name: zombie
+      model: ZOMBIE
+      hp: 300
+      speed: 3
+      damage: 1
+      cost: 75
+      income: 12
+
+    - name: wolf
+      model: WOLF
+      hp: 400
+      speed: 4
+      damage: 1
+      cost: 100
+      income: 14
+
+    - name: spider
+      model: SPIDER
+      hp: 600
+      speed: 4
+      damage: 1
+      cost: 200
+      income: 22
+
+    - name: zombie_leather
+      model: ZOMBIE
+      items:
+        BOOTS: LEATHER_BOOTS
+        CHESTPLATE: LEATHER_CHESTPLATE
+        HELMET: LEATHER_HELMET
+        LEGGINGS: LEATHER_LEGGINGS
+      hp: 1400
+      speed: 3
+      damage: 1
+      cost: 350
+      income: 37
+
+    - name: rabbit
+      model: RABBIT
+      hp: 2500
+      speed: 4
+      damage: 1
+      cost: 500
+      income: 50
+
+    - name: villager
+      model: VILLAGER
+      hp: 4000
+      speed: 3
+      damage: 1
+      cost: 1000
+      income: 100
+
+    - name: zombified_piglin
+      model: ZOMBIFIED_PIGLIN
+      hp: 8000
+      speed: 3
+      damage: 1
+      cost: 2000
+      income: 200
+
+    - name: ocelot
+      model: OCELOT
+      hp: 10000
+      speed: 6
+      damage: 1
+      cost: 5000
+      income: 450
+
+    - name: creeper
+      model: CREEPER
+      hp: 40000
+      speed: 4
+      damage: 1
+      cost: 10000
+      income: 900
+
+    - name: endermite
+      model: ENDERMITE
+      hp: 2000
+      speed: 3
+      damage: 1
+      cost: 500
+      income: 50
+
+    - name: pig
+      model: PIG
+      hp: 2000
+      speed: 4
+      damage: 1
+      cost: 1000
+      income: 150
+
+    - name: guardian
+      model: GUARDIAN
+      hp: 10000
+      speed: 5
+      damage: 1
+      cost: 5000
+      income: 450
+
+    - name: zombie_golden
+      model: ZOMBIE
+      items:
+        BOOTS: GOLDEN_BOOTS
+        CHESTPLATE: GOLDEN_CHESTPLATE
+        HELMET: GOLDEN_HELMET
+        LEGGINGS: GOLDEN_LEGGINGS
+      hp: 40000
+      speed: 4
+      damage: 1
+      cost: 10000
+      income: 900
+
+    - name: cow
+      model: COW
+      hp: 60000
+      speed: 5
+      damage: 1
+      cost: 15000
+      income: 1300
+
+    - name: spider_jockey
+      model: SPIDER
+      passenger: SKELETON
+      hp: 60000
+      speed: 5
+      damage: 1
+      cost: 20000
+      income: 1500
+
+    - name: zombie_diamond
+      model: ZOMBIE
+      items:
+        BOOTS: DIAMOND_BOOTS
+        CHESTPLATE: DIAMOND_CHESTPLATE
+        HELMET: DIAMOND_HELMET
+        LEGGINGS: DIAMOND_LEGGINGS
+      hp: 120000
+      speed: 4
+      damage: 1
+      cost: 30000
+      income: 1900
+
+    - name: horse
+      model: HORSE
+      hp: 150000
+      speed: 6
+      damage: 1
+      cost: 40000
+      income: 2200
+
+    - name: villager_cleric
+      model: VILLAGER
+      nbt:
+        VillagerData:
+          Profession: cleric
+      hp: 200000
+      speed: 5
+      damage: 1
+      cost: 60000
+      income: 2800
+
+    - name: wither_skeleton
+      model: WITHER_SKELETON
+      hp: 250000
+      speed: 5
+      damage: 1
+      cost: 80000
+      income: 3200
+
+    - name: iron_golem
+      model: IRON_GOLEM
+      hp: 300000
+      speed: 8
+      damage: 1
+      cost: 100000
+      income: 3500
+
+    - name: charged_creeper
+      model: CREEPER
+      nbt:
+        powered: 1
+      hp: 350000
+      speed: 8
+      damage: 1
+      cost: 130000
+      income: 3800

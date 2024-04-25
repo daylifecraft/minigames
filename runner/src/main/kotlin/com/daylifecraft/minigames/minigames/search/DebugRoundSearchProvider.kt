@@ -249,6 +249,13 @@ class DebugRoundSearchProvider(
       roundPlayerSettings[key.uuid] = value.settings
     }
 
+    // Spread the remaining players to single teams
+    roundPlayerSettings.keys.forEach { uuid: UUID ->
+      if (playersSpreadByTeams.none { it.contains(uuid) }) {
+        playersSpreadByTeams.add(setOf(uuid))
+      }
+    }
+
     MiniGameStartController.startNewRoundWithoutConfirmation(
       miniGameSettings,
       roundPlayerSettings,

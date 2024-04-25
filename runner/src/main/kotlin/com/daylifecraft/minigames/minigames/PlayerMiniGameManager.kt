@@ -16,6 +16,7 @@ import net.minestom.server.entity.Player
 import net.minestom.server.event.EventDispatcher
 import org.bson.types.ObjectId
 import java.util.UUID
+import java.util.function.Predicate
 
 /** Manager to search rounds & manage player MiniGame block  */
 object PlayerMiniGameManager {
@@ -317,4 +318,15 @@ object PlayerMiniGameManager {
 
     _activeMiniGameInstances.removeAll(toRemove)
   }
+
+  /**
+   * Find MiniGame Round instance by condition
+   *
+   * @param condition Condition (filter) for round search
+   * @return Founded instance or null
+   */
+  fun getMiniGameRoundByCondition(condition: Predicate<AbstractMiniGameInstance?>): AbstractMiniGameInstance? = activeMiniGameInstances.stream()
+    .filter(condition)
+    .findAny()
+    .orElse(null)
 }

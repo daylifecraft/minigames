@@ -26,7 +26,7 @@ class DebugLagCommandTest {
           any(),
           TaskSchedule.tick(1),
           TaskSchedule.tick(1),
-          ExecutionType.TICK_START,
+          ExecutionType.SYNC,
         )
       }
     }

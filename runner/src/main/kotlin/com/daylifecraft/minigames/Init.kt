@@ -18,6 +18,7 @@ import com.daylifecraft.minigames.metrics.RunnerMetrics
 import com.daylifecraft.minigames.minigames.MiniGamesInstancesCleaner
 import com.daylifecraft.minigames.minigames.RoundPlayersSearcher
 import com.daylifecraft.minigames.minigames.controllers.MiniGameControllersManager
+import com.daylifecraft.minigames.minigames.instances.games.towerdefence.TowerDefenseManager
 import com.daylifecraft.minigames.minigames.settings.MiniGamesSettingManager
 import com.daylifecraft.minigames.seasons.SeasonsManager
 import com.daylifecraft.minigames.text.i18n.Lang
@@ -57,6 +58,10 @@ object Init {
     private set
 
   lateinit var miniGameControllersManager: MiniGameControllersManager
+    private set
+
+  @JvmStatic
+  var towerDefenseManager: TowerDefenseManager? = null
     private set
 
   var isInsideTests: Boolean = false
@@ -194,6 +199,9 @@ object Init {
       }
     }
 
+    // Setup tower defense manager P.S. It seems to be removed from this module
+    setupTowerDefenseManager()
+
     // Get global event handler manager
     val globalEventHandler = MinecraftServer.getGlobalEventHandler()
 
@@ -276,6 +284,11 @@ object Init {
 
   private fun setupMiniGamesControllersManager() {
     miniGameControllersManager = MiniGameControllersManager(miniGamesSettingsManager)
+  }
+
+  private fun setupTowerDefenseManager() {
+    towerDefenseManager = TowerDefenseManager(miniGamesSettingsManager, MinecraftServer.getInstanceManager())
+    towerDefenseManager?.load()
   }
 
   private fun enableVelocityProxy(): Boolean {

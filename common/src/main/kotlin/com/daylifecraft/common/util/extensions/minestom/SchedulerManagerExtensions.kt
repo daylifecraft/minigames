@@ -15,6 +15,6 @@ import net.minestom.server.timer.TaskSchedule
 fun SchedulerManager.scheduleTask(
   delay: TaskSchedule,
   repeat: TaskSchedule,
-  executionType: ExecutionType = ExecutionType.TICK_START,
+  executionType: ExecutionType = ExecutionType.SYNC,
   task: () -> Unit,
 ) = this.scheduleTask(task, delay, repeat, executionType)
