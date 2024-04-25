@@ -17,7 +17,6 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.minestom.server.coordinate.Point
 import net.minestom.server.coordinate.Pos
-import net.minestom.server.entity.Entity
 import net.minestom.server.entity.EntityCreature
 import net.minestom.server.entity.EntityType
 import net.minestom.server.entity.GameMode
@@ -401,17 +400,18 @@ class TowerDefenceInstance private constructor(
    * TODO Remove this method when core pathfinder will be fixed
    */
   fun clearStuckedMonsters() {
-    getAllMonsterDataQueue()
-      .filter { it.linkedEntityCreature != null && it.linkedEntityCreature?.target is Player }
-      .forEach{ spawnedMonsterData ->
-        val entityCreature = spawnedMonsterData.linkedEntityCreature!!
-        if (!entityCreature.navigator.isComplete &&
-          entityCreature.position.distance(entityCreature.navigator.pathPosition)
-                  <= MINIMAL_PATH_COMPLETE_DISTANCE + ERROR_PATH_DISTANCE
-        ) {
-        onMonsterReachedDestinationPoint(spawnedMonsterData, entityCreature.target as Player, entityCreature)
+    for (monsterData in getAllMonsterDataQueue()) {
+      monsterData.linkedEntityCreatures
+        .filter { it.target is Player }
+        .forEach { entityCreature ->
+          if (!entityCreature.navigator.isComplete &&
+            entityCreature.position.distance(entityCreature.navigator.pathPosition)
+            <= MINIMAL_PATH_COMPLETE_DISTANCE + ERROR_PATH_DISTANCE
+          ) {
+            onMonsterReachedDestinationPoint(monsterData, entityCreature.target as Player, entityCreature)
+          }
         }
-      }
+    }
   }
 
   private fun onMonsterReachedDestinationPoint(
@@ -421,9 +421,8 @@ class TowerDefenceInstance private constructor(
   ) {
     // Damage player & remove entity
     val result = playersHealthMap[targetPlayer]?.doDamage(monsterData.damageAmount)
-    entityCreature.passengers.forEach { it.remove() }
-    entityCreature.kill()
-    monsterData.linkedEntityCreature = null
+
+    monsterData.killLinkedEntity(entityCreature)
 
     onPlayerHealthUpdate(targetPlayer, result)
   }
@@ -432,20 +431,13 @@ class TowerDefenceInstance private constructor(
     if (event.entity.entityType != EntityType.PLAYER) {
       return
     }
-    val entityUuid = event.target.uuid
-
-    for (monsterEntry in monstersQueue.entries) {
-      val monsterData = monsterEntry.value.find { it.linkedEntityCreature?.uuid == entityUuid }
-
-      if (monsterData != null) {
-        if(monsterData.linkedEntityCreature?.hasPassenger() == true) {
-          monsterData.linkedEntityCreature?.passengers?.forEach(Entity::remove)
-        }
-        monsterData.linkedEntityCreature?.kill()
-        monsterData.linkedEntityCreature = null
-        break
-      }
+    if (event.target !is EntityCreature) {
+      return
     }
+    val entityCreature = event.target as EntityCreature
+    val linkedMonsterData = getMonsterDataByLinkedEntity(entityCreature) ?: return
+
+    linkedMonsterData.killLinkedEntity(entityCreature)
   }
 
   fun doIncomeDistribution(currentTicksCount: Long) {
@@ -454,8 +446,9 @@ class TowerDefenceInstance private constructor(
       return
     }
 
+    // TODO Разобраться
     getAllMonsterDataQueue()
-      .filter { it.linkedEntityCreature != null }
+      .filter { it.hasLinkToAnyEntity() }
       .forEach {
         if (it.ownerPlayer != null) {
           towerDefenceEconomy.addBalance(it.ownerPlayer!!, it.incomeAmount)
@@ -465,38 +458,29 @@ class TowerDefenceInstance private constructor(
 
   fun doTowersAttack(currentTicksCount: Long) {
     for (towerData in towersData.toMutableList()) {
-      if(towerData.attackSpeedTicks == null) continue
-      if(towerData.attackDamage == null) continue
-      if(towerData.attackSpeedTicks != 0 && currentTicksCount % towerData.attackSpeedTicks.toLong() != 0L) continue
+      if (towerData.attackSpeedTicks == null) continue
+      if (towerData.attackDamage == null) continue
+      if (towerData.attackSpeedTicks != 0 && currentTicksCount % towerData.attackSpeedTicks.toLong() != 0L) continue
 
-      val nearbyMonsterData = miniGameWorldInstance.instance
+      val nearbyMonsters = miniGameWorldInstance.instance
         .getNearbyEntities(towerData.position, towerData.attackRange.toDouble())
         .filterIsInstance<EntityCreature>()
-        .mapNotNull { getMonsterDataByLinkedEntity(it) }
 
-      if(towerData.towerTargetEntity != null && nearbyMonsterData.contains(towerData.towerTargetEntity)) {
-        towerData.towerTargetEntity!!
-          .linkedEntityCreature!!.damage(DamageType.PLAYER_ATTACK, towerData.attackDamage.toFloat())
-      }else {
-        val randomMonsterData = nearbyMonsterData.randomOrNull() ?: continue
-
-        towerData.towerTargetEntity = randomMonsterData
-
-        randomMonsterData.linkedEntityCreature!!.damage(DamageType.PLAYER_ATTACK, towerData.attackDamage.toFloat())
-
+      if (towerData.towerTargetEntity == null || !nearbyMonsters.contains(towerData.towerTargetEntity!!.second)) {
+        val randomEntityCreature = nearbyMonsters.randomOrNull() ?: continue
+        towerData.towerTargetEntity = Pair(
+          getMonsterDataByLinkedEntity(randomEntityCreature) ?: continue,
+          randomEntityCreature,
+        )
       }
+
+      towerData.towerTargetEntity!!.second.damage(DamageType.PLAYER_ATTACK, towerData.attackDamage.toFloat())
     }
   }
 
-  private fun getMonsterDataByLinkedEntity(entityCreature: EntityCreature): MonsterData? {
-    return getAllMonsterDataQueue()
-      .find { it.linkedEntityCreature == entityCreature ||
-        it.linkedEntityCreature?.passengers?.any { passenger -> passenger.uuid == entityCreature.uuid } != null }
-  }
+  private fun getMonsterDataByLinkedEntity(entityCreature: EntityCreature): MonsterData? = getAllMonsterDataQueue().find { it.hasLinkToEntity(entityCreature) }
 
-  private fun getAllMonsterDataQueue(): List<MonsterData> {
-    return monstersQueue.values.reduce { list1, list2 -> list1.plus(list2).toMutableList() }
-  }
+  private fun getAllMonsterDataQueue(): List<MonsterData> = monstersQueue.values.flatten()
 
   fun getTeamInfo(playerUuid: UUID): TowerDefenceTeamInfo? = playersDistribution[playerUuid]
 

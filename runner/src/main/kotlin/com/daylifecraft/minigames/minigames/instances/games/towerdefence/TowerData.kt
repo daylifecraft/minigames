@@ -76,7 +76,7 @@ class TowerData private constructor(
 
   var ownerData: Pair<UUID, TowerDefenceTeamInfo>? = null,
 ) {
-  var towerTargetEntity: MonsterData? = null
+  var towerTargetEntity: Pair<MonsterData, EntityCreature>? = null
 
   /**
    * Returns all positions of current tower

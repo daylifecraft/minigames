@@ -3,10 +3,10 @@ package com.daylifecraft.minigames.minigames.instances.games.towerdefence.monste
 import net.minestom.server.attribute.Attribute
 import net.minestom.server.attribute.AttributeModifier
 import net.minestom.server.attribute.AttributeOperation
+import net.minestom.server.entity.Entity
 import net.minestom.server.entity.EntityCreature
 import net.minestom.server.entity.EntityType
 import net.minestom.server.entity.EquipmentSlot
-import net.minestom.server.entity.LivingEntity
 import net.minestom.server.entity.Player
 import net.minestom.server.entity.metadata.villager.VillagerMeta
 import net.minestom.server.instance.Instance
@@ -29,9 +29,9 @@ class MonsterData private constructor(
   val incomeAmount: Int,
   var ownerPlayer: Player? = null,
 ) {
-  var linkedEntityCreature: EntityCreature? = null
+  var linkedEntityCreatures: MutableList<EntityCreature> = mutableListOf()
 
-  override fun toString(): String = "MonsterData(name='$monsterId', entityType=$entityType, items=$items, nbtTags=$nbtTags, passengerType=$passengerType, healthAmount=$healthAmount, speed=$speed, damageAmount=$damageAmount, cost=$cost, incomeAmount=$incomeAmount)"
+  override fun toString(): String = "MonsterData(name='$monsterId', entityType=$entityType, items=$items, nbtTags=$nbtTags, passengerType=$passengerType, healthAmount=$healthAmount, speed=$speed, damageAmount=$damageAmount, cost=$cost, incomeAmount=$incomeAmount, ownerPlayer=${ownerPlayer?.username}, linkedEntityCreature=$linkedEntityCreatures)"
 
   fun getLivingEntity(spawningInstance: Instance): EntityCreature {
     val entityCreature = EntityCreature(entityType)
@@ -90,9 +90,26 @@ class MonsterData private constructor(
         ),
       )
 
-    linkedEntityCreature = entityCreature
+    linkedEntityCreatures.add(entityCreature)
 
     return entityCreature
+  }
+
+  fun hasLinkToEntity(entityCreature: EntityCreature): Boolean = linkedEntityCreatures.any {
+    it.uuid == entityCreature.uuid ||
+      (
+        it.hasPassenger() &&
+          it.passengers.any { passenger -> passenger.uuid == entityCreature.uuid }
+        )
+  }
+
+  fun hasLinkToAnyEntity(): Boolean = linkedEntityCreatures.isNotEmpty()
+
+  fun killLinkedEntity(entityCreature: EntityCreature) {
+    entityCreature.passengers.forEach(Entity::remove)
+    entityCreature.kill()
+
+    linkedEntityCreatures.remove(entityCreature)
   }
 
   fun deepCopyWithOwner(player: Player): MonsterData = MonsterData(
