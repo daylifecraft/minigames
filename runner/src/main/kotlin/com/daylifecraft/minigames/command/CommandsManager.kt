@@ -7,6 +7,7 @@ import com.daylifecraft.minigames.command.confirm.ConfirmCommand
 import com.daylifecraft.minigames.command.confirm.ConfirmRequest
 import com.daylifecraft.minigames.command.confirm.ConfirmableCommand
 import com.daylifecraft.minigames.command.debug.DebugCommand
+import com.daylifecraft.minigames.command.debug.towerdefence.DebugTowerDefenceCommand
 import com.daylifecraft.minigames.command.friends.FriendsCommand
 import com.daylifecraft.minigames.command.group.GroupCommand
 import com.daylifecraft.minigames.command.group.GroupMessageCommand
@@ -41,6 +42,7 @@ object CommandsManager {
       PrivateMessageCommand::class.java,
       DebugCommand::class.java,
       RoundsCommand::class.java,
+      DebugTowerDefenceCommand::class.java,
     )
 
   private val confirmRequests = HashMap<UUID, ConfirmRequest>()

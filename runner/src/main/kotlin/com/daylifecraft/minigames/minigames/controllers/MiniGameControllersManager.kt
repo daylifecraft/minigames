@@ -35,20 +35,28 @@ class MiniGameControllersManager(
       CONTROLLERS_PACKAGE,
       AbstractMiniGameController::class.java,
     )) {
-      try {
-        val constructor =
-          clazz.getConstructor(
-            MiniGamesSettingManager::class.java,
-          )
-        val newInstance = constructor.newInstance(miniGamesSettingManager)
+      registerMiniGameController(clazz)
+    }
+  }
 
-        miniGameControllers[newInstance.miniGameId] = newInstance
-      } catch (e: Exception) {
-        createLogger().build(LogEvent.GENERAL_DEBUG) {
-          message("Failed to load MiniGame controller: " + clazz.name)
-          detailsSection(LogBuilder.KEY_ADDITIONAL, "stackTrace", e.stackTrace)
-          detailsSection(LogBuilder.KEY_ADDITIONAL, "throwable", e.message)
-        }
+  /**
+   * Register MiniGame Controller by class. It needs to have constructor: AbstractMiniGameController(MiniGameSettingManager.class)
+   * @param miniGameControllerClass MiniGame controller class
+   */
+  private fun registerMiniGameController(miniGameControllerClass: Class<out AbstractMiniGameController>) {
+    try {
+      val constructor =
+        miniGameControllerClass.getConstructor(
+          MiniGamesSettingManager::class.java,
+        )
+      val newInstance = constructor.newInstance(miniGamesSettingManager)
+
+      miniGameControllers[newInstance.miniGameId] = newInstance
+    } catch (e: Exception) {
+      createLogger().build(LogEvent.GENERAL_DEBUG) {
+        message("Failed to load MiniGame controller: " + miniGameControllerClass.name)
+        detailsSection(LogBuilder.KEY_ADDITIONAL, "stackTrace", e.stackTrace)
+        detailsSection(LogBuilder.KEY_ADDITIONAL, "throwable", e.message)
       }
     }
   }

@@ -26,7 +26,7 @@ class TestMiniGameController(miniGamesSettingManager: MiniGamesSettingManager) :
         playerPreparationEvent,
         PlayerPreparationEndEvent.PreparationResult.ACTIVE_SEARCH,
         playerPreparationEvent.defaultSettings,
-        playerPreparationEvent.defaultSettings,
+        playerPreparationEvent.defaultFilters,
       )
     EventDispatcher.call(event)
   }

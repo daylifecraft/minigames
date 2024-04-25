@@ -88,7 +88,12 @@ class DebugRoundStartCommand :
     }
 
     if (totalPlayersCount !in miniGameSettings.playersCountRange) {
-      // TODO 10.11.2023 i18n key
+      senderLanguage.sendMiniMessage(
+        "debug.rounds.fail.wrong-players-size",
+        "totalPlayers" to totalPlayersCount.toString(),
+        "minTotalPlayers" to miniGameSettings.playersCountRange.first.toString(),
+        "maxTotalPlayers" to miniGameSettings.playersCountRange.last.toString(),
+      )
       return
     }
 

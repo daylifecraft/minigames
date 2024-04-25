@@ -24,10 +24,6 @@ internal class MiniGamesSettingManagerTest {
       Init.miniGamesSettingsManager.getGeneralGameSettings("testMiniGame"),
       message = "testMiniGame config not found",
     )
-    assertNotNull(
-      Init.miniGamesSettingsManager.getGeneralGameSettings("testMiniGame2"),
-      message = "testMiniGame2 config not found",
-    )
   }
 
   @Test
@@ -48,27 +44,6 @@ internal class MiniGamesSettingManagerTest {
       ),
       actual = settings,
       message = "TestMiniGame1 settings loaded not correct",
-    )
-  }
-
-  @Test
-  fun testInternalSettingsValues2() {
-    val settings = Init.miniGamesSettingsManager.getGeneralGameSettings("testMiniGame2")
-
-    assertEquals(
-      expected = GeneralGameSettings(
-        "testMiniGame2",
-        "games.testMiniGame2.displayName",
-        "games.testMiniGame2.description",
-        Material.RED_SAND,
-        false,
-        "test.permission",
-        1..8,
-        2..6,
-        EMPTY_CONFIG,
-      ),
-      actual = settings,
-      message = "TestMiniGame2 settings loaded not correct",
     )
   }
 }

@@ -24,7 +24,7 @@ class RoundPlayersSearcher {
       .scheduleTask(
         delay = TaskSchedule.nextTick(),
         repeat = TaskSchedule.millis(MIN_SEARCH_TIME_MILLIS),
-        executionType = ExecutionType.TICK_START,
+        executionType = ExecutionType.SYNC,
         task = ::searchCycle,
       )
   }

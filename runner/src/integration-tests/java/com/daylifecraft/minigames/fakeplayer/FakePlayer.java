@@ -1,6 +1,5 @@
 package com.daylifecraft.minigames.fakeplayer;
 
-import com.extollit.gaming.ai.path.HydrazinePathFinder;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
@@ -121,13 +120,6 @@ public class FakePlayer extends Player implements NavigableEntity {
     super.update(time);
     // Path finding
     this.navigator.tick();
-  }
-
-  @Override
-  public CompletableFuture<Void> setInstance(@NotNull Instance instance, @NotNull Pos spawnPosition) {
-    this.navigator.setPathFinder(new HydrazinePathFinder(navigator.getPathingEntity(), instance.getInstanceSpace()));
-
-    return super.setInstance(instance, spawnPosition);
   }
 
   @Override
