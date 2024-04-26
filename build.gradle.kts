@@ -1,12 +1,17 @@
 plugins {
   kotlin("jvm") version "1.9.23"
   jacoco
+  id("org.jetbrains.dokka") version "1.9.20"
   id("io.gitlab.arturbosch.detekt") version "1.23.6"
   id("org.sonarqube") version "5.0.0.4638"
 }
 
 repositories {
   mavenCentral()
+}
+
+subprojects {
+  apply(plugin = "org.jetbrains.dokka")
 }
 
 detekt {
