@@ -1,5 +1,5 @@
 .idea/
 .gradle/
+.vscode/
 build/
-runner/bin
-common/bin
+bin/
