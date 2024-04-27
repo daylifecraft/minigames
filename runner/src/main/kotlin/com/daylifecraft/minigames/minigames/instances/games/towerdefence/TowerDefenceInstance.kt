@@ -462,19 +462,16 @@ class TowerDefenceInstance private constructor(
       if (towerData.attackDamage == null) continue
       if (towerData.attackSpeedTicks != 0 && currentTicksCount % towerData.attackSpeedTicks.toLong() != 0L) continue
 
-      val nearbyMonsters = miniGameWorldInstance.instance
+      val nearbyMonster = miniGameWorldInstance.instance
         .getNearbyEntities(towerData.position, towerData.attackRange.toDouble())
         .filterIsInstance<EntityCreature>()
+        .minByOrNull {
+          it.getNavigatorIndex() ?: Int.MAX_VALUE
+        }
 
-      if (towerData.towerTargetEntity == null || !nearbyMonsters.contains(towerData.towerTargetEntity!!.second)) {
-        val randomEntityCreature = nearbyMonsters.randomOrNull() ?: continue
-        towerData.towerTargetEntity = Pair(
-          getMonsterDataByLinkedEntity(randomEntityCreature) ?: continue,
-          randomEntityCreature,
-        )
-      }
+      if(nearbyMonster == null) continue
 
-      towerData.towerTargetEntity!!.second.damage(DamageType.PLAYER_ATTACK, towerData.attackDamage.toFloat())
+      nearbyMonster.damage(DamageType.PLAYER_ATTACK, towerData.attackDamage.toFloat())
     }
   }
 
@@ -550,4 +547,19 @@ class TowerDefenceInstance private constructor(
 
 private fun CancellableEvent.cancel() {
   isCancelled = true
+}
+
+private fun EntityCreature.getNavigatorIndex(): Int? {
+  if(navigator.isComplete) {
+    return null
+  }
+
+  val pathField = navigator.javaClass.getDeclaredField("path")
+  pathField.isAccessible = true
+
+  val pathObject = pathField[navigator]
+  val indexField = pathObject.javaClass.getDeclaredField("index")
+  indexField.isAccessible = true
+
+  return indexField[pathObject] as Int
 }
