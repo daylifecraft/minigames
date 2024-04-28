@@ -510,7 +510,7 @@ class TowerDefenceInstance private constructor(
 
     private const val MINIMAL_PATH_COMPLETE_DISTANCE = 1.0
 
-    private const val ERROR_PATH_DISTANCE = 0.6
+    private const val ERROR_PATH_DISTANCE = 1.0
 
     /**
      * Creates Active MiniGame instance
