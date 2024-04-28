@@ -465,8 +465,8 @@ class TowerDefenceInstance private constructor(
       val nearbyMonster = miniGameWorldInstance.instance
         .getNearbyEntities(towerData.position, towerData.attackRange.toDouble())
         .filterIsInstance<EntityCreature>()
-        .minByOrNull {
-          it.getNavigatorIndex() ?: Int.MAX_VALUE
+        .maxByOrNull {
+          it.getNavigatorIndex() ?: -1
         }
 
       if(nearbyMonster == null) continue
