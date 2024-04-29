@@ -75,6 +75,10 @@ class TowerDefenceInstance private constructor(
     PlayerHealth(ON_STARTUP_PLAYER_HEALTH)
   }
 
+  private val playersDebugModeStatus = playerSettings.keys.map { it.uuid }.associateWith {
+    false
+  }.toMutableMap()
+
   override fun onAllPlayersReady() {
     super.onAllPlayersReady()
 
@@ -431,6 +435,9 @@ class TowerDefenceInstance private constructor(
     if (event.entity.entityType != EntityType.PLAYER) {
       return
     }
+    if(playersDebugModeStatus[event.entity.uuid] != true) {
+      return
+    }
     if (event.target !is EntityCreature) {
       return
     }
@@ -487,6 +494,19 @@ class TowerDefenceInstance private constructor(
     if ((isPlayerDead != null && isPlayerDead) || (getPlayerHealth(player) <= 0)) {
       // TODO handle player death
     }
+  }
+
+
+  fun switchPlayerDebugModeStatus(player: Player): Boolean {
+    val playerUuid = player.uuid
+
+    if(!playersDebugModeStatus.containsKey(playerUuid)) {
+      throw NullPointerException("Cannot find player with name ${player.username} in round")
+    }
+
+    playersDebugModeStatus[playerUuid] = playersDebugModeStatus[playerUuid]?.not() ?: false
+
+    return playersDebugModeStatus[playerUuid] ?: false
   }
 
   public override fun stopRound() {
