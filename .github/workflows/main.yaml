@@ -114,7 +114,7 @@ jobs:
     needs: build
     services:
       mongo:
-        image: mongo:7.0.8
+        image: mongo:7.0.9
         ports:
           - 27017:27017
         env:
