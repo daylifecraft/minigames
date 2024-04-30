@@ -1,6 +1,6 @@
 services:
   mongo:
-    image: docker.io/library/mongo:7.0.8
+    image: docker.io/library/mongo:7.0.9
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
