@@ -20,7 +20,7 @@ dependencies {
 
   api("org.snakeyaml:snakeyaml-engine:2.7")
   api("net.kyori:adventure-text-minimessage:4.16.0")
-  api("org.mongodb:mongodb-driver-sync:5.0.1")
+  api("org.mongodb:mongodb-driver-sync:5.1.0")
 }
 
 kotlin {
