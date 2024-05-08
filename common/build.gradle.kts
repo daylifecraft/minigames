@@ -19,7 +19,7 @@ dependencies {
   api("io.prometheus:prometheus-metrics-exporter-httpserver:1.2.1")
 
   api("org.snakeyaml:snakeyaml-engine:2.7")
-  api("net.kyori:adventure-text-minimessage:4.16.0")
+  api("net.kyori:adventure-text-minimessage:4.17.0")
   api("org.mongodb:mongodb-driver-sync:5.1.0")
 }
 
