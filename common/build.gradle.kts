@@ -1,5 +1,5 @@
 plugins {
-  kotlin("jvm") version "1.9.23"
+  kotlin("jvm") version "1.9.24"
   jacoco
   id("org.sonarqube") version "5.0.0.4638"
   id("io.gitlab.arturbosch.detekt") version "1.23.6"
@@ -19,8 +19,8 @@ dependencies {
   api("io.prometheus:prometheus-metrics-exporter-httpserver:1.2.1")
 
   api("org.snakeyaml:snakeyaml-engine:2.7")
-  api("net.kyori:adventure-text-minimessage:4.16.0")
-  api("org.mongodb:mongodb-driver-sync:5.0.1")
+  api("net.kyori:adventure-text-minimessage:4.17.0")
+  api("org.mongodb:mongodb-driver-sync:5.1.0")
 }
 
 kotlin {
