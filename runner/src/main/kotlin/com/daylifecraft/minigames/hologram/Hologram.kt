@@ -6,7 +6,9 @@ import net.minestom.server.entity.Player
 
 interface Hologram {
 
-  fun setHologramText(hologramText: PlayerText)
+  fun setHologramTextWithLinesRecreation(hologramText: PlayerText)
+
+  fun updateText(hologramText: PlayerText)
 
   fun addViewer(player: Player)
 
