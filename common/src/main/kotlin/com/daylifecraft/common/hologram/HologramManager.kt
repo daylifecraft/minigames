@@ -1,4 +1,4 @@
-package com.daylifecraft.minigames.hologram
+package com.daylifecraft.common.hologram
 
 import com.daylifecraft.common.text.PlayerText
 import net.minestom.server.coordinate.Pos

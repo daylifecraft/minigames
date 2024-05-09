@@ -3,8 +3,8 @@ package com.daylifecraft.minigames.minigames.instances.games.towerdefence
 import com.daylifecraft.common.config.ConfigFile
 import com.daylifecraft.common.text.PlayerText
 import com.daylifecraft.minigames.PlayerManager
-import com.daylifecraft.minigames.hologram.Hologram
-import com.daylifecraft.minigames.hologram.HologramManager
+import com.daylifecraft.common.hologram.Hologram
+import com.daylifecraft.common.hologram.HologramManager
 import com.daylifecraft.minigames.minigames.instances.games.towerdefence.monsters.MonsterData
 import com.daylifecraft.minigames.text.i18n.TranslateText
 import net.minestom.server.coordinate.Point

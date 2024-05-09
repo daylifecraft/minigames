@@ -1,4 +1,4 @@
-package com.daylifecraft.minigames.hologram
+package com.daylifecraft.common.hologram
 
 import com.daylifecraft.common.text.PlayerText
 import net.kyori.adventure.text.Component
@@ -80,10 +80,12 @@ internal class PacketHologram(
     val lines = hologramText.string(player).split("\n").reversed()
     val result = mutableListOf<HologramLine>()
     for(lineNumber in 0..<lines.count()) {
-      result.add(PacketHologramLine(
+      result.add(
+          PacketHologramLine(
         position.add(0.0, LINE_POSITION_MODIFIER * (lineNumber + 1), 0.0),
         MiniMessage.miniMessage().deserialize(lines[lineNumber]),
-        player))
+        player)
+      )
     }
 
     return result
