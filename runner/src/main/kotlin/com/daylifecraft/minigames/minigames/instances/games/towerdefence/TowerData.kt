@@ -1,14 +1,21 @@
 package com.daylifecraft.minigames.minigames.instances.games.towerdefence
 
 import com.daylifecraft.common.config.ConfigFile
+import com.daylifecraft.common.text.PlayerText
+import com.daylifecraft.minigames.PlayerManager
+import com.daylifecraft.minigames.hologram.Hologram
+import com.daylifecraft.minigames.hologram.HologramManager
 import com.daylifecraft.minigames.minigames.instances.games.towerdefence.monsters.MonsterData
+import com.daylifecraft.minigames.text.i18n.TranslateText
 import net.minestom.server.coordinate.Point
 import net.minestom.server.coordinate.Pos
 import net.minestom.server.entity.EntityCreature
+import net.minestom.server.entity.Player
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.item.Material
 import java.util.UUID
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.max
 
 class TowerData private constructor(
@@ -75,7 +82,14 @@ class TowerData private constructor(
   var towerHeight: Int = MAXIMUM_TOWER_HEIGHT,
 
   var ownerData: Pair<UUID, TowerDefenceTeamInfo>? = null,
+
+  val uniqueTowerId: Int = getUniqueTowerId()
 ) {
+  private var hologram: Hologram? = null
+  var targetEntityId: Int? = null
+    private set
+  private var lastTargetEntityId: Int? = null
+  private var nextAttackMillis: Long? = null
 
   /**
    * Returns all positions of current tower
@@ -144,7 +158,9 @@ class TowerData private constructor(
    */
   fun isEqual(towerId: String, towerLevel: Int): Boolean = this.towerId == towerId && this.level == towerLevel
 
-  fun createCopy(newPosition: Point, newOwnerData: Pair<UUID, TowerDefenceTeamInfo>? = null): TowerData = TowerData(
+  fun createCopy(newPosition: Point, newOwnerData: Pair<UUID, TowerDefenceTeamInfo>? = null,
+                 uniqueTowerId: Int = getUniqueTowerId()
+  ): TowerData = TowerData(
     towerId,
     level,
     guiItem,
@@ -159,6 +175,7 @@ class TowerData private constructor(
     towerSize,
     towerHeight,
     newOwnerData,
+    uniqueTowerId
   )
 
   fun calculateTowerHeight(instance: Instance) {
@@ -179,6 +196,9 @@ class TowerData private constructor(
     for (point in iterateThrowTowerLayers()) {
       worldInstance.setBlock(point, Block.AIR)
     }
+
+    hologram?.remove()
+    hologram = null
   }
 
   fun findEmptyPlacePositionFrom(allowedBlockType: Material?, instance: Instance, startPoint: Point): Point? {
@@ -218,7 +238,80 @@ class TowerData private constructor(
 
   fun getSellPrice(): Int = (cost * (TowerDefenseManager.get().towerCostBuybackPercent / 100.0)).toInt()
 
+  fun generateHologram(viewers: List<Player> = emptyList()) {
+    hologram = HologramManager.createHologram(
+      Pos(position).add(0.0, towerHeight - 2.0, 0.0), getHologramText(), viewers
+    )
+  }
+
+  fun addHologramViewer(player: Player) {
+    try {
+      hologram?.addViewer(player)
+    }catch (exception: IllegalArgumentException) {
+      // Noting to do
+    }
+  }
+
+  fun removeHologramViewer(player: Player) {
+    try {
+      hologram?.removeViewer(player)
+    }catch (exception: IllegalArgumentException) {
+      // Noting to do
+    }
+  }
+
+  fun updateHologram() {
+    hologram?.updateText(getHologramText())
+    hologram?.doRender()
+  }
+
+
+  fun removeHologram() {
+    hologram?.remove()
+  }
+
+  private fun getHologramText(): PlayerText {
+    return TranslateText(
+      "debug.td.debughud.tower",
+      "towerDisplayName" to TranslateText(displayNameKey),
+      "towerSpawnID" to uniqueTowerId.toString(),
+      "towerLevel" to level.toString(),
+      "towerAttackRange" to attackRange.toString(),
+      "towerDamage" to attackDamage.toString(),
+      "towerTarget" to targetEntityId.toString(),
+      "towerLastTarget" to lastTargetEntityId.toString(),
+      "towerNextAttack" to nextAttackMillis.toString(),
+      "towerOwner" to if(ownerData != null) PlayerManager.getPlayerByUuid(ownerData!!.first)?.username else "null"
+    )
+  }
+
+  fun updateTargetEntity(entityCreature: EntityCreature) {
+    val entityId = entityCreature.entityId
+
+    if(targetEntityId == null) {
+      targetEntityId = entityId
+      lastTargetEntityId = entityId
+    }else if(targetEntityId != entityId) {
+      lastTargetEntityId = targetEntityId
+      targetEntityId = entityId
+    }
+  }
+
+  fun canAttackInCurrentTick(currentTickCount: Long): Boolean {
+    if(attackDamage == null || attackSpeedTicks == null) return false
+    val canAttack = attackSpeedTicks == 0 || currentTickCount % attackSpeedTicks.toLong() != 0L
+
+    if(canAttack) {
+      nextAttackMillis = 0
+    }else {
+      nextAttackMillis = (attackSpeedTicks.toLong() - currentTickCount % attackSpeedTicks.toLong()) * 50
+    }
+
+    return canAttack
+  }
+
   companion object {
+    private var lastUniqueTowerId = AtomicInteger(0)
     private const val DISPLAY_NAME_PATH = "games.towerdefence.towers.%s.displayname"
     private const val DESCRIPTION_PATH = "games.towerdefence.towers.%s.description"
     private const val MAXIMUM_TOWER_HEIGHT = 255
@@ -250,6 +343,10 @@ class TowerData private constructor(
       )
     } else {
       null
+    }
+
+    private fun getUniqueTowerId(): Int {
+      return lastUniqueTowerId.incrementAndGet()
     }
 
     /**

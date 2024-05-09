@@ -1,8 +1,14 @@
 package com.daylifecraft.minigames.minigames.instances.games.towerdefence.monsters
 
+import com.daylifecraft.common.text.PlayerText
+import com.daylifecraft.minigames.hologram.Hologram
+import com.daylifecraft.minigames.hologram.HologramManager
+import com.daylifecraft.minigames.minigames.instances.games.towerdefence.TowerData
+import com.daylifecraft.minigames.text.i18n.TranslateText
 import net.minestom.server.attribute.Attribute
 import net.minestom.server.attribute.AttributeModifier
 import net.minestom.server.attribute.AttributeOperation
+import net.minestom.server.coordinate.Pos
 import net.minestom.server.entity.Entity
 import net.minestom.server.entity.EntityCreature
 import net.minestom.server.entity.EntityType
@@ -29,11 +35,11 @@ class MonsterData private constructor(
   val incomeAmount: Int,
   var ownerPlayer: Player? = null,
 ) {
-  var linkedEntityCreatures: MutableList<EntityCreature> = mutableListOf()
+  var linkedEntityCreatures: MutableMap<EntityCreature, Hologram> = mutableMapOf()
 
   override fun toString(): String = "MonsterData(name='$monsterId', entityType=$entityType, items=$items, nbtTags=$nbtTags, passengerType=$passengerType, healthAmount=$healthAmount, speed=$speed, damageAmount=$damageAmount, cost=$cost, incomeAmount=$incomeAmount, ownerPlayer=${ownerPlayer?.username}, linkedEntityCreature=$linkedEntityCreatures)"
 
-  fun getLivingEntity(spawningInstance: Instance): EntityCreature {
+  fun getLivingEntity(spawningInstance: Instance, hudViewers: List<Player> = emptyList()): EntityCreature {
     val entityCreature = EntityCreature(entityType)
 
     entityCreature.setInstance(spawningInstance)
@@ -90,12 +96,12 @@ class MonsterData private constructor(
         ),
       )
 
-    linkedEntityCreatures.add(entityCreature)
+    linkedEntityCreatures[entityCreature] = createHologram(entityCreature, hudViewers)
 
     return entityCreature
   }
 
-  fun hasLinkToEntity(entityCreature: EntityCreature): Boolean = linkedEntityCreatures.any {
+  fun hasLinkToEntity(entityCreature: EntityCreature): Boolean = linkedEntityCreatures.keys.any {
     it.uuid == entityCreature.uuid ||
       (
         it.hasPassenger() &&
@@ -108,6 +114,8 @@ class MonsterData private constructor(
   fun killLinkedEntity(entityCreature: EntityCreature) {
     entityCreature.passengers.forEach(Entity::remove)
     entityCreature.kill()
+
+    linkedEntityCreatures[entityCreature]?.remove()
 
     linkedEntityCreatures.remove(entityCreature)
   }
@@ -131,6 +139,60 @@ class MonsterData private constructor(
   fun getNameKey(): String = "games.towerdefence.monsters.%s.name".format(monsterId)
 
   fun getDescriptionKey(): String = "games.towerdefence.monsters.%s.description".format(monsterId)
+
+  //region HUD
+  private fun createHologram(entityCreature: EntityCreature, hudViewers: List<Player>): Hologram {
+    return HologramManager.createHologram(
+      Pos.ZERO, getHologramText(entityCreature) { _ -> emptyList() }, hudViewers
+    )
+  }
+
+  private fun getHologramText(entityCreature: EntityCreature,
+                              getTowersWithTargetToEntityFunction: (entityId: Int) -> List<TowerData>
+  ): PlayerText {
+    return TranslateText(
+      "debug.td.debughud.monster",
+      "monsterDisplayName" to TranslateText(getNameKey()),
+      "monsterSpawnID" to entityCreature.entityId.toString(),
+      "monsterCurrentHP" to entityCreature.health.toString(),
+      "monsterDamage" to damageAmount.toString(),
+      // TODO Точно ли нужно получать значение скорости так?
+      "monsterSpeed" to entityCreature.getAttributeValue(Attribute.MOVEMENT_SPEED).toString(),
+      // TODO
+      "monsterTargetedBy" to getTowersWithTargetToEntityFunction(entityCreature.entityId)
+        .joinToString(", ") { it.uniqueTowerId.toString() },
+      "monsterTarget" to (entityCreature.target as Player?)?.username,
+    )
+  }
+
+  fun updateHolograms(getTowersWithTargetToEntityFunction: (entityId: Int) -> List<TowerData>) {
+    linkedEntityCreatures.forEach { (entityCreature, hologram) ->
+      hologram.updateText(getHologramText(entityCreature, getTowersWithTargetToEntityFunction))
+      hologram.updatePositionWithoutRender(entityCreature.position.add(0.0, -1.0, 0.0))
+      hologram.doRender()
+    }
+  }
+
+  fun addHologramViewer(player: Player) {
+    linkedEntityCreatures.values.forEach {
+      try {
+        it.addViewer(player)
+      }catch (exception: IllegalArgumentException) {
+        // Noting to do
+      }
+    }
+  }
+
+  fun removeHologramViewer(player: Player) {
+    linkedEntityCreatures.values.forEach {
+      try {
+        it.removeViewer(player)
+      }catch (exception: IllegalArgumentException) {
+        // Noting to do
+      }
+    }
+  }
+  //endregion
 
   companion object {
     const val PATH_FINDING_LIMIT = 2500.0

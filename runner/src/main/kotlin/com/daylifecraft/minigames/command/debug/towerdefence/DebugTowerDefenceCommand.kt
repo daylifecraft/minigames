@@ -2,6 +2,7 @@ package com.daylifecraft.minigames.command.debug.towerdefence
 
 import com.daylifecraft.common.command.SubCommand
 import com.daylifecraft.minigames.command.debug.AbstractDebugCommand
+import com.daylifecraft.minigames.command.debug.towerdefence.subcommands.DebugModeSwitchTowerCommand
 import com.daylifecraft.minigames.command.debug.towerdefence.subcommands.GetCurrencyTowerCommand
 import com.daylifecraft.minigames.command.debug.towerdefence.subcommands.PlaceTowerCommand
 import com.daylifecraft.minigames.command.debug.towerdefence.subcommands.RemoveTowerCommand
@@ -38,6 +39,7 @@ class DebugTowerDefenceCommand :
     addSubcommand(SetWaveTowerCommand())
     addSubcommand(RemoveTowerCommand())
     addSubcommand(SpawnMonsterTowerCommand())
+    addSubcommand(DebugModeSwitchTowerCommand())
   }
 
   override fun onCommandUse(sender: CommandSender, context: CommandContext) {

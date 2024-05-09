@@ -202,6 +202,8 @@ class TowerDefenceInstance private constructor(
   fun removeTower(towerData: TowerData, clearBlocks: Boolean = false) {
     towersData.remove(towerData)
 
+    towerData.removeHologram()
+
     if (clearBlocks) {
       towerData.remove(miniGameWorldInstance.instance)
     }
@@ -209,6 +211,8 @@ class TowerDefenceInstance private constructor(
 
   fun addTower(towerData: TowerData) {
     towersData.add(towerData)
+
+    towerData.generateHologram(getPlayersEnabledDebugMode())
   }
 
   fun replaceTowerByNew(oldTowerData: TowerData, newTowerData: TowerData) {
@@ -219,7 +223,7 @@ class TowerDefenceInstance private constructor(
     // Copy old start position
     val originalPosition = oldTowerData.position
     removeTower(oldTowerData)
-    val newTower = newTowerData.createCopy(originalPosition, oldTowerData.ownerData)
+    val newTower = newTowerData.createCopy(originalPosition, oldTowerData.ownerData, oldTowerData.uniqueTowerId)
 
     // Add tower and build
     addTower(newTower)
@@ -376,7 +380,7 @@ class TowerDefenceInstance private constructor(
           continue
         }
 
-        val entity = monsterData.getLivingEntity(miniGameWorldInstance.instance)
+        val entity = monsterData.getLivingEntity(miniGameWorldInstance.instance, getPlayersEnabledDebugMode())
         val randomPoint = Pos(entry.key.mobSpawnZone.getRandomPoint())
 
         entity.teleport(randomPoint)
@@ -406,6 +410,7 @@ class TowerDefenceInstance private constructor(
   fun clearStuckedMonsters() {
     for (monsterData in getAllMonsterDataQueue()) {
       monsterData.linkedEntityCreatures
+        .keys
         .filter { it.target is Player }
         .forEach { entityCreature ->
           if (!entityCreature.navigator.isComplete &&
@@ -465,9 +470,8 @@ class TowerDefenceInstance private constructor(
 
   fun doTowersAttack(currentTicksCount: Long) {
     for (towerData in towersData.toMutableList()) {
-      if (towerData.attackSpeedTicks == null) continue
       if (towerData.attackDamage == null) continue
-      if (towerData.attackSpeedTicks != 0 && currentTicksCount % towerData.attackSpeedTicks.toLong() != 0L) continue
+      if (!towerData.canAttackInCurrentTick(currentTicksCount)) continue
 
       val nearbyMonster = miniGameWorldInstance.instance
         .getNearbyEntities(towerData.position, towerData.attackRange.toDouble())
@@ -478,6 +482,7 @@ class TowerDefenceInstance private constructor(
 
       if(nearbyMonster == null) continue
 
+      towerData.updateTargetEntity(nearbyMonster)
       nearbyMonster.damage(DamageType.PLAYER_ATTACK, towerData.attackDamage.toFloat())
     }
   }
@@ -496,6 +501,11 @@ class TowerDefenceInstance private constructor(
     }
   }
 
+  fun doUpdateHolograms() {
+    towersData.forEach { it.updateHologram() }
+
+    monstersQueue.values.flatten().forEach { it.updateHolograms(this::getTowersWithTargetToEntity) }
+  }
 
   fun switchPlayerDebugModeStatus(player: Player): Boolean {
     val playerUuid = player.uuid
@@ -506,7 +516,25 @@ class TowerDefenceInstance private constructor(
 
     playersDebugModeStatus[playerUuid] = playersDebugModeStatus[playerUuid]?.not() ?: false
 
+    if(playersDebugModeStatus[playerUuid] == true) {
+      towersData.forEach { it.addHologramViewer(player) }
+      monstersQueue.values.flatten().forEach { it.addHologramViewer(player) }
+    }else {
+      towersData.forEach { it.removeHologramViewer(player) }
+      monstersQueue.values.flatten().forEach { it.removeHologramViewer(player) }
+    }
+
     return playersDebugModeStatus[playerUuid] ?: false
+  }
+
+  private fun getPlayersEnabledDebugMode(): List<Player> {
+    return playersDebugModeStatus.filter { it.value }.keys.mapNotNull { PlayerManager.getPlayerByUuid(it) }
+  }
+
+  fun getTowersWithTargetToEntity(entityId: Int): List<TowerData> {
+    return towersData.filter {
+      entityId == it.targetEntityId
+    }
   }
 
   public override fun stopRound() {

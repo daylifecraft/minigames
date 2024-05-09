@@ -36,6 +36,7 @@ class TowerDefenceInstanceTicker(
       instance.clearStuckedMonsters()
 
       instance.doTowersAttack(currentTickValue)
+      instance.doUpdateHolograms()
 
       currentTaskTick.incrementAndGet()
     } catch (e: Exception) {
