@@ -25,7 +25,6 @@ class DebugCommand : AbstractDebugCommand("~") {
     addSubcommand(DebugToggleAdminCommand())
     addSubcommand(DebugLagCommand())
     addSubcommand(DebugTowerDefenceCommand())
-    addSubcommand(DebugHologramCommand())
   }
 
   /**
