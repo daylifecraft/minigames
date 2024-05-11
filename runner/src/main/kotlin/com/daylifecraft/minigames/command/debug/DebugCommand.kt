@@ -1,7 +1,6 @@
 package com.daylifecraft.minigames.command.debug
 
 import com.daylifecraft.minigames.command.debug.player.DebugFlyCommand
-import com.daylifecraft.minigames.command.debug.player.DebugHologramCommand
 import com.daylifecraft.minigames.command.debug.player.DebugSpeedCommand
 import com.daylifecraft.minigames.command.debug.player.DebugToggleAdminCommand
 import com.daylifecraft.minigames.command.debug.rounds.DebugRoundsCommand
