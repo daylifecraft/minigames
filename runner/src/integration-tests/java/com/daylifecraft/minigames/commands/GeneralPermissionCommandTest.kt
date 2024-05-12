@@ -1,6 +1,8 @@
 package com.daylifecraft.minigames.commands
 
 import com.daylifecraft.minigames.config.ConfigManager
+import com.daylifecraft.minigames.config.GroupConfig
+import com.daylifecraft.minigames.config.MainConfig
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
@@ -39,7 +41,7 @@ internal class GeneralPermissionCommandTest {
     val player = mockk<Player>(relaxed = true)
 
     mockkObject(ConfigManager) {
-      every { ConfigManager.mainConfig } returns configWithPermission(permission)
+      every { ConfigManager.mainConfig } returns configWithGroupWithPermission(permission)
 
       val finalCommand = getBestSubCommand(command)
       assertFalse(
@@ -56,7 +58,7 @@ internal class GeneralPermissionCommandTest {
     every { player.allPermissions } returns setOf(Permission("isPlayerModerator"))
 
     mockkObject(ConfigManager) {
-      every { ConfigManager.mainConfig } returns configWithPermission(permission)
+      every { ConfigManager.mainConfig } returns configWithGroupWithPermission(permission)
 
       val finalCommand = getBestSubCommand(command)
       assertTrue(
@@ -67,18 +69,18 @@ internal class GeneralPermissionCommandTest {
   }
 }
 
-/** Creates config file with provided permission present in isPlayerModerator group */
-private fun configWithPermission(permission: String): ConfigFile =
-  ConfigFile(
-    mapOf(
-      "groups" to listOf(
-        mapOf(
-          "name" to "isPlayerModerator",
-          "permissions" to listOf(permission),
-        ),
-      ),
-    ),
+private fun configWithGroupWithPermission(permission: String): MainConfig {
+  val mainConfig = mockk<MainConfig>()
+  every { mainConfig.groups } returns listOf(
+    GroupConfig(
+      name = "isPlayerModerator",
+      badge = "stub",
+      permissions = listOf(permission),
+      globalChatColor = null,
+    )
   )
+  return mainConfig
+}
 
 /**
  * Returns best command node in commands tree for provided string

@@ -19,15 +19,15 @@ chat:
     pattern: "$(senderBadge)$(senderUsername): <color:$(chatMessageColor)>$(chatMessageText)</color>"
   # Group chat
   group:
-    members_pattern: "$(translate:group.prefix) $(senderBadge)$(senderUsername): <dark_aqua>$(chatMessageText)</dark_aqua>"
-    leader_pattern: "$(translate:group.prefix) $(senderBadge)$(senderUsername): <aqua>$(chatMessageText)</aqua>"
+    membersPattern: "$(translate:group.prefix) $(senderBadge)$(senderUsername): <dark_aqua>$(chatMessageText)</dark_aqua>"
+    leaderPattern: "$(translate:group.prefix) $(senderBadge)$(senderUsername): <aqua>$(chatMessageText)</aqua>"
   # Private chat
   privateMessages:
-    from_default_pattern: "$(translate:pm.prefix) <color:$(chatMessageColor)>$(translate:pm.from)</color:$(chatMessageColor)> $(senderBadge)$(senderUsername): <color:$(chatMessageColor)>$(chatMessageText)</color:$(chatMessageColor)>"
-    to_default_pattern: "$(translate:pm.prefix) <color:$(chatMessageColor)>$(translate:pm.to)</color:$(chatMessageColor)> $(senderBadge)$(senderUsername): <dark_gray>$(chatMessageText)</dark_gray>"
+    fromDefaultPattern: "$(translate:pm.prefix) <color:$(chatMessageColor)>$(translate:pm.from)</color:$(chatMessageColor)> $(senderBadge)$(senderUsername): <color:$(chatMessageColor)>$(chatMessageText)</color:$(chatMessageColor)>"
+    toDefaultPattern: "$(translate:pm.prefix) <color:$(chatMessageColor)>$(translate:pm.to)</color:$(chatMessageColor)> $(senderBadge)$(senderUsername): <dark_gray>$(chatMessageText)</dark_gray>"
 
-    from_admin_pattern: "$(translate:pm.prefix.staff) <color:$(chatMessageColor)>$(translate:pm.from)</color:$(chatMessageColor)> $(senderBadge)$(senderUsername): <color:$(chatMessageColor)>$(chatMessageText)</color:$(chatMessageColor)>"
-    to_admin_pattern: "$(translate:pm.prefix.staff) <color:$(chatMessageColor)>$(translate:pm.to)</color:$(chatMessageColor)> $(senderBadge)$(senderUsername): <color:$(chatMessageColor)>$(chatMessageText)</color:$(chatMessageColor)>"
+    fromAdminPattern: "$(translate:pm.prefix.staff) <color:$(chatMessageColor)>$(translate:pm.from)</color:$(chatMessageColor)> $(senderBadge)$(senderUsername): <color:$(chatMessageColor)>$(chatMessageText)</color:$(chatMessageColor)>"
+    toAdminPattern: "$(translate:pm.prefix.staff) <color:$(chatMessageColor)>$(translate:pm.to)</color:$(chatMessageColor)> $(senderBadge)$(senderUsername): <color:$(chatMessageColor)>$(chatMessageText)</color:$(chatMessageColor)>"
   # Spectator chat
   spectator:
     pattern: "$(translate:spectator.chat.prefix) $(senderBadge)$(senderUsername): <color:$(chatMessageColor)>$(chatMessageText)</color>"
@@ -94,32 +94,32 @@ seasons:
   - name: "easter"
     # i18n key for season display name
     # Will be shown to players
-    display_name: "seasons.easter.displayname"
+    displayName: "seasons.easter.displayname"
     # Season start date, year is not supported
     # Format: "MM.DD"
     # Should have string type
-    start_date: "04.02"
+    startDate: "04.02"
     # Season end date, year is not supported
     # Format: "MM.DD"
     # Should have string type
-    end_date: "05.01"
+    endDate: "05.01"
 
   - name: "halloween"
-    display_name: "seasons.halloween.displayname"
-    start_date: "10.28"
-    end_date: "11.03"
+    displayName: "seasons.halloween.displayname"
+    startDate: "10.28"
+    endDate: "11.03"
 
   - name: "newyear"
-    display_name: "seasons.newyear.displayname"
-    start_date: "12.20"
-    end_date: "01.15"
+    displayName: "seasons.newyear.displayname"
+    startDate: "12.20"
+    endDate: "01.15"
 
   - name: "summer"
-    display_name: "seasons.summer.displayname"
-    start_date: "06.01"
-    end_date: "09.01"
+    displayName: "seasons.summer.displayname"
+    startDate: "06.01"
+    endDate: "09.01"
 
   - name: "winter"
-    display_name: "seasons.winter.displayname"
-    start_date: "12.01"
-    end_date: "03.01"
+    displayName: "seasons.winter.displayname"
+    startDate: "12.01"
+    endDate: "03.01"

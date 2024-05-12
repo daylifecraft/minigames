@@ -1,13 +1,12 @@
 package com.daylifecraft.minigames.games
 
 import com.daylifecraft.minigames.Init
+import com.daylifecraft.minigames.config.GameConfig
 import com.daylifecraft.minigames.minigames.settings.GeneralGameSettings
 import net.minestom.server.item.Material
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-
-private val EMPTY_CONFIG = ConfigFile(emptyMap())
 
 internal class MiniGamesSettingManagerTest {
   @Test
@@ -43,7 +42,7 @@ internal class MiniGamesSettingManagerTest {
         null,
         1..8,
         1..8,
-        EMPTY_CONFIG,
+        GameConfig(emptyList()),
       ),
       actual = settings,
       message = "TestMiniGame1 settings loaded not correct",
@@ -64,7 +63,7 @@ internal class MiniGamesSettingManagerTest {
         "test.permission",
         1..8,
         2..6,
-        EMPTY_CONFIG,
+        GameConfig(emptyList()),
       ),
       actual = settings,
       message = "TestMiniGame2 settings loaded not correct",

@@ -2,12 +2,12 @@ package com.daylifecraft.minigames.config
 
 data class MainConfig(
   val collections: List<String>,
-  val roundSearchTime: Long,
   val roundInvitationTimeout: Long,
-  val ports: PortsConfig,
-  val seasons: List<SeasonConfig>,
+  val roundSearchTime: Long,
   val chat: ChatConfig,
   val groups: List<GroupConfig>,
+  val ports: PortsConfig,
+  val seasons: List<SeasonConfig>,
 )
 
 data class ChatConfig(
@@ -41,6 +41,7 @@ data class SpectatorChatConfig(
 data class GroupConfig(
   val name: String,
   val badge: String,
+  val globalChatColor: String?,
   val permissions: List<String>,
 )
 
