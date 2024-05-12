@@ -1,5 +1,9 @@
 package com.daylifecraft.minigames
 
+import com.daylifecraft.common.config.Cfg
+import com.daylifecraft.common.config.load
+import com.daylifecraft.common.config.providers.EnvProvider
+import com.daylifecraft.common.config.providers.yamlProvidersOf
 import com.daylifecraft.common.logging.building.Logger
 import com.daylifecraft.common.logging.building.createLogger
 import com.daylifecraft.common.logging.foundation.LogEvent
@@ -9,6 +13,8 @@ import com.daylifecraft.common.variable.VariablesRegistry
 import com.daylifecraft.minigames.ServerUuidProvider.uuid
 import com.daylifecraft.minigames.command.CommandsManager
 import com.daylifecraft.minigames.config.ConfigManager
+import com.daylifecraft.minigames.config.MainConfig
+import com.daylifecraft.minigames.config.MiniGameSettingsConfig
 import com.daylifecraft.minigames.database.DatabaseManager
 import com.daylifecraft.minigames.gui.GuiManager
 import com.daylifecraft.minigames.instance.CraftInstancesManager
@@ -21,6 +27,7 @@ import com.daylifecraft.minigames.minigames.controllers.MiniGameControllersManag
 import com.daylifecraft.minigames.minigames.settings.MiniGamesSettingManager
 import com.daylifecraft.minigames.seasons.SeasonsManager
 import com.daylifecraft.minigames.text.i18n.Lang
+import com.daylifecraft.minigames.util.FilesUtil
 import io.prometheus.metrics.exporter.httpserver.HTTPServer
 import io.prometheus.metrics.instrumentation.jvm.JvmMetrics
 import net.minestom.server.MinecraftServer
@@ -82,6 +89,26 @@ object Init {
 
   @JvmStatic
   fun main(args: Array<String>) {
+    val main = load<MainConfig>(
+      EnvProvider(),
+      *yamlProvidersOf(
+        FilesUtil.getResourceStreamByPath("server.yml"),
+        FilesUtil.getResourceStreamByPath("another.yml")
+      ),
+    )
+    println(main)
+    val cfg = load<Cfg>(
+      EnvProvider(),
+      *yamlProvidersOf(
+        FilesUtil.getResourceStreamByPath("server.yml"),
+        FilesUtil.getResourceStreamByPath("another.yml")
+      ),
+    )
+    val config = load<MiniGameSettingsConfig>(
+      yamlProvidersOf(FilesUtil.getResourceStreamByPath("games/testMiniGame/config.yml")).first()
+    )
+    println(config)
+    println(cfg)
     try {
       initialize()
     } catch (e: Exception) {
@@ -204,7 +231,7 @@ object Init {
     CommandsManager.load(MinecraftServer.getCommandManager(), isInDebugMode)
 
     // Start the server on port 25565
-    minecraftServer.start(SERVER_IP, ConfigManager.mainConfig.getInt("ports.minecraft")!!)
+    minecraftServer.start(SERVER_IP, ConfigManager.mainConfig.ports.minecraft)
 
     setupMetrics()
 
@@ -261,7 +288,7 @@ object Init {
     MinestomMetrics.builder().register()
     RunnerMetrics.builder().register()
 
-    val prometheusPort = ConfigManager.mainConfig.getInt("ports.prometheus")!!
+    val prometheusPort = ConfigManager.mainConfig.ports.prometheus
     HTTPServer.builder().port(prometheusPort).buildAndStart()
   }
 

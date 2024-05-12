@@ -1,10 +1,14 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run server" type="Application" factoryName="Application" focusToolWindowBeforeRun="true">
+    <envs>
+      <env name="CFGA" value="110" />
+      <env name="CFGC_LI" value="2" />
+      <env name="CFGC_LI_[0]" value="111" />
+      <env name="CFGC_LI_[1]" value="222" />
+      <env name="DAYLIFECRAFT_SETTINGS_SERVER_ENV" value="DEV" />
+    </envs>
     <option name="MAIN_CLASS_NAME" value="com.daylifecraft.minigames.Init" />
     <module name="minigames.runner.main" />
-    <selectedOptions>
-      <option name="environmentVariables" visible="false" />
-    </selectedOptions>
     <option name="WORKING_DIRECTORY" value="$ProjectFileDir$/runner" />
     <method v="2">
       <option name="Make" enabled="true" />

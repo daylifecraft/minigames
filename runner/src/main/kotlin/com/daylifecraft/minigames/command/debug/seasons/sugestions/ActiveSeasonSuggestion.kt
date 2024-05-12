@@ -18,8 +18,8 @@ class ActiveSeasonSuggestion : SuggestionCallback {
   ) {
     val currentArgumentValue = suggestion.currentArgumentValue
 
-    configSeasonsList?.activeSeasonsPrioritized
-      ?.filter { season: Season -> season.name.startsWith(currentArgumentValue) }
-      ?.forEach { season: Season -> suggestion.addEntry(SuggestionEntry(season.name)) }
+    configSeasonsList.activeSeasonsPrioritized
+      .filter { season: Season -> season.name.startsWith(currentArgumentValue) }
+      .forEach { season: Season -> suggestion.addEntry(SuggestionEntry(season.name)) }
   }
 }

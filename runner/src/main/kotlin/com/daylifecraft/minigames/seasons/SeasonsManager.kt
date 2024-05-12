@@ -1,34 +1,34 @@
 package com.daylifecraft.minigames.seasons
 
-import com.daylifecraft.common.config.ConfigFile
 import com.daylifecraft.common.seasons.Season
+import com.daylifecraft.common.seasons.SeasonDate
 import com.daylifecraft.common.seasons.SeasonsList
 import com.daylifecraft.minigames.config.ConfigManager
+import com.daylifecraft.minigames.config.SeasonConfig
 
 /** Singleton which can load and hold seasons list loaded from default config  */
 object SeasonsManager {
 
-  var configSeasonsList: SeasonsList? = null
+  lateinit var configSeasonsList: SeasonsList
     private set
 
   fun load() {
-    configSeasonsList = fromConfig(ConfigManager.mainConfig, "seasons")
+    configSeasonsList = fromConfig(ConfigManager.mainConfig.seasons)
   }
 
-  /**
-   * Creates seasons list from yaml config file.
-   *
-   * @param file config file where list is stored.
-   * @param listPath path to list node in config.
-   * @return created seasons list.
-   */
-  private fun fromConfig(file: ConfigFile, listPath: String): SeasonsList {
-    val valueList = file.getValueList(listPath)
-
+  private fun fromConfig(seasonConfigs: List<SeasonConfig>): SeasonsList {
     val seasons: MutableList<Season> = ArrayList()
-    var priority = valueList.size
-    for (seasonValues in valueList) {
-      seasons.add(Season(seasonValues, priority))
+    var priority = seasons.size
+    for (seasonValues in seasonConfigs) {
+      seasons.add(
+        Season(
+          seasonValues.name,
+          seasonValues.displayName,
+          SeasonDate(seasonValues.startDate),
+          SeasonDate(seasonValues.endDate),
+          priority,
+        )
+      )
       priority--
     }
 

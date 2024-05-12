@@ -1,6 +1,5 @@
 package com.daylifecraft.minigames.commands
 
-import com.daylifecraft.common.config.ConfigFile
 import com.daylifecraft.minigames.config.ConfigManager
 import io.mockk.every
 import io.mockk.mockk

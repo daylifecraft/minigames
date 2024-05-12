@@ -1,6 +1,5 @@
 package com.daylifecraft.minigames.games
 
-import com.daylifecraft.common.config.ConfigFile
 import com.daylifecraft.minigames.Init
 import com.daylifecraft.minigames.minigames.settings.GeneralGameSettings
 import net.minestom.server.item.Material

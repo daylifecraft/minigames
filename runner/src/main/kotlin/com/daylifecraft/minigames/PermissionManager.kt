@@ -1,7 +1,6 @@
 package com.daylifecraft.minigames
 
 import com.daylifecraft.common.util.safeCastToList
-import com.daylifecraft.minigames.config.ConfigManager.mainConfig
 import net.minestom.server.entity.Player
 import net.minestom.server.permission.Permission
 import java.util.Optional
@@ -133,5 +132,5 @@ object PermissionManager {
    * @param group group id
    * @return map of permission for group
    */
-  private fun getGroupParameters(group: String): Map<String, Any?> = mainConfig.getValueFromList("groups", "name", group)
+  private fun getGroupParameters(group: String): Map<String, Any?> = mapOf(group to null)
 }

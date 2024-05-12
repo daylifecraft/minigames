@@ -1,0 +1,5 @@
+cfgB: "asdf"
+cfgA: 11
+cfgC:
+  a: 321
+  b: "bim bim bam bam"

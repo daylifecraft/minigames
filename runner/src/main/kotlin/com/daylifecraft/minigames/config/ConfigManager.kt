@@ -1,6 +1,7 @@
 package com.daylifecraft.minigames.config
 
-import com.daylifecraft.common.config.ConfigFile
+import com.daylifecraft.common.config.load
+import com.daylifecraft.common.config.providers.YamlProvider
 import com.daylifecraft.minigames.util.FilesUtil
 
 object ConfigManager {
@@ -9,11 +10,13 @@ object ConfigManager {
    *
    * @return server.yml ConfigFile
    */
-  lateinit var mainConfig: ConfigFile
+  lateinit var mainConfig: MainConfig
     private set
 
   /** Load configs  */
   fun load() {
-    mainConfig = ConfigFile(FilesUtil.getResourceStreamByPath("server.yml"))
+    mainConfig = load(
+      YamlProvider(FilesUtil.getResourceStreamByPath("server.yml"))
+    )
   }
 }

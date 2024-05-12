@@ -68,42 +68,30 @@ class TestMiniGameController(miniGamesSettingManager: MiniGamesSettingManager) :
 
   private fun getRandomWorldName(roundPlayerCount: Int): String {
     val worlds: MutableList<String> = ArrayList()
-    for (worldMap in generalGameSettings.gameConfig.getValueList("worlds")) {
-      val mapEnabled = worldMap["enabled"] as Boolean
+    for (worldConfig in generalGameSettings.gameConfig.worlds) {
+      if (!worldConfig.enabled) continue
 
-      if (!mapEnabled) continue
+      if (roundPlayerCount !in worldConfig.minPlayers..worldConfig.maxPlayers) continue
 
-      val minPlayers = worldMap["minPlayers"] as Int
-      val maxPlayers = worldMap["maxPlayers"] as Int
-
-      if (roundPlayerCount !in minPlayers..maxPlayers) continue
-
-      worlds.add((worldMap["name"] as String))
+      worlds.add(worldConfig.name)
     }
 
     return worlds.random(RandomUtil.SHARED_SECURE_RANDOM)
   }
 
-  private fun getWorldSpawnPositions(worldName: String?): List<Pos> {
-    val worldMap =
-      generalGameSettings.gameConfig.getValueList("worlds")
-        .first { objectMap -> objectMap["name"] == worldName }
-
-    if (worldMap.isEmpty()) {
-      return emptyList()
-    }
+  private fun getWorldSpawnPositions(worldName: String): List<Pos> {
+    val worldMap = generalGameSettings.gameConfig.worlds.first { it.name == worldName }
 
     val spawnPositions: MutableList<Pos> = ArrayList()
-    for (pointObject in worldMap["spawnPoints"] as List<*>) {
-      val pointMap = (pointObject as Map<*, *>)
+    for (spawnPointConfig in worldMap.spawnPoints) {
 
       spawnPositions.add(
         Pos(
-          (pointMap["x"] as Number).toDouble(),
-          (pointMap["y"] as Number).toDouble(),
-          (pointMap["z"] as Number).toDouble(),
-          (pointMap["facingX"] as Number).toFloat(),
-          (pointMap["facingZ"] as Number).toFloat(),
+          spawnPointConfig.x,
+          spawnPointConfig.y,
+          spawnPointConfig.z,
+          spawnPointConfig.yaw,
+          spawnPointConfig.pitch,
         ),
       )
     }
