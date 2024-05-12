@@ -21,7 +21,6 @@ private const val CHAT_MESSAGE_TEXT_KEY = "chatMessageText"
  * @author FazziCLAY
  */
 class ChatManager {
-  // TODO create dto
   private val simpyChatPattern = mainConfig.chat.global.pattern
   private val groupMemberPattern = mainConfig.chat.group.membersPattern
   private val groupLeaderPattern = mainConfig.chat.group.leaderPattern
@@ -117,13 +116,8 @@ class ChatManager {
     )
   }
 
-  private fun getMiniMessageForChat(badge: String, messageColor: String): String {
-    // TODO here code copy from getMiniMessage()
-    return simpyChatPattern
-      .replace("$($SENDER_USERNAME_KEY)", GLOBAL_CHAT_PLAYER_USERNAME)
-      .replace("$(senderBadge)", badge)
-      .replace("$(chatMessageColor)", messageColor)
-  }
+  private fun getMiniMessageForChat(badge: String, messageColor: String): String =
+    getMiniMessage(simpyChatPattern, badge, messageColor)
 
   private fun getMiniMessageForChat(sender: Player): String = getMiniMessageForChat(
     getGlobalChatPlayerBadge(sender),
@@ -131,12 +125,11 @@ class ChatManager {
   )
 
   private fun getMiniMessageForGroup(sender: Player, isLeader: Boolean): String {
-    val chatPattern =
-      if (isLeader) {
-        groupLeaderPattern
-      } else {
-        groupMemberPattern
-      }
+    val chatPattern = if (isLeader) {
+      groupLeaderPattern
+    } else {
+      groupMemberPattern
+    }
 
     return getMiniMessage(sender, chatPattern)
   }
@@ -187,11 +180,7 @@ class ChatManager {
       }
     }
 
-    return getMiniMessage(
-      chatPattern,
-      getGlobalChatPlayerBadge(player),
-      messageColor,
-    )
+    return getMiniMessage(chatPattern, getGlobalChatPlayerBadge(player), messageColor)
   }
 
   private fun getMiniMessage(

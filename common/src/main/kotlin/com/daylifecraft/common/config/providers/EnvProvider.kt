@@ -17,7 +17,7 @@ class EnvProvider(
 
   override fun double(configPath: ConfigPath): Double? = string(configPath)?.toDouble()
 
-  override fun boolean(configPath: ConfigPath): Boolean? = System.getenv(configPath.toEnv())?.toBoolean()
+  override fun boolean(configPath: ConfigPath): Boolean? = string(configPath)?.toBoolean()
 
   override fun string(configPath: ConfigPath): String? = System.getenv(configPath.toEnv())
 
