@@ -93,7 +93,7 @@ object Init {
       EnvProvider(),
       *yamlProvidersOf(
         FilesUtil.getResourceStreamByPath("server.yml"),
-        FilesUtil.getResourceStreamByPath("another.yml")
+        FilesUtil.getResourceStreamByPath("another.yml"),
       ),
     )
     println(main)
@@ -101,11 +101,11 @@ object Init {
       EnvProvider(),
       *yamlProvidersOf(
         FilesUtil.getResourceStreamByPath("server.yml"),
-        FilesUtil.getResourceStreamByPath("another.yml")
+        FilesUtil.getResourceStreamByPath("another.yml"),
       ),
     )
     val config = load<MiniGameSettingsConfig>(
-      yamlProvidersOf(FilesUtil.getResourceStreamByPath("games/testMiniGame/config.yml")).first()
+      yamlProvidersOf(FilesUtil.getResourceStreamByPath("games/testMiniGame/config.yml")).first(),
     )
     println(config)
     println(cfg)

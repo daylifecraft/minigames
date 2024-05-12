@@ -49,7 +49,7 @@ class MiniGamesSettingManager {
 
   private fun loadConfigurationFile(folderName: String, inputStream: InputStream) {
     val config = load<MiniGameSettingsConfig>(
-      yamlProvidersOf(inputStream).first()
+      yamlProvidersOf(inputStream).first(),
     )
 
     val generalGameSettings = GeneralGameSettings(

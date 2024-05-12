@@ -27,7 +27,7 @@ object SeasonsManager {
           SeasonDate(seasonValues.startDate),
           SeasonDate(seasonValues.endDate),
           priority,
-        )
+        ),
       )
       priority--
     }

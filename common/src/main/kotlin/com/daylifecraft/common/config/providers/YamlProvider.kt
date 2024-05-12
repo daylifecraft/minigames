@@ -12,7 +12,7 @@ fun yamlProvidersOf(vararg yamlStreams: InputStream): Array<out Provider> =
     YamlProvider(yamlStreams[it])
   }
 
-class YamlProvider(yamlStream: InputStream): Provider {
+class YamlProvider(yamlStream: InputStream) : Provider {
   private val yamlSetting = LoadSettings.builder().setLabel("Custom user configuration").build()
 
   private val data: Map<String, Any?> = Load(yamlSetting).loadTreeMapFromInputStream(yamlStream)
@@ -33,44 +33,30 @@ class YamlProvider(yamlStream: InputStream): Provider {
     return result
   }
 
-  override fun int(configPath: ConfigPath): Int? {
-    return when (val res = any(configPath, data)) {
-      is Number -> res.toInt()
-      else -> null
-    }
+  override fun int(configPath: ConfigPath): Int? = when (val res = any(configPath, data)) {
+    is Number -> res.toInt()
+    else -> null
   }
-  override fun long(configPath: ConfigPath): Long? {
-    return when (val res = any(configPath, data)) {
-      is Number -> res.toLong()
-      else -> null
-    }
+  override fun long(configPath: ConfigPath): Long? = when (val res = any(configPath, data)) {
+    is Number -> res.toLong()
+    else -> null
   }
 
-  override fun float(configPath: ConfigPath): Float? {
-    return when (val res = any(configPath, data)) {
-      is Number -> res.toFloat()
-      else -> null
-    }
+  override fun float(configPath: ConfigPath): Float? = when (val res = any(configPath, data)) {
+    is Number -> res.toFloat()
+    else -> null
   }
 
-  override fun double(configPath: ConfigPath): Double? {
-    return when (val res = any(configPath, data)) {
-      is Number -> res.toDouble()
-      else -> null
-    }
+  override fun double(configPath: ConfigPath): Double? = when (val res = any(configPath, data)) {
+    is Number -> res.toDouble()
+    else -> null
   }
 
-  override fun boolean(configPath: ConfigPath): Boolean? {
-    return any(configPath, data) as Boolean?
-  }
+  override fun boolean(configPath: ConfigPath): Boolean? = any(configPath, data) as Boolean?
 
-  override fun string(configPath: ConfigPath): String? {
-    return any(configPath, data) as String?
-  }
+  override fun string(configPath: ConfigPath): String? = any(configPath, data) as String?
 
-  override fun listSize(configPath: ConfigPath): Int? {
-    return (any(configPath, data) as List<*>?)?.size
-  }
+  override fun listSize(configPath: ConfigPath): Int? = (any(configPath, data) as List<*>?)?.size
 
   private fun any(path: ConfigPath, currentData: Map<String, Any?>): Any? {
     val pathToken = path.first()

@@ -6,7 +6,7 @@ import kotlin.reflect.KParameter
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.jvm.jvmErasure
 
-inline fun <reified T: Any> load(
+inline fun <reified T : Any> load(
   firstLoader: Provider,
   vararg loaders: Provider,
   basePath: ConfigPath = ConfigPath(),
@@ -16,10 +16,10 @@ inline fun <reified T: Any> load(
   return load(T::class, basePath, l)
 }
 
-fun <T: Any> load(
+fun <T : Any> load(
   kClass: KClass<T>,
   basePath: ConfigPath,
-  loaders: List<Provider>
+  loaders: List<Provider>,
 ): T {
   if (!kClass.isData) throw IllegalArgumentException("T must be data class, but was ${kClass.simpleName}")
 
@@ -32,14 +32,21 @@ fun <T: Any> load(
 
     val res = when (constructorParameter.type.jvmErasure) {
       Int::class -> loaders.tryGet { int(basePath) }
+
       Long::class -> loaders.tryGet { long(basePath) }
+
       Float::class -> loaders.tryGet { float(basePath) }
+
       Double::class -> loaders.tryGet { double(basePath) }
+
       Boolean::class -> loaders.tryGet { boolean(basePath) }
+
       String::class -> loaders.tryGet { string(basePath) }
+
       List::class -> {
         loadList(loaders, basePath, constructorParameter.type.arguments[0].type!!.jvmErasure)
       }
+
       else -> load(constructorParameter.type.jvmErasure, basePath, loaders)
     }
     basePath.removeLast()
@@ -83,7 +90,7 @@ private fun loadList(
 private inline fun loadList(
   listSize: Int,
   basePath: ConfigPath,
-  getter: (ConfigPath) -> Any?
+  getter: (ConfigPath) -> Any?,
 ): List<Any> = MutableList(listSize) {
   basePath.addLast(IntToken(it))
   val got = getter(basePath)
@@ -98,10 +105,6 @@ inline fun <T> List<Provider>.tryGet(block: Provider.() -> T): T? {
   }
   return null
 }
-
-
-
-
 
 data class Cfg(
   val cfgA: Int,

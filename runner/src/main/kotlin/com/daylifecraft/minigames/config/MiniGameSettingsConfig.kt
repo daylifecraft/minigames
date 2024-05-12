@@ -15,7 +15,7 @@ data class MiniGameSettingsConfig(
 )
 
 data class GameConfig(
-  val worlds: List<GameWorldConfig>
+  val worlds: List<GameWorldConfig>,
 )
 
 data class GameWorldConfig(
@@ -24,7 +24,7 @@ data class GameWorldConfig(
   val displayNameKey: String,
   val maxPlayers: Int,
   val minPlayers: Int,
-  val spawnPoints: List<SpawnPointConfig>
+  val spawnPoints: List<SpawnPointConfig>,
 )
 
 data class SpawnPointConfig(

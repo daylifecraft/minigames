@@ -16,7 +16,7 @@ object ConfigManager {
   /** Load configs  */
   fun load() {
     mainConfig = load(
-      YamlProvider(FilesUtil.getResourceStreamByPath("server.yml"))
+      YamlProvider(FilesUtil.getResourceStreamByPath("server.yml")),
     )
   }
 }

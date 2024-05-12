@@ -84,7 +84,6 @@ class TestMiniGameController(miniGamesSettingManager: MiniGamesSettingManager) :
 
     val spawnPositions: MutableList<Pos> = ArrayList()
     for (spawnPointConfig in worldMap.spawnPoints) {
-
       spawnPositions.add(
         Pos(
           spawnPointConfig.x,

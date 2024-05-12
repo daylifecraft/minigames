@@ -17,12 +17,10 @@ value class ConfigPath(val tokens: LinkedList<PathToken> = LinkedList<PathToken>
   fun removeFirst(): PathToken = tokens.removeFirst()
   fun removeLast(): PathToken = tokens.removeLast()
 
-  override fun toString(): String {
-    return tokens.joinToString(".") {
-      when (it) {
-        is StringToken -> it.value
-        is IntToken -> "[${it.value}]"
-      }
+  override fun toString(): String = tokens.joinToString(".") {
+    when (it) {
+      is StringToken -> it.value
+      is IntToken -> "[${it.value}]"
     }
   }
 }
