@@ -77,7 +77,7 @@ private fun configWithGroupWithPermission(permission: String): MainConfig {
       badge = "stub",
       permissions = listOf(permission),
       globalChatColor = null,
-    )
+    ),
   )
   return mainConfig
 }
