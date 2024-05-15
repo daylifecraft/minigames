@@ -22,7 +22,7 @@ class DebugSeasonsListCommand :
 
   override fun onCommandUse(sender: CommandSender, context: CommandContext) {
     val senderLanguage = CommandsManager.getSenderLanguage(sender)
-    val seasonsList = configSeasonsList!!
+    val seasonsList = configSeasonsList
 
     val listType = context[listTypeArgument] ?: return
     val seasons =

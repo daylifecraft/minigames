@@ -204,9 +204,7 @@ class MiniGameStartController private constructor(
     )
 
   companion object {
-    private val ROUND_CONFIRMATION_TIMEOUT =
-      mainConfig.getInt("roundInvitationTimeout")!!
-        .toLong()
+    private val ROUND_CONFIRMATION_TIMEOUT = mainConfig.roundInvitationTimeout
 
     /**
      * Starting round without confirmation GUI (Debug)

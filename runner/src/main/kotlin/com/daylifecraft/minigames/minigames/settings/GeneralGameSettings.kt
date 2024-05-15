@@ -1,6 +1,6 @@
 package com.daylifecraft.minigames.minigames.settings
 
-import com.daylifecraft.common.config.ConfigFile
+import com.daylifecraft.minigames.config.GameConfig
 import net.minestom.server.item.Material
 
 /**
@@ -24,5 +24,5 @@ data class GeneralGameSettings(
   val permission: String?,
   val playersCountRange: IntRange,
   val groupSizeRange: IntRange,
-  val gameConfig: ConfigFile,
+  val gameConfig: GameConfig,
 )

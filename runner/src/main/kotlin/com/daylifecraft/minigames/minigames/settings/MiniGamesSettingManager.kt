@@ -1,7 +1,9 @@
 package com.daylifecraft.minigames.minigames.settings
 
-import com.daylifecraft.common.config.ConfigFile
+import com.daylifecraft.common.config.load
+import com.daylifecraft.common.config.providers.yamlProvidersOf
 import com.daylifecraft.common.logging.building.createLogger
+import com.daylifecraft.minigames.config.MiniGameSettingsConfig
 import com.daylifecraft.minigames.util.FilesUtil.getResourceStreamByPathCatching
 import com.daylifecraft.minigames.util.FilesUtil.walkThrowResourcesDir
 import net.minestom.server.item.Material
@@ -11,7 +13,7 @@ import java.nio.file.Paths
 
 /** Manager that provide interaction with basic MiniGames settings, which loaded from config.yml  */
 class MiniGamesSettingManager {
-  private val generalGameSettingsMap: MutableMap<String, GeneralGameSettings> = HashMap()
+  private val generalGameSettingsMap = mutableMapOf<String, GeneralGameSettings>()
 
   /**
    * Calls on startup to load all MiniGames config.yml
@@ -46,20 +48,21 @@ class MiniGamesSettingManager {
   }
 
   private fun loadConfigurationFile(folderName: String, inputStream: InputStream) {
-    val configFile = ConfigFile(inputStream)
+    val config = load<MiniGameSettingsConfig>(
+      *yamlProvidersOf(inputStream),
+    )
 
-    val generalGameSettings =
-      GeneralGameSettings(
-        configFile.getString("name")!!,
-        configFile.getString("displayNameKey")!!,
-        configFile.getString("descriptionKey")!!,
-        Material.fromNamespaceId(configFile.getString("guiBlock")!!.lowercase())!!,
-        configFile.getBool("public")!!,
-        configFile.getString("permission"),
-        configFile.getInt("minPlayers")!!..configFile.getInt("maxPlayers")!!,
-        configFile.getInt("minGroupSize")!!..configFile.getInt("maxGroupSize")!!,
-        configFile.getConfigSection("gameConfig"),
-      )
+    val generalGameSettings = GeneralGameSettings(
+      config.name,
+      config.displayNameKey,
+      config.descriptionKey,
+      Material.fromNamespaceId(config.guiBlock.lowercase())!!,
+      config.public,
+      config.permission,
+      playersCountRange = config.minPlayers..config.maxPlayers,
+      groupSizeRange = config.minGroupSize..config.maxGroupSize,
+      config.gameConfig,
+    )
 
     generalGameSettingsMap[folderName] = generalGameSettings
   }

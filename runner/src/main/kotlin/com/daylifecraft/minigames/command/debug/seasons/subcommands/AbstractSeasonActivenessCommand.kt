@@ -31,7 +31,7 @@ abstract class AbstractSeasonActivenessCommand protected constructor(
 
     val senderLanguage = CommandsManager.getSenderLanguage(sender)
 
-    val season = configSeasonsList!!.getSeasonByName(name)
+    val season = configSeasonsList.getSeasonByName(name)
     if (season == null) {
       senderLanguage.sendMiniMessage(WRONG_NAME_KEY, "seasonName" to name)
       return

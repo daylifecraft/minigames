@@ -21,23 +21,23 @@ gameConfig:
         - x: -42 # red
           y: 35
           z: -85
-          facingX: 1
-          facingZ: 1
+          yaw: 1
+          pitch: 1
         - x: -42 # green
           y: 35
           z: 81
-          facingX: 179
-          facingZ: 1
+          yaw: 179
+          pitch: 1
         - x: 43 # yellow
           y: 35
           z: 81
-          facingX: -179
-          facingZ: -1
+          yaw: -179
+          pitch: -1
         - x: 43 # blue
           y: 35
           z: -83
-          facingX: 0
-          facingZ: -1
+          yaw: 0
+          pitch: -1
 
     - name: world8
       enabled: true
@@ -48,40 +48,40 @@ gameConfig:
         - x: -77 # dark_blue
           y: 29
           z: -27
-          facingX: -86
-          facingZ: -1
+          yaw: -86
+          pitch: -1
         - x: -30 # green
           y: 29
           z: -74
-          facingX: 1
-          facingZ: 0
+          yaw: 1
+          pitch: 0
         - x: 37 # yellow
           y: 29
           z: -75
-          facingX: 1
-          facingZ: 1
+          yaw: 1
+          pitch: 1
         - x: 84 # blue
           y: 29
           z: -27
-          facingX: 89
-          facingZ: 3
+          yaw: 89
+          pitch: 3
         - x: 84 # white
           y: 29
           z: 40
-          facingX: 91
-          facingZ: 3
+          yaw: 91
+          pitch: 3
         - x: 37 # pink
           y: 29
           z: 87
-          facingX: 178
-          facingZ: 0
+          yaw: 178
+          pitch: 0
         - x: -30 # gray
           y: 29
           z: 87
-          facingX: 179
-          facingZ: 0
+          yaw: 179
+          pitch: 0
         - x: -77 # red
           y: 29
           z: 40
-          facingX: -91
-          facingZ: 0
+          yaw: -91
+          pitch: 0

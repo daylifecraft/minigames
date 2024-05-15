@@ -9,7 +9,7 @@ class DebugSeasonsStartCommand :
   AbstractSeasonActivenessCommand(
     command = "start",
     nameSuggestionCallback = { _, _, suggestion ->
-      SeasonsManager.configSeasonsList!!.inactiveSeasons
+      SeasonsManager.configSeasonsList.inactiveSeasons
         .filter { season: Season -> season.name.startsWith(suggestion.currentArgumentValue) }
         .forEach { season: Season ->
           suggestion.addEntry(

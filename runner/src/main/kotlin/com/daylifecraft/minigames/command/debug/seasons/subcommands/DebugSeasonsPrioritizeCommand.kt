@@ -46,7 +46,7 @@ class DebugSeasonsPrioritizeCommand :
       return
     }
 
-    val season = configSeasonsList!!.getSeasonByName(name)
+    val season = configSeasonsList.getSeasonByName(name)
     if (season == null) {
       senderLanguage.sendMiniMessage(WRONG_NAME_KEY, SEASON_NAME_PLACEHOLDER to name)
       return

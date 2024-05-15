@@ -1,7 +1,7 @@
 package com.daylifecraft.minigames
 
-import com.daylifecraft.common.util.safeCastToList
 import com.daylifecraft.minigames.config.ConfigManager.mainConfig
+import com.daylifecraft.minigames.config.GroupConfig
 import net.minestom.server.entity.Player
 import net.minestom.server.permission.Permission
 import java.util.Optional
@@ -14,12 +14,12 @@ object PermissionManager {
    * @return Optional with badge for group
    */
   fun getBadge(group: String): Optional<String> {
-    val o = getGroupParameters(group)["badge"]
+    val badge = getGroupConfig(group)?.badge
 
-    return if (o == null) {
+    return if (badge == null) {
       Optional.empty()
     } else {
-      Optional.of(o.toString())
+      Optional.of(badge.toString())
     }
   }
 
@@ -30,12 +30,12 @@ object PermissionManager {
    * @return Optional with color for group
    */
   fun getGlobalChatColor(group: String): Optional<String> {
-    val o = getGroupParameters(group)["globalChatColor"]
+    val globalChatColor = getGroupConfig(group)?.globalChatColor
 
-    return if (o == null) {
+    return if (globalChatColor == null) {
       Optional.empty()
     } else {
-      Optional.of(o.toString())
+      Optional.of(globalChatColor.toString())
     }
   }
 
@@ -125,7 +125,7 @@ object PermissionManager {
    * @param group group id
    * @return list of permission names for group
    */
-  private fun getPermissionsNames(group: String): List<String> = getGroupParameters(group)["permissions"]!!.safeCastToList<String>()
+  private fun getPermissionsNames(group: String): List<String> = getGroupConfig(group)!!.permissions
 
   /**
    * Gets the names of all group permissions.
@@ -133,5 +133,6 @@ object PermissionManager {
    * @param group group id
    * @return map of permission for group
    */
-  private fun getGroupParameters(group: String): Map<String, Any?> = mainConfig.getValueFromList("groups", "name", group)
+  private fun getGroupConfig(group: String): GroupConfig? =
+    mainConfig.groups.firstOrNull { it.name == group }
 }

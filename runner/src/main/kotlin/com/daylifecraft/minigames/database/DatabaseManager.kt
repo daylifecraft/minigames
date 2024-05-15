@@ -255,7 +255,7 @@ object DatabaseManager {
   }
 
   private fun loadCollections() {
-    val collectionsNames = mainConfig.getStringList("collections")
+    val collectionsNames = mainConfig.collections
 
     // Check is collection names assigned
     if (collectionsNames.isNullOrEmpty()) {
