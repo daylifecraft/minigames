@@ -1,6 +1,5 @@
-cfgA: "aaaa"
+cfgB: "bbbbb"
 cfgC:
-  a: 111
   b: "fdsa"
   li:
     - 1
@@ -9,7 +8,7 @@ cfgC:
     - 4
   ls:
     - "asdf"
-    - "fdsa"
+    - "kkkkkk"
     - "vibe"
   lo:
     - v: 1

@@ -1,6 +1,5 @@
 package com.daylifecraft.minigames
 
-import com.daylifecraft.common.config.Cfg
 import com.daylifecraft.common.config.load
 import com.daylifecraft.common.config.providers.EnvProvider
 import com.daylifecraft.common.config.providers.yamlProvidersOf
@@ -37,6 +36,29 @@ import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.util.UUID
 import kotlin.system.exitProcess
+
+data class Cfg(
+  val cfgA: Int,
+  val cfgB: String,
+  val cfgC: C,
+  val cfgD: Int? = null,
+  val cfgE: Int?,
+  val cfgF: Int = 1,
+)
+
+data class C(
+  val a: Int,
+  val b: String,
+  val li: List<Int>,
+  val ls: List<String>,
+  val lo: List<D>,
+)
+
+data class D(
+  val v: Int,
+  val w: String,
+  val cfg: Cfg,
+)
 
 private const val SERVER_IP = "::"
 
@@ -93,19 +115,18 @@ object Init {
       EnvProvider(),
       *yamlProvidersOf(
         FilesUtil.getResourceStreamByPath("server.yml"),
-        FilesUtil.getResourceStreamByPath("another.yml"),
       ),
     )
     println(main)
     val cfg = load<Cfg>(
       EnvProvider(),
       *yamlProvidersOf(
-        FilesUtil.getResourceStreamByPath("server.yml"),
+        FilesUtil.getResourceStreamByPath("test.yml"),
         FilesUtil.getResourceStreamByPath("another.yml"),
       ),
     )
     val config = load<MiniGameSettingsConfig>(
-      yamlProvidersOf(FilesUtil.getResourceStreamByPath("games/testMiniGame/config.yml")).first(),
+      *yamlProvidersOf(FilesUtil.getResourceStreamByPath("games/testMiniGame/config.yml")),
     )
     println(config)
     println(cfg)

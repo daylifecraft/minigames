@@ -58,7 +58,7 @@ class YamlProvider(yamlStream: InputStream) : Provider {
 
   override fun listSize(configPath: ConfigPath): Int? = (any(configPath, data) as List<*>?)?.size
 
-  private fun any(path: ConfigPath, currentData: Map<String, Any?>): Any? {
+  private fun any(path: ConfigPath, currentData: Map<*, *>): Any? {
     val pathToken = path.first()
     if (pathToken !is StringToken) error("path wasn't a StringToken $path")
     return moveDeeper(path, currentData[pathToken.value])
@@ -70,7 +70,6 @@ class YamlProvider(yamlStream: InputStream) : Provider {
     return moveDeeper(path, currentData[firstToken.value])
   }
 
-  @Suppress("UNCHECKED_CAST")
   private fun moveDeeper(path: ConfigPath, current: Any?): Any? {
     if (path.size == 1) return current
     if (current == null) return null
@@ -78,7 +77,8 @@ class YamlProvider(yamlStream: InputStream) : Provider {
     val removed = path.removeFirst()
     val next = when (current) {
       is List<*> -> any(path, current)
-      else -> any(path, current as Map<String, Any>)
+      is Map<*, *> -> any(path, current)
+      else -> return null
     }
     path.addFirst(removed)
     return next

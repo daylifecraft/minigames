@@ -7,23 +7,19 @@ import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.jvm.jvmErasure
 
 inline fun <reified T : Any> load(
-  firstLoader: Provider,
   vararg loaders: Provider,
   basePath: ConfigPath = ConfigPath(),
-): T {
-  val l = mutableListOf(firstLoader)
-  l.addAll(loaders)
-  return load(T::class, basePath, l)
-}
+): T = load(T::class, basePath, loaders.toList())
 
 fun <T : Any> load(
   kClass: KClass<T>,
   basePath: ConfigPath,
   loaders: List<Provider>,
 ): T {
-  if (!kClass.isData) throw IllegalArgumentException("T must be data class, but was ${kClass.simpleName}")
+  require(kClass.isData) { "${kClass.simpleName} must be data class, to be loadable by reflection" }
 
-  val primaryConstructor = kClass.primaryConstructor ?: throw IllegalArgumentException("Primary constructor of data class not found!?")
+  val primaryConstructor = kClass.primaryConstructor
+  require(primaryConstructor != null) { "${kClass.simpleName} must have a primary constructor" }
 
   val arguments = mutableMapOf<KParameter, Any?>()
 
@@ -73,12 +69,28 @@ private fun loadList(
 ): List<Any> {
   val listSize = loaders.tryGet { listSize(basePath) } ?: 0
   return when (listElementType) {
-    String::class -> loadList(listSize, basePath) {
-      loaders.tryGet { string(basePath) }
-    }
-
     Int::class -> loadList(listSize, basePath) {
       loaders.tryGet { int(basePath) }
+    }
+
+    Long::class -> loadList(listSize, basePath) {
+      loaders.tryGet { long(basePath) }
+    }
+
+    Float::class -> loadList(listSize, basePath) {
+      loaders.tryGet { float(basePath) }
+    }
+
+    Double::class -> loadList(listSize, basePath) {
+      loaders.tryGet { double(basePath) }
+    }
+
+    Boolean::class -> loadList(listSize, basePath) {
+      loaders.tryGet { boolean(basePath) }
+    }
+
+    String::class -> loadList(listSize, basePath) {
+      loaders.tryGet { string(basePath) }
     }
 
     else -> loadList(listSize, basePath) { path ->
@@ -98,33 +110,10 @@ private inline fun loadList(
   return@MutableList got ?: error("List element not found")
 }
 
-inline fun <T> List<Provider>.tryGet(block: Provider.() -> T): T? {
+private inline fun <T> List<Provider>.tryGet(block: Provider.() -> T): T? {
   for (loader in this) {
     val res = block.invoke(loader)
     if (res != null) return res
   }
   return null
 }
-
-data class Cfg(
-  val cfgA: Int,
-  val cfgB: String,
-  val cfgC: C,
-  val cfgD: Int? = null,
-  val cfgE: Int?,
-  val cfgF: Int = 1,
-)
-
-data class C(
-  val a: Int,
-  val b: String,
-  val li: List<Int>,
-  val ls: List<String>,
-  val lo: List<D>,
-)
-
-data class D(
-  val v: Int,
-  val w: String,
-  val cfg: Cfg,
-)
