@@ -24,6 +24,10 @@ object GuiUtil {
     return x == 0 || x == LAST_COLUMN_X || y == 0 || y == LAST_ROW_Y
   }
 
+  fun isChest6SlotInUpperRow(slot: Int): Boolean = (slot / SLOTS_IN_LINE) == 0
+
+  fun isChest6SlotInLowerRow(slot: Int): Boolean = (slot / SLOTS_IN_LINE) == LAST_ROW_Y
+
   /** return true if clickType is LEFT_CLICK or RIGHT_CLICK  */
   val ClickType.isLR: Boolean
     get() = this == ClickType.LEFT_CLICK || this == ClickType.RIGHT_CLICK

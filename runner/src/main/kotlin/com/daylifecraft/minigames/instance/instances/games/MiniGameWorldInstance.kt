@@ -20,7 +20,7 @@ typealias ReceiveMessageConsumer = (Player, Player) -> Boolean
 private val ZERO_POSITION = Pos(0.0, 0.0, 0.0)
 
 /** General MiniGame World instance to control world  */
-class MiniGameWorldInstance(
+open class MiniGameWorldInstance(
   private val miniGameId: String,
   private val worldName: String,
   playersSpawnPoints: Map<UUID, Pos>?,

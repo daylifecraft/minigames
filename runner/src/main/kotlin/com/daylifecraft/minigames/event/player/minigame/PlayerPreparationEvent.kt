@@ -14,7 +14,7 @@ class PlayerPreparationEvent(
   val miniGameId: String,
   val roundSearchProvider: IRoundSearchProvider,
   val defaultSettings: JsonObject,
-  val defaultFilters: JsonObject?,
+  val defaultFilters: JsonObject,
 ) : PlayerEvent {
   override fun getPlayer(): Player = player
 }

@@ -7,6 +7,7 @@ import com.daylifecraft.minigames.command.debug.rounds.DebugRoundsCommand
 import com.daylifecraft.minigames.command.debug.seasons.DebugSeasonsCommand
 import com.daylifecraft.minigames.command.debug.server.DebugLagCommand
 import com.daylifecraft.minigames.command.debug.server.DebugStopCommand
+import com.daylifecraft.minigames.command.debug.towerdefence.DebugTowerDefenceCommand
 import net.minestom.server.command.CommandSender
 import net.minestom.server.command.builder.CommandContext
 
@@ -22,6 +23,7 @@ class DebugCommand : AbstractDebugCommand("~") {
     addSubcommand(DebugSpeedCommand())
     addSubcommand(DebugToggleAdminCommand())
     addSubcommand(DebugLagCommand())
+    addSubcommand(DebugTowerDefenceCommand())
   }
 
   /**

@@ -8,6 +8,7 @@ import com.daylifecraft.minigames.instance.InstancePlayerState
 import com.daylifecraft.minigames.instance.InstanceUtil
 import com.daylifecraft.minigames.instance.instances.games.MiniGameWorldInstance
 import com.daylifecraft.minigames.minigames.PlayerMiniGameManager
+import com.daylifecraft.minigames.minigames.items.MiniGameItem
 import com.daylifecraft.minigames.minigames.profile.RoundProfile
 import com.daylifecraft.minigames.minigames.profile.RoundStatus
 import com.google.gson.JsonObject
@@ -19,6 +20,7 @@ import net.minestom.server.event.EventDispatcher
 import net.minestom.server.event.EventFilter
 import net.minestom.server.event.EventNode
 import net.minestom.server.event.trait.PlayerEvent
+import net.minestom.server.item.ItemStack
 
 /**
  * Abstract MiniGame instance that stores World instance, RoundProfile in database, players with
@@ -33,7 +35,7 @@ abstract class AbstractMiniGameInstance protected constructor(
   private val roundPlayerSettings: MutableMap<Player, JsonObject> =
     HashMap(roundPlayerSettings)
 
-  private val events: EventNode<Event> = EventNode
+  protected val events: EventNode<Event> = EventNode
     .type("AbstractMiniGameInstance", EventFilter.ALL) { event: Event, _ ->
       if ((event is PlayerEvent) &&
         spectatorsList.contains(event.player)
@@ -47,6 +49,8 @@ abstract class AbstractMiniGameInstance protected constructor(
   private var readyPlayersCount = 0
 
   private val spectatorsList: MutableList<Player> = ArrayList()
+
+  private val miniGameItems: MutableMap<Int, MiniGameItem> = mutableMapOf()
 
   private val logger = createLogger()
 
@@ -68,6 +72,17 @@ abstract class AbstractMiniGameInstance protected constructor(
 
   private fun unregisterEvents() {
     MinecraftServer.getGlobalEventHandler().removeChild(events)
+  }
+
+  protected fun addMiniGameItem(player: Player, slot: Int, miniGameItem: MiniGameItem) {
+    val itemStack = miniGameItem.renderForPlayer(player)
+
+    player.inventory.setItemStack(slot, itemStack)
+    miniGameItems[itemStack.hashCode()] = miniGameItem
+  }
+
+  protected fun onPlayerItemUse(player: Player, itemStack: ItemStack) {
+    miniGameItems[itemStack.hashCode()]?.onPlayerInteract(player)
   }
 
   /**
@@ -95,7 +110,7 @@ abstract class AbstractMiniGameInstance protected constructor(
     roundProfile.setRoundStatusAndUpdate(RoundStatus.STARTED)
   }
 
-  protected fun stopRound() {
+  protected open fun stopRound() {
     roundProfile.endRound()
 
     for (spectator in ArrayList(spectatorsList)) {
@@ -120,7 +135,7 @@ abstract class AbstractMiniGameInstance protected constructor(
     EventDispatcher.call(roundLeaveEvent)
   }
 
-  protected fun removePlayerFromRound(player: Player) {
+  open fun removePlayerFromRound(player: Player) {
     onPlayerLeaveFromRound(player)
 
     if (roundPlayerSettings.isEmpty()) {
@@ -221,18 +236,16 @@ abstract class AbstractMiniGameInstance protected constructor(
    */
   abstract fun onPlayerLeaveFromInstance(player: Player)
 
-  companion object {
-    private fun clearPlayerAttributes(player: Player) {
-      // Clear attribute modifiers
-      for (attribute in Attribute.values()) {
-        for (attributeModifier in player.getAttribute(attribute).modifiers) {
-          player.getAttribute(attribute).removeModifier(attributeModifier)
-        }
+  private fun clearPlayerAttributes(player: Player) {
+    // Clear attribute modifiers
+    for (attribute in Attribute.values()) {
+      for (attributeModifier in player.getAttribute(attribute).modifiers) {
+        player.getAttribute(attribute).removeModifier(attributeModifier)
       }
-
-      // Remove title & clear effects
-      player.clearTitle()
-      player.clearEffects()
     }
+
+    // Remove title & clear effects
+    player.clearTitle()
+    player.clearEffects()
   }
 }

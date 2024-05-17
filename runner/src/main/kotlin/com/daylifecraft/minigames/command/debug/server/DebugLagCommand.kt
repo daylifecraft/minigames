@@ -81,7 +81,7 @@ class DebugLagCommand :
       )
     }
 
-    scheduleLaggingTask(ExecutionType.TICK_START)
+    scheduleLaggingTask(ExecutionType.SYNC)
   }
 
   private fun stopLags() {

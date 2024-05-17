@@ -128,9 +128,13 @@ abstract class AbstractListGui internal constructor(
     }
   }
 
-  private inner class CurrentPageIndicator(private val titleKey: String, private val varKey: String) : GuiItem() {
+  protected inner class CurrentPageIndicator(
+    private val titleKey: String,
+    private val varKey: String,
+    material: Material = Material.SUNFLOWER,
+  ) : GuiItem() {
     init {
-      material = Material.SUNFLOWER
+      super.material = material
       text = generateText()
     }
 
@@ -149,7 +153,7 @@ abstract class AbstractListGui internal constructor(
     )
   }
 
-  private abstract inner class GoToPageButton(
+  protected abstract inner class GoToPageButton(
     material: Material,
     private val textKey: String,
     private val varKey: String,
@@ -180,7 +184,7 @@ abstract class AbstractListGui internal constructor(
     }
   }
 
-  private inner class UsageToPageButton(material: Material, textKey: String, varKey: String, shift: Int) : GoToPageButton(material, textKey, varKey, shift) {
+  protected inner class UsageToPageButton(material: Material, textKey: String, varKey: String, shift: Int) : GoToPageButton(material, textKey, varKey, shift) {
     init {
       text = generateTitle()
     }
